@@ -200,7 +200,11 @@ TICKER_JS = r"""
         let status='scheduled';
         if(sn==='STATUS_IN_PROGRESS') status='inprogress';
         else if(sn==='STATUS_FINAL') status='closed';
-        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,
+        const hTeam=comps[0]?.competitors?.find(x=>x.homeAway==='home')?.team?.abbreviation||comps[0]?.competitors?.[0]?.team?.abbreviation;
+        const aTeam=comps[0]?.competitors?.find(x=>x.homeAway==='away')?.team?.abbreviation||comps[0]?.competitors?.[1]?.team?.abbreviation;
+        const hScore=comps[0]?.competitors?.find(x=>x.homeAway==='home')?.score;
+        const aScore=comps[0]?.competitors?.find(x=>x.homeAway==='away')?.score;
+        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,home:hTeam,away:aTeam,score:hTeam&&hScore!=null?{[hTeam]:parseInt(hScore)||0,[aTeam]:parseInt(aScore)||0}:null,
           teams:{[home.team.abbreviation]:{abbreviation:home.team.abbreviation},[away.team.abbreviation]:{abbreviation:away.team.abbreviation}},
           score:status!=='scheduled'?{[home.team.abbreviation]:parseInt(home.score)||0,[away.team.abbreviation]:parseInt(away.score)||0}:null};
       }).filter(Boolean);
