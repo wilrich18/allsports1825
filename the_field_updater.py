@@ -685,8 +685,7 @@ renderProps();
 </body></html>"""
 
     html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
-    html = html.replace("</body></html>", TICKER_JS + "
-</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
     out = os.path.join(OUTPUT_DIR, "nba.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nba.html saved ({len(html):,} chars)")
@@ -961,8 +960,7 @@ function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.cla
 </body></html>"""
 
     html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
-    html = html.replace("</body></html>", TICKER_JS + "
-</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
     out = os.path.join(OUTPUT_DIR, "nhl.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nhl.html saved ({len(html):,} chars)")
@@ -1148,8 +1146,7 @@ function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.cla
 </body></html>"""
 
     html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
-    html = html.replace("</body></html>", TICKER_JS + "
-</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
     out = os.path.join(OUTPUT_DIR, "mlb.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ mlb.html saved ({len(html):,} chars)")
@@ -1346,8 +1343,7 @@ function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.cla
 </body></html>"""
 
     html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
-    html = html.replace("</body></html>", TICKER_JS + "
-</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
     out = os.path.join(OUTPUT_DIR, "nfl.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nfl.html saved ({len(html):,} chars)")
