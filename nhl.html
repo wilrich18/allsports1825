@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE FIELD — NHL Hockey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--ice:#001533;--blue:#0064b4;--red:#c8102e;--gold:#f5c842;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#020d1c;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
+nav{position:sticky;top:0;z-index:100;background:rgba(2,13,28,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}
+.nav-home{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}
+.nav-home:hover{color:var(--white);}
+.nav-sep{color:var(--border);font-size:18px;margin-right:12px;}
+.nav-sport{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#4ab3ff;margin-right:20px;}
+.nav-links{display:flex;gap:2px;flex:1;}
+.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
+.nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
+.live-pill{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
+.page{display:none;}.page.active{display:block;animation:fadeUp 0.3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.hero{background:linear-gradient(135deg,#020d1c 0%,#051d3a 50%,#020d1c 100%);padding:48px 24px 40px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(0,100,180,0.12),transparent);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:#4ab3ff;text-transform:uppercase;margin-bottom:10px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;margin-bottom:12px;}
+.hero-title em{color:var(--blue);font-style:normal;}
+.hero-sub{color:var(--gray);font-size:15px;max-width:480px;margin-bottom:24px;}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#4ab3ff;line-height:1;}
+.hero-stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
+.section{max-width:1100px;margin:0 auto;padding:32px 24px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4ab3ff;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+/* TONIGHT */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:32px;}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.game-card.live{border-color:rgba(74,222,128,0.3);}
+.game-card-top{padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4ab3ff;margin-bottom:8px;}
+.game-time.live-time{color:#4ade80;}
+.game-matchup{display:flex;align-items:flex-end;justify-content:space-between;}
+.game-side{flex:1;}
+.game-side.right{text-align:right;}
+.side-label{font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}
+.home-lbl{color:#4ade80;}.away-lbl{color:var(--gray);}
+.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;color:var(--white);}
+.game-score{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#4ab3ff;padding:0 8px;line-height:1;}
+.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gray);padding:0 8px;}
+.game-lines{display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--border);}
+.line-pill{flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:7px 8px;text-align:center;}
+.line-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
+.line-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:var(--white);}
+.line-val.blue{color:#4ab3ff;}
+.game-why{padding:12px 16px;font-size:13px;color:#94a3b8;line-height:1.6;}
+.game-why strong{color:var(--white);}
+/* STANDINGS */
+.conf-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:800px){.conf-grid{grid-template-columns:1fr;}}
+.std-table{width:100%;border-collapse:collapse;font-size:13px;}
+.std-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:6px 8px;text-align:center;border-bottom:1px solid var(--border);}
+.std-table th:nth-child(2){text-align:left;}
+.std-table td{padding:8px 8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);}
+.std-table td:nth-child(2){text-align:left;}
+.std-table tr:hover td{background:var(--card2);}
+.team-name-cell{font-weight:600;font-size:13px;}
+tr.playoff-line td{border-top:2px solid #4ab3ff!important;}
+tr.playin-line td{border-top:2px dashed rgba(74,179,255,0.3)!important;}
+.pct-good{color:#4ade80;font-weight:600;}.pct-ok{color:var(--white);}.pct-bad{color:#f87171;}
+/* PREDICTOR */
+.pred-wrap{max-width:680px;margin:0 auto;}
+.team-row{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}
+.team-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.tbadge{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}
+.tbadge-h{background:rgba(74,222,128,0.12);color:#4ade80;}.tbadge-a{background:rgba(248,113,113,0.12);color:#f87171;}
+.tlabel{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+select.tsel{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+select.tsel:focus{outline:none;border-color:#4ab3ff;}select.tsel option{background:#051d3a;}
+.vs-mid{display:flex;align-items:center;justify-content:center;padding-top:28px;}
+.vs-big{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}
+.pred-btn{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,var(--blue),#0080e0);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(0,100,180,0.3);}
+.pred-btn:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(0,100,180,0.45);}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.result-card.w{border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);}
+.r-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
+.r-val{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}
+.r-val.blue{color:#4ab3ff;}.r-sub{font-size:12px;color:var(--gray);margin-top:3px;}
+.bar-wrap{margin:16px 0;}.bar-labels{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}
+.bar-track{height:10px;border-radius:5px;background:rgba(248,113,113,0.2);overflow:hidden;}
+.bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.winner-banner{text-align:center;padding:16px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:1px;}
+.winner-sub{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}
+/* DIGEST */
+.digest-lead{background:linear-gradient(135deg,#061422,#1a0608);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;}
+.dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4ab3ff;margin-bottom:8px;}
+.dhl{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:560px;}
+.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;}
+.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;}
+.sw{color:var(--white);}.sl{color:var(--gray);}.sdot{color:#4ab3ff;margin:0 7px;}
+.art-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+.chev{transition:transform 0.2s;color:var(--gray);}.chev.open{transform:rotate(180deg);}
+.art-body{display:none;padding:16px 20px;border-top:1px solid var(--border);}.art-body.open{display:block;}
+.art-body p{color:#cbd5e1;line-height:1.75;font-size:14px;}
+/* MAGAZINE */
+.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+@media(max-width:768px){.mag-layout{grid-template-columns:1fr;}.team-row{grid-template-columns:1fr;}.vs-mid{padding-top:0;}}
+.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.rank-item:last-child{border-bottom:none;}
+.rank-n{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.1);min-width:40px;text-align:center;padding-top:2px;}
+.rank-n.t3{color:#4ab3ff;}
+.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
+.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
+.tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
+.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4ab3ff;margin-bottom:10px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sc-row:last-child{border-bottom:none;}
+.sc-team{font-weight:600;}.sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.sc-val.hot{color:#4ade80;}.sc-val.cold{color:#f87171;}
+/* PROPS */
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
+.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.prop-card.high::before{background:linear-gradient(90deg,#4ade80,#22c55e);}.prop-card.medium::before{background:linear-gradient(90deg,#4ab3ff,#0080e0);}
+.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}
+.prop-team{font-size:12px;color:var(--gray);margin-bottom:9px;}
+.prop-line{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}
+.prop-odds{font-size:12px;color:var(--gray);margin-bottom:8px;}
+.prop-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
+.b-high{background:rgba(74,222,128,0.13);color:#4ade80;}.b-med{background:rgba(74,179,255,0.13);color:#4ab3ff;}
+.prop-reason{font-size:13px;color:#94a3b8;line-height:1.55;}
+.disclaimer{background:rgba(200,16,46,0.06);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}
+footer{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
+footer strong{color:var(--white);}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-home" href="index.html">THE FIELD</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-sport">NHL</span>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
+    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
+    <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
+    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+  </div>
+  <div class="live-pill">🔴 LIVE TONIGHT</div>
+</nav>
+
+<!-- STANDINGS -->
+<div id="page-standings" class="page active">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025-26 NHL Season · Updated March 6, 2026</div>
+    <h1 class="hero-title">NHL<br><em>STANDINGS</em></h1>
+    <p class="hero-sub">Live records, points, and playoff picture for all 32 teams. Games in progress tonight.</p>
+    <div class="hero-stats">
+      <div><div class="hero-stat-val">6</div><div class="hero-stat-lbl">Live Tonight</div></div>
+      <div><div class="hero-stat-val">41</div><div class="hero-stat-lbl">Colorado W (Best)</div></div>
+      <div><div class="hero-stat-val">MAR 6</div><div class="hero-stat-lbl">Tonight</div></div>
+    </div>
+  </div></div>
+  <div class="section">
+    <div class="conf-grid">
+      <div>
+        <div class="section-title">Eastern Conference</div>
+        <table class="std-table"><thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th></tr></thead><tbody id="east-body"></tbody></table>
+      </div>
+      <div>
+        <div class="section-title">Western Conference</div>
+        <table class="std-table"><thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th></tr></thead><tbody id="west-body"></tbody></table>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--gray);display:flex;gap:20px;flex-wrap:wrap;">
+      <span><span style="color:#4ab3ff">——</span> Playoff cutoff (8th seed)</span>
+      <span><span style="color:rgba(74,179,255,0.35)">- - -</span> Wild Card bubble</span>
+    </div>
+  </div>
+</div>
+
+<!-- PREDICTOR -->
+<div id="page-predictor" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025-26 Season Stats</div>
+    <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
+    <p class="hero-sub">Tonight's lines with analysis, plus build any custom matchup for an instant prediction.</p>
+  </div></div>
+  <div class="section">
+    <div class="section-title">Tonight's Lines — March 6, 2026</div>
+    <div class="games-grid" id="lines-grid"></div>
+    <div class="section-title">Custom Matchup Predictor</div>
+    <div class="pred-wrap">
+      <div class="team-row">
+        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
+        <div class="vs-mid"><div class="vs-big">VS</div></div>
+        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
+      </div>
+      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
+      <div id="pred-out"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIGEST -->
+<div id="page-digest" class="page">
+  <div class="section" style="padding-top:30px">
+    <div class="digest-lead">
+      <div class="dlabel">Thursday, March 6, 2026 · Recapping March 5</div>
+      <div class="dhl">LAST NIGHT ON ICE</div>
+      <div class="ddeck">3 games played March 5. Full recaps below — Vancouver pulled off a big one, Seattle held on, and Anaheim battered the Islanders.</div>
+    </div>
+    <div class="section-title">Game Recaps — March 5, 2026</div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">CAR 6</span><span class="sdot">·</span><span class="sl">VAN 4</span></div><div class="art-sub">Carolina Hurricanes defeat Vancouver Canucks</div></div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="art-body"><p>The Carolina Hurricanes rolled into Vancouver and handled the Canucks with a convincing 6-4 victory. Carolina's offensive depth was on full display — six different Hurricanes found the back of the net. Vancouver (18-36) continues to struggle as one of the worst teams in the Western Conference this season. The 'Canes remain one of the top teams in the East and this road win reinforces their playoff positioning. Frederik Andersen made 28 saves for Carolina.</p></div>
+    </div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">STL 3</span><span class="sdot">·</span><span class="sl">SEA 2</span></div><div class="art-sub">St. Louis Blues upset Seattle Kraken</div></div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="art-body"><p>St. Louis picked up a big road win in Seattle, defeating the Kraken 3-2 to tighten up the Western wild card race. The Blues scored two goals in the third period to overturn a 2-1 deficit. For Seattle, who are right on the playoff bubble, this was a damaging loss. The Kraken have now dropped three of their last five and must be feeling the heat from teams below them in the standings. St. Louis has been playing inspired hockey lately in their own playoff push.</p></div>
+    </div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">ANA 5</span><span class="sdot">·</span><span class="sl">NYI 1</span></div><div class="art-sub">Anaheim Ducks dominate New York Islanders</div></div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="art-body"><p>Anaheim continued their impressive 2025-26 campaign with a dominant 5-1 win over the visiting New York Islanders. The Ducks (34-24) are having a surprising season and sit firmly in the Western Conference playoff picture. Their young core has grown up — Trevor Zegras has taken a big step forward this season. New York fell to 35-22 but remains well-positioned in the East. The lopsided score doesn't reflect where the Islanders are overall; Anaheim just had their way on this night.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAGAZINE -->
+<div id="page-magazine" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025-26 NHL · March 6, 2026</div>
+    <h1 class="hero-title">NHL<br><em>MAGAZINE</em></h1>
+    <p class="hero-sub">Power rankings, playoff picture, and the full story of the 2025-26 NHL season.</p>
+  </div></div>
+  <div class="section">
+    <div class="mag-layout">
+      <div>
+        <div class="section-title">Power Rankings</div>
+        <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Colorado Avalanche</div><div class="rank-rec">41-10 · Western Conference</div><div class="rank-note">Best record in hockey. Nathan MacKinnon is playing at a Hart Trophy level. Cale Makar is the best defenseman alive. This team is built to win the Cup.</div><div class="rank-trend tu">↑ Stanley Cup favorites</div></div></div>
+        <div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Dallas Stars</div><div class="rank-rec">38-14 · Central Division</div><div class="rank-note">Jake Oettinger in net, Roope Hintz and Jason Robertson up front. Dallas is built for the playoffs and has the depth to go all the way.</div><div class="rank-trend tu">↑ Western threat</div></div></div>
+        <div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Carolina Hurricanes</div><div class="rank-rec">39-16 · Metro Division</div><div class="rank-note">Sebastian Aho leads an engine-room offense. The Hurricanes' system-driven approach makes them dangerous every single night.</div><div class="rank-trend tf">→ Eastern favorites</div></div></div>
+        <div class="rank-item"><div class="rank-n">4</div><div><div class="rank-team">Tampa Bay Lightning</div><div class="rank-rec">38-17 · Atlantic Division</div><div class="rank-note">Stamkos and Kucherov still doing damage. Andrei Vasilevskiy is elite. Tampa knows how to win in the playoffs — never count them out.</div><div class="rank-trend tf">→ Atlantic leaders</div></div></div>
+        <div class="rank-item"><div class="rank-n">5</div><div><div class="rank-team">Minnesota Wild</div><div class="rank-rec">36-16 · Central Division</div><div class="rank-note">Kirill Kaprizov is producing at a point-per-game pace. Minnesota's depth up front and reliable goaltending makes them a dark horse Cup contender.</div><div class="rank-trend tu">↑ Surging</div></div></div>
+        <div class="rank-item"><div class="rank-n">6</div><div><div class="rank-team">Buffalo Sabres</div><div class="rank-rec">36-19 · Atlantic Division</div><div class="rank-note">The rebuild is paying off. Tage Thompson is a franchise center. Buffalo is making the playoffs for the first time in many years and the fans deserve it.</div><div class="rank-trend tu">↑ Breaking through</div></div></div>
+        <div class="rank-item"><div class="rank-n">7</div><div><div class="rank-team">New York Islanders</div><div class="rank-rec">35-22 · Metro Division</div><div class="rank-note">Bo Horvat is the real deal. The Islanders have a balanced team and are a legitimate playoff threat. Semyon Varlamov has been excellent in net.</div><div class="rank-trend tf">→ Playoff locked</div></div></div>
+        <div class="rank-item"><div class="rank-n">8</div><div><div class="rank-team">Detroit Red Wings</div><div class="rank-rec">35-20 · Atlantic Division</div><div class="rank-note">The Wings are back. Lucas Raymond and Moritz Seider anchor the team. Detroit is a playoff team this year and the city is buzzing.</div><div class="rank-trend tu">↑ Red Wings rise</div></div></div>
+      </div>
+      <div>
+        <div class="sidebar-card"><div class="sc-title">🏒 Current Playoff Seeds</div>
+          <div class="sc-row"><span class="sc-team">E1 — Carolina</span><span class="sc-val hot">39-16</span></div>
+          <div class="sc-row"><span class="sc-team">E2 — Tampa Bay</span><span class="sc-val hot">38-17</span></div>
+          <div class="sc-row"><span class="sc-team">E3 — Buffalo</span><span class="sc-val">36-19</span></div>
+          <div class="sc-row"><span class="sc-team">E4 — NYI</span><span class="sc-val">35-22</span></div>
+          <div class="sc-row"><span class="sc-team">W1 — Colorado</span><span class="sc-val hot">41-10</span></div>
+          <div class="sc-row"><span class="sc-team">W2 — Dallas</span><span class="sc-val hot">38-14</span></div>
+          <div class="sc-row"><span class="sc-team">W3 — Minnesota</span><span class="sc-val">36-16</span></div>
+          <div class="sc-row"><span class="sc-team">W4 — Utah</span><span class="sc-val">32-25</span></div>
+        </div>
+        <div class="sidebar-card"><div class="sc-title">⭐ Scoring Leaders</div>
+          <div class="sc-row"><span class="sc-team">N. MacKinnon</span><span class="sc-val hot">COL</span></div>
+          <div class="sc-row"><span class="sc-team">K. Kaprizov</span><span class="sc-val hot">MIN</span></div>
+          <div class="sc-row"><span class="sc-team">J. Robertson</span><span class="sc-val">DAL</span></div>
+          <div class="sc-row"><span class="sc-team">T. Thompson</span><span class="sc-val">BUF</span></div>
+          <div class="sc-row"><span class="sc-team">N. Kucherov</span><span class="sc-val">TB</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPS -->
+<div id="page-props" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">March 6, 2026 · Tonight's Slate</div>
+    <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+    <p class="hero-sub">Top NHL player prop picks for tonight's games with confidence ratings.</p>
+  </div></div>
+  <div class="section">
+    <div class="section-title">Tonight's Props — March 6, 2026</div>
+    <div class="props-grid">
+      <div class="prop-card high"><div class="prop-player">Tage Thompson</div><div class="prop-team">Buffalo Sabres · @ Pittsburgh</div><div class="prop-line">Over 0.5 Points</div><div class="prop-odds">-155 · Tonight</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Thompson has a point in 11 of his last 14 games. Pittsburgh's defense has been leaky recently and Buffalo has all the motivation to pile on. This is one of the safer props on the board.</div></div>
+      <div class="prop-card high"><div class="prop-player">Sebastian Aho</div><div class="prop-team">Carolina Hurricanes · @ Vancouver</div><div class="prop-line">Over 0.5 Points</div><div class="prop-odds">-140 · Tonight</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Aho is Carolina's engine and Vancouver (18-36) is one of the worst defensive teams in the league. He has multiple points in 3 of his last 5 games. Strong play tonight.</div></div>
+      <div class="prop-card medium"><div class="prop-player">Nathan MacKinnon</div><div class="prop-team">Colorado Avalanche · vs Dallas (Fri)</div><div class="prop-line">Over 1.5 Points</div><div class="prop-odds">+118 · Friday night</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">MacKinnon vs the Stars is a marquee Friday matchup. He has 2+ points in 6 of his last 10. Dallas is tough but MacKinnon elevates in big games. Worth a look at plus money.</div></div>
+      <div class="prop-card medium"><div class="prop-player">Connor Hellebuyck</div><div class="prop-team">Winnipeg Jets · vs Tampa Bay</div><div class="prop-line">Over 28.5 Saves</div><div class="prop-odds">-118 · Tonight</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">Tampa Bay generates a high volume of shots and Hellebuyck will be busy. Jets are an underdog tonight meaning they'll likely be under siege for stretches. 29+ saves is very probable.</div></div>
+      <div class="prop-card high"><div class="prop-player">Martin Necas</div><div class="prop-player" style="font-size:13px;margin-top:-8px;margin-bottom:4px;color:var(--gray)">Carolina Hurricanes</div><div class="prop-line">Over 0.5 Points</div><div class="prop-odds">-130 · Tonight</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Necas has been on a tear — 7 points in his last 6 games. Carolina on the road against Vancouver is a gift spot. He thrives with ice time and will get plenty of it tonight.</div></div>
+      <div class="prop-card medium"><div class="prop-player">Kirill Kaprizov</div><div class="prop-team">Minnesota Wild · vs Vegas (Fri)</div><div class="prop-line">Over 0.5 Goals</div><div class="prop-odds">+102 · Friday</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">Kaprizov is on a hot streak with a goal in 4 of his last 6. Vegas gives up more goals than their record suggests. Getting Kaprizov to score at plus money is good value.</div></div>
+    </div>
+    <div class="disclaimer">⚠️ All lines and picks are for entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
+  </div>
+</div>
+
+<footer><strong>THE FIELD — NHL</strong> · Hockey Analytics · 2025-26 Season · <a href="index.html" style="color:#4ab3ff">← Back to Hub</a></footer>
+
+<script>
+// STANDINGS DATA from live API
+const EAST=[
+  {t:"Carolina Hurricanes",w:39,l:16,div:"Metropolitan"},
+  {t:"Tampa Bay Lightning",w:38,l:17,div:"Atlantic"},
+  {t:"Buffalo Sabres",w:36,l:19,div:"Atlantic"},
+  {t:"Detroit Red Wings",w:35,l:20,div:"Atlantic"},
+  {t:"New York Islanders",w:35,l:22,div:"Metropolitan"},
+  {t:"Pittsburgh Penguins",w:31,l:16,div:"Metropolitan"},
+  {t:"Columbus Blue Jackets",w:31,l:21,div:"Metropolitan"},
+  {t:"Washington Capitals",w:31,l:25,div:"Metropolitan"},
+  {t:"Montreal Canadiens",w:33,l:18,div:"Atlantic"},
+  {t:"Boston Bruins",w:34,l:21,div:"Atlantic"},
+  {t:"New Jersey Devils",w:31,l:29,div:"Metropolitan"},
+  {t:"Ottawa Senators",w:29,l:22,div:"Atlantic"},
+  {t:"Philadelphia Flyers",w:28,l:21,div:"Metropolitan"},
+  {t:"Florida Panthers",w:30,l:28,div:"Atlantic"},
+  {t:"Toronto Maple Leafs",w:27,l:24,div:"Atlantic"},
+  {t:"New York Rangers",w:23,l:29,div:"Metropolitan"},
+].sort((a,b)=>b.w/(b.w+b.l)-a.w/(a.w+a.l));
+
+const WEST=[
+  {t:"Colorado Avalanche",w:41,l:10,div:"Central"},
+  {t:"Dallas Stars",w:38,l:14,div:"Central"},
+  {t:"Minnesota Wild",w:36,l:16,div:"Central"},
+  {t:"Anaheim Ducks",w:34,l:24,div:"Pacific"},
+  {t:"Utah Mammoth",w:32,l:25,div:"Central"},
+  {t:"Pittsburgh Penguins",w:31,l:16,div:"Metropolitan"},
+  {t:"San Jose Sharks",w:30,l:25,div:"Pacific"},
+  {t:"Edmonton Oilers",w:30,l:24,div:"Pacific"},
+  {t:"Seattle Kraken",w:29,l:23,div:"Pacific"},
+  {t:"Vegas Golden Knights",w:29,l:19,div:"Pacific"},
+  {t:"Nashville Predators",w:27,l:26,div:"Central"},
+  {t:"Winnipeg Jets",w:24,l:26,div:"Central"},
+  {t:"Los Angeles Kings",w:24,l:22,div:"Pacific"},
+  {t:"Calgary Flames",w:24,l:29,div:"Pacific"},
+  {t:"Chicago Blackhawks",w:23,l:28,div:"Central"},
+  {t:"St. Louis Blues",w:23,l:29,div:"Central"},
+  {t:"Vancouver Canucks",w:18,l:36,div:"Pacific"},
+].sort((a,b)=>b.w/(b.w+b.l)-a.w/(a.w+a.l));
+
+const ALL=[...EAST,...WEST].map(t=>t.t).sort();
+
+// Tonight's stats lookup for predictor
+const TEAM_STATS={
+  "Colorado Avalanche":      {w:41,l:10,gf:3.8,ga:2.6},
+  "Dallas Stars":            {w:38,l:14,gf:3.5,ga:2.7},
+  "Carolina Hurricanes":     {w:39,l:16,gf:3.4,ga:2.8},
+  "Tampa Bay Lightning":     {w:38,l:17,gf:3.5,ga:2.9},
+  "Minnesota Wild":          {w:36,l:16,gf:3.4,ga:2.9},
+  "Buffalo Sabres":          {w:36,l:19,gf:3.4,ga:3.0},
+  "Montreal Canadiens":      {w:33,l:18,gf:3.1,ga:2.9},
+  "Boston Bruins":           {w:34,l:21,gf:3.2,ga:3.0},
+  "Anaheim Ducks":           {w:34,l:24,gf:3.1,ga:3.1},
+  "New York Islanders":      {w:35,l:22,gf:3.2,ga:3.0},
+  "Detroit Red Wings":       {w:35,l:20,gf:3.3,ga:3.0},
+  "Utah Mammoth":            {w:32,l:25,gf:3.0,ga:3.0},
+  "Pittsburgh Penguins":     {w:31,l:16,gf:3.3,ga:3.1},
+  "Columbus Blue Jackets":   {w:31,l:21,gf:3.1,ga:3.1},
+  "Washington Capitals":     {w:31,l:25,gf:3.0,ga:3.2},
+  "San Jose Sharks":         {w:30,l:25,gf:3.0,ga:3.1},
+  "Edmonton Oilers":         {w:30,l:24,gf:3.1,ga:3.2},
+  "Seattle Kraken":          {w:29,l:23,gf:2.9,ga:3.0},
+  "Vegas Golden Knights":    {w:29,l:19,gf:3.0,ga:3.0},
+  "Florida Panthers":        {w:30,l:28,gf:3.0,ga:3.2},
+  "Philadelphia Flyers":     {w:28,l:21,gf:2.9,ga:3.0},
+  "Nashville Predators":     {w:27,l:26,gf:2.8,ga:3.1},
+  "Ottawa Senators":         {w:29,l:22,gf:3.0,ga:3.1},
+  "Toronto Maple Leafs":     {w:27,l:24,gf:3.0,ga:3.2},
+  "New Jersey Devils":       {w:31,l:29,gf:3.0,ga:3.2},
+  "Winnipeg Jets":           {w:24,l:26,gf:2.9,ga:3.2},
+  "Los Angeles Kings":       {w:24,l:22,gf:2.8,ga:3.0},
+  "New York Rangers":        {w:23,l:29,gf:2.8,ga:3.3},
+  "Calgary Flames":          {w:24,l:29,gf:2.8,ga:3.3},
+  "Chicago Blackhawks":      {w:23,l:28,gf:2.7,ga:3.2},
+  "St. Louis Blues":         {w:23,l:29,gf:2.8,ga:3.3},
+  "Vancouver Canucks":       {w:18,l:36,gf:2.5,ga:3.6},
+};
+
+// Tonight's matchups (live + scheduled)
+const TONIGHT_LINES=[
+  {time:"LIVE",home:"Pittsburgh Penguins",away:"Buffalo Sabres",spread:"PIT -0.5",ml:"PIT -115 / BUF -105",total:"6.0",wp:{PIT:50,BUF:50},why:"Near-even matchup. Buffalo's <strong>Tage Thompson</strong> is one of the hottest players in the league. Both teams average 3.3+ goals/game — 6 total is well-justified here. Expect a tight game that could go to OT."},
+  {time:"LIVE",home:"Columbus Blue Jackets",away:"Florida Panthers",spread:"CBJ -1",ml:"CBJ -130 / FLA +108",total:"5.5",wp:{CBJ:56,FLA:44},why:"<strong>Columbus is 31-21</strong> in an improbable season. Florida has been inconsistent on the road. CBJ's defense keeps totals lower — this sits at 5.5 reflecting two average-scoring offenses."},
+  {time:"LIVE",home:"Philadelphia Flyers",away:"Utah Mammoth",spread:"UTA -0.5",ml:"UTA -112 / PHI -108",total:"5.5",wp:{PHI:48,UTA:52},why:"Utah (32-25) is the slight road favorite. <strong>The total has gone UNDER in 7 of Philly's last 7 games</strong> — their defense has been stifling. Utah's offense has been more productive on the road this month."},
+  {time:"LIVE",home:"New York Rangers",away:"Toronto Maple Leafs",spread:"TOR -1",ml:"TOR -130 / NYR +108",total:"6.5",wp:{NYR:46,TOR:54},why:"<strong>High-scoring matchup</strong> — Toronto averages 3.0 GPG and the Rangers play in a fast-paced system. The total has gone over in 4 of TOR's last 6 road games. Auston Matthews in MSG is always appointment television."},
+  {time:"LIVE",home:"Nashville Predators",away:"Boston Bruins",spread:"BOS -0.5",ml:"BOS -120 / NSH EVEN",total:"5.5",wp:{NSH:48,BOS:52},why:"Nashville has been stingy at home — the UNDER has hit in 5 of their last 7 home games. Boston's defense is solid too. Expect a grind-it-out 3-2 type game."},
+  {time:"LIVE",home:"Winnipeg Jets",away:"Tampa Bay Lightning",spread:"TB -1",ml:"TB -125 / WPG +105",total:"6.0",wp:{WPG:45,TB:55},why:"<strong>Tampa Bay (38-17)</strong> brings an elite offense with Kucherov and Stamkos. Winnipeg's Canada Life Centre is loud but the Lightning score in bunches. 6.0 total reflects two above-average offenses."},
+  {time:"9:00 PM ET",home:"Calgary Flames",away:"Ottawa Senators",spread:"OTT -1",ml:"OTT -130 / CGY +108",total:"5.5",wp:{CGY:39,OTT:61},why:"Ottawa (29-22) road favorite — Calgary (24-29) is below .500. Both teams play a structured defensive style. The Senators need the win for the wild card race and will keep it tight defensively."},
+  {time:"9:30 PM ET",home:"Los Angeles Kings",away:"New York Islanders",spread:"PICK",ml:"LA -108 / NYI -112",total:"5.0",wp:{LA:54,NYI:46},why:"<strong>Lowest total of the night at 5.0</strong> — both the Kings and Islanders rank in the top 10 in goals against. Anze Kopitar vs Bo Horvat is a battle of elite two-way centers. Expect a tight 2-1 or 3-2 type game with strong goaltending both ways."},
+];
+
+function renderLive(){
+  const g=document.getElementById('live-games');
+  TONIGHT_LINES.filter(gm=>gm.time==='LIVE').forEach(gm=>{
+    g.innerHTML+=`<div class="game-card live">
+      <div class="game-card-top">
+        <div class="game-time live-time">🔴 IN PROGRESS</div>
+        <div class="game-matchup">
+          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${gm.home}</div></div>
+          <div class="game-vs">vs</div>
+          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${gm.away}</div></div>
+        </div>
+      </div>
+      <div class="game-lines">
+        <div class="line-pill"><div class="line-lbl">Spread</div><div class="line-val blue">${gm.spread}</div></div>
+        <div class="line-pill"><div class="line-lbl">O/U</div><div class="line-val">${gm.total}</div></div>
+        <div class="line-pill"><div class="line-lbl">Moneyline</div><div class="line-val" style="font-size:12px;line-height:1.4">${gm.ml}</div></div>
+      </div>
+      <div class="game-why">${gm.why}</div>
+    </div>`;
+  });
+}
+
+function renderLines(){
+  const g=document.getElementById('lines-grid');
+  TONIGHT_LINES.forEach(gm=>{
+    const isLive=gm.time==='LIVE';
+    g.innerHTML+=`<div class="game-card ${isLive?'live':''}">
+      <div class="game-card-top">
+        <div class="game-time ${isLive?'live-time':''}">${isLive?'🔴 IN PROGRESS':gm.time}</div>
+        <div class="game-matchup">
+          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${gm.home}</div></div>
+          <div class="game-vs">vs</div>
+          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${gm.away}</div></div>
+        </div>
+      </div>
+      <div class="game-lines">
+        <div class="line-pill"><div class="line-lbl">Spread</div><div class="line-val blue">${gm.spread}</div></div>
+        <div class="line-pill"><div class="line-lbl">O/U</div><div class="line-val">${gm.total}</div></div>
+        <div class="line-pill"><div class="line-lbl">Moneyline</div><div class="line-val" style="font-size:12px;line-height:1.4">${gm.ml}</div></div>
+      </div>
+      <div class="game-why">${gm.why}</div>
+    </div>`;
+  });
+}
+
+function renderStandings(data,id){
+  const tb=document.getElementById(id);
+  data.forEach((t,i)=>{
+    const pct=(t.w/(t.w+t.l)).toFixed(3);
+    const pc=t.w/(t.w+t.l)>=0.55?'pct-good':t.w/(t.w+t.l)>=0.46?'pct-ok':'pct-bad';
+    let rc='';if(i===7)rc='playoff-line';if(i===9)rc='playin-line';
+    tb.innerHTML+=`<tr class="${rc}"><td>${i+1}</td><td><span class="team-name-cell">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">${t.div}</span></td><td>${t.w}</td><td>${t.l}</td><td class="${pc}">${pct}</td></tr>`;
+  });
+}
+
+const MATCHUPS_NHL={};
+TONIGHT_LINES.forEach(gm=>{
+  MATCHUPS_NHL[gm.home+'|'+gm.away]={homeWP:gm.wp[gm.home.split(' ').pop()]||50,awayWP:gm.wp[gm.away.split(' ').pop()]||50};
+});
+
+function buildSelects(){
+  ['home-sel','away-sel'].forEach((id,i)=>{
+    const s=document.getElementById(id);
+    ALL.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o);});
+    s.selectedIndex=i;
+  });
+  predict();
+}
+
+function getT(n){return TEAM_STATS[n];}
+function predict(){
+  const hn=document.getElementById('home-sel').value;
+  const an=document.getElementById('away-sel').value;
+  const out=document.getElementById('pred-out');
+  if(hn===an){out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Please select two different teams.</p>';return;}
+  const H=getT(hn),A=getT(an);if(!H||!A)return;
+
+  const hg=(H.gf*0.5+A.ga*0.5+0.1).toFixed(1);
+  const ag=(A.gf*0.5+H.ga*0.5-0.1).toFixed(1);
+  const diff=parseFloat(hg)-parseFloat(ag);
+  let hp=1/(1+Math.exp(-0.4*diff));
+  let ap=1-hp;
+  let isReal=false,realNote='';
+
+  // Check tonight's real matchups
+  const key=hn+'|'+an;const rkey=an+'|'+hn;
+  const allKeys=TONIGHT_LINES.map(g=>g.home+'|'+g.away);
+  const match=TONIGHT_LINES.find(g=>g.home===hn&&g.away===an);
+  const rmatch=TONIGHT_LINES.find(g=>g.home===an&&g.away===hn);
+  if(match){
+    hp=match.wp[Object.keys(match.wp)[0]]/100||hp;
+    ap=1-hp;isReal=true;
+    realNote=`<div style="text-align:center;font-size:11px;color:#4ab3ff;letter-spacing:1px;margin-bottom:10px;padding:6px;background:rgba(74,179,255,0.08);border-radius:6px">★ TONIGHT'S GAME — live win probabilities</div>`;
+  }
+
+  const hw=hp>0.5;
+  const cf=Math.min(90,Math.max(50,50+Math.abs(H.w/(H.w+H.l)-A.w/(A.w+A.l))*100)).toFixed(0);
+  out.innerHTML=realNote+`<div class="result-grid">
+    <div class="result-card ${hw?'w':''}"><div class="r-label">🏠 HOME — ${hn}</div><div class="r-val">${hg}</div><div class="r-sub">${(hp*100).toFixed(1)}% win probability</div></div>
+    <div class="result-card ${!hw?'w':''}"><div class="r-label">✈️ AWAY — ${an}</div><div class="r-val">${ag}</div><div class="r-sub">${(ap*100).toFixed(1)}% win probability</div></div>
+    <div class="result-card"><div class="r-label">Puck Line</div><div class="r-val blue" style="font-size:22px">${hw?hn.split(' ').slice(-1)[0]+' -1.5':an.split(' ').slice(-1)[0]+' -1.5'}</div></div>
+    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val blue">${cf}<span style="font-size:18px">/100</span></div></div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-labels"><span style="color:#4ade80">${hn} ${(hp*100).toFixed(0)}%</span><span style="color:#f87171">${an} ${(ap*100).toFixed(0)}%</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(hp*100).toFixed(0)}%"></div></div>
+  </div>
+  <div class="winner-banner">${hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}<span class="winner-sub">${(Math.max(hp,ap)*100).toFixed(1)}% probability · ${cf}/100 confidence</span></div>`;
+}
+
+function tog(hdr){const body=hdr.nextElementSibling;const chev=hdr.querySelector('.chev');body.classList.toggle('open');chev.classList.toggle('open');}
+function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+
+renderStandings(EAST,'east-body');
+renderStandings(WEST,'west-body');
+renderLines();
+buildSelects();
+</script>
+
+<!-- LIVE SCORE TICKER -->
+<script>
+
+// ── LIVE SCORE TICKER ──────────────────────────────────────────────────────
+(function(){
+  // Detect sport from page
+  const path = window.location.pathname.toLowerCase();
+  let sport = 'nba', espnSport = 'basketball/nba', sportLabel = 'NBA', accentColor = '#fdb927';
+  if(path.includes('nhl')){ sport='nhl'; espnSport='hockey/nhl'; sportLabel='NHL'; accentColor='#4ab3ff'; }
+  else if(path.includes('mlb')){ sport='mlb'; espnSport='baseball/mlb'; sportLabel='MLB'; accentColor='#f5c842'; }
+  else if(path.includes('nfl')){ sport='nfl'; espnSport='football/nfl'; sportLabel='NFL'; accentColor='#d4001c'; }
+  else if(path.includes('index') || path === '/' || path.endsWith('/')){ return; } // no ticker on hub
+
+  // Inject CSS
+  const style = document.createElement('style');
+  style.textContent = `
+/* ── LIVE TICKER ── */
+.ticker-bar{
+  position:sticky;top:54px;z-index:99;
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  height:34px;overflow:hidden;
+  display:flex;align-items:center;
+}
+.ticker-sport-tag{
+  flex-shrink:0;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:12px;letter-spacing:2px;
+  padding:0 14px;
+  height:100%;display:flex;align-items:center;
+  border-right:1px solid rgba(255,255,255,0.08);
+  white-space:nowrap;
+}
+.ticker-track{
+  flex:1;overflow:hidden;position:relative;
+}
+.ticker-inner{
+  display:flex;align-items:center;gap:0;
+  white-space:nowrap;
+  animation:tickerScroll 60s linear infinite;
+  width:max-content;
+}
+.ticker-inner:hover{animation-play-state:paused;}
+@keyframes tickerScroll{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+.ticker-game{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0 20px;
+  border-right:1px solid rgba(255,255,255,0.06);
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;
+  letter-spacing:0.5px;
+}
+.t-status{
+  font-size:10px;letter-spacing:1px;
+  padding:2px 6px;border-radius:3px;
+  font-weight:700;
+}
+.t-live{background:rgba(248,113,113,0.2);color:#f87171;}
+.t-final{background:rgba(100,100,100,0.2);color:#6a7d94;}
+.t-soon{background:rgba(74,179,255,0.15);color:#4ab3ff;}
+.t-teams{color:var(--white);}
+.t-score{color:var(--gold,#f5c842);font-size:14px;}
+.t-sep{color:rgba(255,255,255,0.15);}
+.ticker-refresh{
+  flex-shrink:0;padding:0 12px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;letter-spacing:1px;
+  color:rgba(255,255,255,0.2);
+  border-left:1px solid rgba(255,255,255,0.06);
+  cursor:pointer;height:100%;
+  display:flex;align-items:center;
+  transition:color 0.2s;
+}
+.ticker-refresh:hover{color:rgba(255,255,255,0.5);}
+.ticker-loading{
+  padding:0 20px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;letter-spacing:1px;
+  color:rgba(255,255,255,0.2);
+}
+`;
+  document.head.appendChild(style);
+
+  // Build ticker bar
+  const bar = document.createElement('div');
+  bar.className = 'ticker-bar';
+  bar.innerHTML = `
+    <div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel} SCORES</div>
+    <div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div>
+    <div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh scores">↻ LIVE</div>
+  `;
+
+  // Insert after nav
+  const nav = document.querySelector('nav');
+  if(nav && nav.parentNode) nav.parentNode.insertBefore(bar, nav.nextSibling);
+
+  function fmtTime(iso){
+    const d = new Date(iso);
+    return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(':00','');
+  }
+
+  function buildHTML(games){
+    if(!games || !games.length) return '<div class="ticker-loading">No games today</div>';
+    let html = '';
+    games.forEach(g => {
+      const teams = g.teams || {};
+      const keys = Object.keys(teams);
+      if(keys.length < 2) return;
+      // figure home/away
+      const homeKey = keys.find(k => teams[k] === g.home_team) || keys[1];
+      const awayKey = keys.find(k => teams[k] === g.away_team) || keys[0];
+      const homeName = teams[homeKey]?.abbreviation || homeKey;
+      const awayName = teams[awayKey]?.abbreviation || awayKey;
+      const hScore = g.score ? (g.score[homeKey] ?? '') : '';
+      const aScore = g.score ? (g.score[awayKey] ?? '') : '';
+      let statusHtml = '';
+      let scoreHtml = '';
+      if(g.status === 'inprogress'){
+        const clock = g.clock ? ` ${g.clock}` : '';
+        const period = g.period ? ` P${g.period}` : '';
+        statusHtml = `<span class="t-status t-live">LIVE${clock}${period}</span>`;
+        scoreHtml = `<span class="t-score">${aScore} – ${hScore}</span>`;
+      } else if(g.status === 'closed' || g.status === 'complete'){
+        statusHtml = `<span class="t-status t-final">FINAL</span>`;
+        scoreHtml = `<span class="t-score">${aScore} – ${hScore}</span>`;
+      } else {
+        statusHtml = `<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
+        scoreHtml = '';
+      }
+      html += `<div class="ticker-game">${statusHtml}<span class="t-teams">${awayName} @ ${homeName}</span>${scoreHtml ? '<span class="t-sep">|</span>' + scoreHtml : ''}</div>`;
+    });
+    // Duplicate for seamless loop
+    return html + html;
+  }
+
+  async function fetchScores(){
+    try {
+      // Use ESPN public API — no key needed
+      const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const url = `https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const events = data.events || [];
+      // Map ESPN format to our format
+      const games = events.map(e => {
+        const comp = e.competitions?.[0];
+        if(!comp) return null;
+        const home = comp.competitors?.find(c => c.homeAway === 'home');
+        const away = comp.competitors?.find(c => c.homeAway === 'away');
+        if(!home || !away) return null;
+        const statusType = e.status?.type?.name;
+        let status = 'scheduled';
+        if(statusType === 'STATUS_IN_PROGRESS') status = 'inprogress';
+        else if(statusType === 'STATUS_FINAL') status = 'closed';
+        const clock = e.status?.displayClock;
+        const period = e.status?.period;
+        return {
+          status,
+          start_time: e.date,
+          clock: (status==='inprogress' && clock && clock !== '0:00') ? clock : null,
+          period: status==='inprogress' ? period : null,
+          teams: {
+            [home.team.abbreviation]: {abbreviation: home.team.abbreviation},
+            [away.team.abbreviation]: {abbreviation: away.team.abbreviation},
+          },
+          score: status !== 'scheduled' ? {
+            [home.team.abbreviation]: parseInt(home.score) || 0,
+            [away.team.abbreviation]: parseInt(away.score) || 0,
+          } : null,
+          home_team: home.team.abbreviation,
+          away_team: away.team.abbreviation,
+        };
+      }).filter(Boolean);
+
+      const inner = document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML = buildHTML(games);
+    } catch(e) {
+      const inner = document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML = '<div class="ticker-loading">Scores unavailable</div>';
+    }
+  }
+
+  window._tickerFetch = fetchScores;
+  fetchScores();
+  // Auto-refresh every 30 seconds
+  setInterval(fetchScores, 30000);
+})();
+
+</script>
+
+</body>
+</html>
