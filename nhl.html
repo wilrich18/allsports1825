@@ -377,7 +377,7 @@ function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.clas
       } else {
         statusHtml=`<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
       }
-      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} @ ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
+      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} vs ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
     });
     return html+html;
   }
@@ -385,8 +385,9 @@ function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.clas
   async function fetchScores(){
     try{
       const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
-      const res=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`);
-      const data=await res.json();
+      const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://site.api.espn.com/apis/site/v2/sports/"+espnSport+"/scoreboard?dates="+today)}`);
+      const raw=await res.json();
+      const data=raw.contents?JSON.parse(raw.contents):raw;
       const events=data.events||[];
       const games=events.map(e=>{
         const comp=e.competitions?.[0]; if(!comp) return null;
