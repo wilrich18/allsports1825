@@ -1336,7 +1336,8 @@ footer strong{{color:var(--white);}}
 <script>
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 </script>
-{TICKER_JS}
+</script>
+""" + TICKER_JS + """
 </body></html>"""
 
     out = os.path.join(OUTPUT_DIR, "nfl.html")
