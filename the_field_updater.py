@@ -926,11 +926,21 @@ footer strong{{color:var(--white);}}
   <div class="hero"><div class="hero-inner">
     <div class="hero-eyebrow">2025-26 Season</div>
     <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
-    <p class="hero-sub">Tonight's NHL schedule plus custom matchup predictions.</p>
+    <p class="hero-sub">Tonight's schedule plus a custom matchup predictor for any two teams.</p>
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Games — {dow}, {today}</div>
     <div class="games-grid">{tonight_cards}</div>
+    <div class="section-title">Custom Matchup Predictor</div>
+    <div class="pred-wrap">
+      <div class="team-row">
+        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
+        <div class="vs-mid"><div class="vs-big">VS</div></div>
+        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
+      </div>
+      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
+      <div id="pred-out"></div>
+    </div>
   </div>
 </div>
 
