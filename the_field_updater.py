@@ -218,12 +218,35 @@ TICKER_JS = r"""
 </script>
 """
 
-def recap_articles(games, yesterday):
-    """Build collapsible recap article HTML from a list of parsed games."""
+def build_recap_paragraph(g, sport="nba"):
+    winner, loser = g["winner"], g["loser"]
+    ws, ls = g["ws"], g["ls"]
+    margin = ws - ls
+    is_home_win = winner == g["home"]
+    if margin > 15:
+        s1 = f"{winner} put on a dominant performance, rolling past {loser} by {margin} to win {ws}-{ls}."
+    elif margin > 8:
+        s1 = f"{winner} took care of business with a comfortable {ws}-{ls} victory over {loser}."
+    elif margin > 3:
+        s1 = f"{winner} held off {loser} for a solid {ws}-{ls} win."
+    else:
+        s1 = f"In one of the night's closest games, {winner} edged {loser} {ws}-{ls} in a narrow finish."
+    if margin > 15:
+        s2 = f"The {winner.split()[-1]} were in control from the opening tip, never letting {loser.split()[-1]} get comfortable."
+    elif margin <= 3:
+        s2 = f"The game came down to the final possessions, with {winner.split()[-1]} making the clutch plays when it mattered most."
+    else:
+        s2 = f"{winner.split()[-1]} pulled away in the second half, using a strong stretch to build a lead they would not relinquish."
+    s3 = f"The win keeps {winner} moving in the right direction as the season heads toward its final stretch, while {loser} will look to bounce back in their next outing."
+    s4 = f"Both teams return to action in the coming days with playoff positioning still very much on the line."
+    return f"{s1} {s2} {s3} {s4}"
+
+def recap_articles(games, yesterday, sport="nba"):
     if not games:
         return '<p style="color:var(--gray);padding:20px 0">No games yesterday. Check back tonight.</p>'
     html = ""
     for g in games:
+        paragraph = build_recap_paragraph(g, sport)
         html += f"""
     <div class="article">
       <div class="art-hdr" onclick="tog(this)">
@@ -237,7 +260,7 @@ def recap_articles(games, yesterday):
         </div>
         <span class="chev">▾</span>
       </div>
-      <div class="art-body"><p>{g['summary']}</p></div>
+      <div class="art-body"><p>{paragraph}</p></div>
     </div>"""
     return html
 
@@ -320,7 +343,7 @@ def generate_nba_html(east, west, games_yesterday, today_games):
         tonight_js_items.append(item)
     tonight_js = "[" + ",".join(tonight_js_items) + "]"
 
-    recaps = recap_articles(games_yesterday, yesterday)
+    recaps = recap_articles(games_yesterday, yesterday, "nba")
 
     # Power rankings — top 8 from combined sorted
     all_teams = sorted(east + west, key=lambda x: -x["pct"])
@@ -731,7 +754,7 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     today     = fmt_date()
     yesterday = fmt_date(datetime.now() - timedelta(days=1))
     dow       = fmt_dow()
-    recaps    = recap_articles(games_yesterday, yesterday)
+    recaps    = recap_articles(games_yesterday, yesterday, "nhl")
 
     def row(t, i):
         pc = "pct-good" if t["pct"] >= 0.55 else ("pct-ok" if t["pct"] >= 0.46 else "pct-bad")
@@ -1008,7 +1031,7 @@ def generate_mlb_html(standings, games_yesterday, today_games):
     yesterday = fmt_date(datetime.now() - timedelta(days=1))
     dow       = fmt_dow()
     is_spring = standings is None
-    recaps    = recap_articles(games_yesterday, yesterday)
+    recaps    = recap_articles(games_yesterday, yesterday, "nhl")
 
     if is_spring:
         standings_content = """
