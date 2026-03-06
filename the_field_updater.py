@@ -1083,7 +1083,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
   </div>
-  <div class="{"spring-pill">⚾ SPRING TRAINING" if is_spring else "live-pill">🔴 IN SEASON"}</div>
+  <div class="{"spring-pill">SPRING TRAINING" if is_spring else "live-pill">IN SEASON"}</div>
 </nav>
 
 <div id="page-standings" class="page active">
@@ -1267,7 +1267,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('magazine',this)">Power Rankings</button>
     <button class="nav-link" onclick="showPage('draft',this)">Draft Preview</button>
   </div>
-  <div class="{"off-pill">⏸ OFFSEASON" if is_offseason else "live-pill">🏈 IN SEASON"}</div>
+  <div class="{"off-pill">OFFSEASON" if is_offseason else "live-pill">IN SEASON"}</div>
 </nav>
 
 <div id="page-standings" class="page active">
