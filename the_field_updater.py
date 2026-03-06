@@ -779,6 +779,7 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         calc_ou = round((hd.get("ppg", 112) + ad.get("ppg", 112)) * 0.97, 1)
         fav = g["home"] if hp >= 50 else g["away"]
         prob_html = f'<div style="margin-top:10px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(max(hp,ap))}%</span> &nbsp;·&nbsp; O/U {calc_ou}</div>' if not isFinal and not isLive else ""
+        lines_html = ""
         tonight_cards += f"""<div style="background:rgba(255,255,255,0.04);border:1px solid {'rgba(74,222,128,0.3)' if isLive else 'rgba(255,255,255,0.08)'};border-radius:12px;padding:16px 18px;">
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:{'#4ade80' if isLive else '#4ab3ff'};margin-bottom:8px">{tl}</div>
   <div style="display:flex;align-items:center;justify-content:space-between">
