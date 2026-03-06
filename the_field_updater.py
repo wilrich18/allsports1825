@@ -29,7 +29,7 @@ import requests, time, os, sys, json
 from datetime import datetime, timedelta
 
 # ── CONFIGURATION ────────────────────────────────────────────────────────────
-OUTPUT_DIR  = os.path.expanduser("~/Desktop/ALLSPORTS")   # folder for all HTML files
+OUTPUT_DIR  = os.path.dirname(os.path.abspath(__file__))   # folder for all HTML files
 EXCEL_PATH  = os.path.expanduser("~/Desktop/ALLSPORTS/NBA_Game_Predictor.xlsx")
 LOG_FILE    = os.path.expanduser("~/Desktop/ALLSPORTS/updater_log.txt")
 # Optional: set these to auto-publish to Netlify via API
