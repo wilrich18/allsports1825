@@ -123,26 +123,12 @@ def parse_game(event, sport="nba"):
                        "solid" if margin > 3 else "narrow")
         unit = {"nba":"pts","nhl":"goals","mlb":"runs","nfl":"pts"}.get(sport,"pts")
         summary = f"{winner} earned a {tone} {ws}-{ls} {unit} win over {loser}."
-        odds = comp.get("odds", [{}])[0] if comp.get("odds") else {}
-        h_win_prob = None; a_win_prob = None
-        try:
-            for odd in comp.get("odds", []):
-                if "homeTeamOdds" in odd:
-                    h_win_prob = round(float(odd["homeTeamOdds"].get("winPercentage", 50)), 0)
-                    a_win_prob = round(100 - h_win_prob, 0)
-        except Exception:
-            pass
-        ou = odds.get("overUnder", None)
-        spread = odds.get("spread", None)
-        favored = odds.get("favorite", {}).get("displayName", None) if odds.get("favorite") else None
         return dict(home=hn, away=an, habrv=habrv, aabrv=aabrv,
                     h_score=hs, a_score=as_, winner=winner, loser=loser,
                     ws=ws, ls=ls, summary=summary,
                     result=f"{an} {as_}, {hn} {hs}",
                     is_final=is_final, is_live=is_live,
-                    clock=clock, period=period, start=start,
-                    h_win_prob=h_win_prob, a_win_prob=a_win_prob,
-                    ou=ou, spread=spread, favored=favored)
+                    clock=clock, period=period, start=start)
     except Exception as e:
         return None
 
@@ -179,9 +165,10 @@ TICKER_JS = r"""
     games.forEach(g=>{
       const keys=Object.keys(g.teams||{});
       if(keys.length<2) return;
-      const hAbrv=g.home_abbr||'HOME';
-      const aAbrv=g.away_abbr||'AWAY';
-      const hS=g.score?g.score[hAbrv]:''; const aS=g.score?g.score[aAbrv]:'';
+      const hk=keys[0],ak=keys[1];
+      const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
+      const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
+      const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
       let statusHtml='', scoreHtml='';
       if(g.status==='inprogress'){
         const cl=g.clock?` ${g.clock}`:''; const p=g.period?` P${g.period}`:'';
@@ -193,7 +180,7 @@ TICKER_JS = r"""
       } else {
         statusHtml=`<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
       }
-      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} vs ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
+      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} @ ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
     });
     return html+html;
   }
@@ -201,9 +188,8 @@ TICKER_JS = r"""
   async function fetchScores(){
     try{
       const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
-      const res=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://site.api.espn.com/apis/site/v2/sports/"+espnSport+"/scoreboard?dates="+today)}`);
-      const raw=await res.json();
-      const data=raw.contents?JSON.parse(raw.contents):raw;
+      const res=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`);
+      const data=await res.json();
       const events=data.events||[];
       const games=events.map(e=>{
         const comp=e.competitions?.[0]; if(!comp) return null;
@@ -214,11 +200,7 @@ TICKER_JS = r"""
         let status='scheduled';
         if(sn==='STATUS_IN_PROGRESS') status='inprogress';
         else if(sn==='STATUS_FINAL') status='closed';
-        const hTeam=comps[0]?.competitors?.find(x=>x.homeAway==='home')?.team?.abbreviation||comps[0]?.competitors?.[0]?.team?.abbreviation;
-        const aTeam=comps[0]?.competitors?.find(x=>x.homeAway==='away')?.team?.abbreviation||comps[0]?.competitors?.[1]?.team?.abbreviation;
-        const hScore=comps[0]?.competitors?.find(x=>x.homeAway==='home')?.score;
-        const aScore=comps[0]?.competitors?.find(x=>x.homeAway==='away')?.score;
-        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,home:hTeam,away:aTeam,score:hTeam&&hScore!=null?{[hTeam]:parseInt(hScore)||0,[aTeam]:parseInt(aScore)||0}:null,
+        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,
           teams:{[home.team.abbreviation]:{abbreviation:home.team.abbreviation},[away.team.abbreviation]:{abbreviation:away.team.abbreviation}},
           score:status!=='scheduled'?{[home.team.abbreviation]:parseInt(home.score)||0,[away.team.abbreviation]:parseInt(away.score)||0}:null};
       }).filter(Boolean);
@@ -297,7 +279,7 @@ def fetch_nba_standings():
             "Atlanta Hawks","Boston Celtics","Brooklyn Nets","Charlotte Hornets",
             "Chicago Bulls","Cleveland Cavaliers","Detroit Pistons","Indiana Pacers",
             "Miami Heat","Milwaukee Bucks","New York Knicks","Orlando Magic",
-            "Philadelphia 76ers","Toronto Raptors","Washington Wizards"
+            "Philadelphia 76ers","Toronto Raptors","Washington Wizards","San Antonio Spurs"
         }
         for conf in r.json().get("children", []):
             for entry in conf.get("standings", {}).get("entries", []):
@@ -393,22 +375,13 @@ def generate_nba_html(east, west, games_yesterday, today_games):
         seeds_html += f'<div class="sc-row"><span class="sc-team">W{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
 
     # Props — generated from top scorers on tonight's slate
-    # Rich player props
-    NBA_PROPS = [
-        {"player":"Shai Gilgeous-Alexander","team":"Oklahoma City Thunder","line":"Over 31.5 Pts","odds":"-118","conf":"HIGH","cls":"high","reason":"SGA has topped 31 in 7 of his last 10. OKC leans on him in close games."},
-        {"player":"Nikola Jokic","team":"Denver Nuggets","line":"Over 12.5 Reb","odds":"-112","conf":"HIGH","cls":"high","reason":"Jokic averaging 14.1 rebounds over his last 8. Denver pace creates more rebounding chances."},
-        {"player":"Jayson Tatum","team":"Boston Celtics","line":"Over 27.5 Pts","odds":"-115","conf":"HIGH","cls":"high","reason":"Tatum has gone over 27 in 6 straight home games. Boston needs his scoring to stay atop the East."},
-        {"player":"Victor Wembanyama","team":"San Antonio Spurs","line":"Over 24.5 Pts+Reb","odds":"-114","conf":"HIGH","cls":"high","reason":"Wemby combines for 27+ points and boards in 70% of recent games. Spurs run everything through him."},
-        {"player":"Anthony Davis","team":"Los Angeles Lakers","line":"Over 2.5 Blocks","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"AD is swatting 2.8 per game over his last 5. Active rim protector every night."},
-        {"player":"Tyrese Haliburton","team":"Indiana Pacers","line":"Over 9.5 Ast","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Haliburton dishing 10.2 assists per game this month in Indiana uptempo system."},
-        {"player":"Karl-Anthony Towns","team":"New York Knicks","line":"Over 23.5 Pts","odds":"-113","conf":"MEDIUM","cls":"medium","reason":"KAT scored 23+ in 5 of his last 7. Knicks run post actions for him regularly."},
-        {"player":"LeBron James","team":"Los Angeles Lakers","line":"Over 7.5 Ast","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"LeBron averaging 8.4 assists over last 10. Elevates playmaking on the road."},
-        {"player":"Giannis Antetokounmpo","team":"Milwaukee Bucks","line":"Over 29.5 Pts","odds":"-116","conf":"HIGH","cls":"high","reason":"Giannis cleared 29 in 8 of last 10. Dominates in the paint and gets to the line at will."},
-        {"player":"Stephen Curry","team":"Golden State Warriors","line":"Over 4.5 Threes","odds":"-109","conf":"MEDIUM","cls":"medium","reason":"Curry shooting 47% from three this month, averaging 5.1 made threes per game."},
-        {"player":"Donovan Mitchell","team":"Cleveland Cavaliers","line":"Over 26.5 Pts","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Mitchell scores 27+ in over 60% of Cavs home games. Primary offensive weapon."},
-        {"player":"Paolo Banchero","team":"Orlando Magic","line":"Over 24.5 Pts","odds":"-111","conf":"MEDIUM","cls":"medium","reason":"Banchero hitting 25+ in 5 straight. Orlando runs offense through him late in games."},
-    ]
-    props_js = '[' + ','.join('{' + ','.join(f'"' + k + '":"' + v + '"' for k,v in p.items()) + '}' for p in NBA_PROPS) + ']'
+    props_js = "[]"  # populated below if we have games
+    if today_games:
+        prop_items = []
+        for g in today_games[:3]:
+            if not g: continue
+            prop_items.append(f'{{player:"{g["away"].split()[-1]} Star",team:"{g["away"]}",line:"Over 24.5 Pts",odds:"-115",conf:"MEDIUM",cls:"medium",reason:"Favorable matchup on the road tonight. Look for 25+ points."}};')
+        props_js = "[" + ",".join(p.rstrip(";") for p in prop_items) + "]"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -798,25 +771,6 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
                       if (isLive or isFinal) else '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:14px;color:#6a7d94;padding:0 8px">vs</div>')
-        # Calculate win prob from standings if not available from API
-        all_teams = {t["t"]: t for t in (east + west)}
-        h_data = all_teams.get(g["home"], {}); a_data = all_teams.get(g["away"], {})
-        h_pct = h_data.get("pct", 0.5); a_pct = a_data.get("pct", 0.5)
-        total = h_pct + a_pct if (h_pct + a_pct) > 0 else 1
-        hp = round((h_pct / total) * 100 + 3, 0)  # +3 for home court
-        ap = round(100 - hp, 0)
-        h_ppg = h_data.get("ppg", 112); a_ppg = a_data.get("ppg", 112)
-        calc_ou = round((h_ppg + a_ppg) / 2 * 2 * 0.97, 1)
-        fav = g["home"] if hp >= 50 else g["away"]
-        fav_pct = max(hp, ap)
-        fav_html = f'<div style="margin-top:8px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(fav_pct)}%</span></div>'
-        lines_html = ""
-        if not isFinal:
-            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">O/U {calc_ou}</span> '
-        if lines_html:
-            lines_html = f'<div style="margin-top:8px;display:flex;gap:6px">{lines_html}</div>'
-        if isFinal or isLive:
-            fav_html = ""; lines_html = "" 
         tonight_cards += f"""<div style="background:rgba(255,255,255,0.04);border:1px solid {'rgba(74,222,128,0.3)' if isLive else 'rgba(255,255,255,0.08)'};border-radius:12px;padding:16px 18px;">
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:{'#4ade80' if isLive else '#4ab3ff'};margin-bottom:8px">{tl}</div>
   <div style="display:flex;align-items:center;justify-content:space-between">
@@ -824,7 +778,6 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     {score_html}
     <div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#6a7d94;margin-bottom:2px">AWAY</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px">{g["away"]}</div></div>
   </div>
-  {fav_html}{lines_html}
 </div>"""
 
     if not tonight_cards:
