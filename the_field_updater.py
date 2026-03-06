@@ -560,7 +560,7 @@ footer strong{{color:var(--white);}}
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid">{tonight_cards}</div>
+    <div class="games-grid" id="tonight-grid"></div>
     <div class="section-title">Custom Matchup Predictor</div>
     <div class="pred-wrap">
       <div class="team-row">
