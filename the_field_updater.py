@@ -771,6 +771,14 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
                       if (isLive or isFinal) else '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:14px;color:#6a7d94;padding:0 8px">vs</div>')
+        all_tm = {t["t"]: t for t in (east + west)}
+        hd = all_tm.get(g["home"], {}); ad = all_tm.get(g["away"], {})
+        h_pct = hd.get("pct", 0.5); a_pct = ad.get("pct", 0.5)
+        tot = (h_pct + a_pct) or 1
+        hp = round((h_pct / tot) * 100 + 3, 0); ap = round(100 - hp, 0)
+        calc_ou = round((hd.get("ppg", 112) + ad.get("ppg", 112)) * 0.97, 1)
+        fav = g["home"] if hp >= 50 else g["away"]
+        prob_html = f'<div style="margin-top:10px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(max(hp,ap))}%</span> &nbsp;·&nbsp; O/U {calc_ou}</div>' if not isFinal and not isLive else ""
         tonight_cards += f"""<div style="background:rgba(255,255,255,0.04);border:1px solid {'rgba(74,222,128,0.3)' if isLive else 'rgba(255,255,255,0.08)'};border-radius:12px;padding:16px 18px;">
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:{'#4ade80' if isLive else '#4ab3ff'};margin-bottom:8px">{tl}</div>
   <div style="display:flex;align-items:center;justify-content:space-between">
