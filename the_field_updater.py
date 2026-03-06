@@ -165,7 +165,7 @@ TICKER_JS = r"""
     games.forEach(g=>{
       const keys=Object.keys(g.teams||{});
       if(keys.length<2) return;
-      const hk=keys[0],ak=keys[1];
+      const hk=keys[1],ak=keys[0];
       const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
       const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
       const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
