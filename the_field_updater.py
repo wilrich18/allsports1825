@@ -165,10 +165,9 @@ TICKER_JS = r"""
     games.forEach(g=>{
       const keys=Object.keys(g.teams||{});
       if(keys.length<2) return;
-      const hk=keys[1],ak=keys[0];
-      const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
-      const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
-      const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
+      const hAbrv=g.home||'HOME';
+      const aAbrv=g.away||'AWAY';
+      const hS=g.score?g.score[hAbrv]:''; const aS=g.score?g.score[aAbrv]:'';
       let statusHtml='', scoreHtml='';
       if(g.status==='inprogress'){
         const cl=g.clock?` ${g.clock}`:''; const p=g.period?` P${g.period}`:'';
