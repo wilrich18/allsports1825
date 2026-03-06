@@ -1328,7 +1328,7 @@ footer strong{{color:var(--white);}}
         (3,"New York Jets","Quarterback","Cam Ward","Miami (FL)","Dynamic dual-threat. Jets fans have waited years for this.","#006241"),
         (4,"Arizona Cardinals","Wide Receiver / CB","Travis Hunter","Colorado","Legitimate two-way player. Unique talent in this class.","#97233f"),
         (5,"Cleveland Browns","Offensive Tackle","Will Campbell","LSU","Best offensive lineman in the draft. Plug-and-play LT.","#311d00"),
-        (6,"Washington Commanders","Wide Receiver","Tetairoa McMillan","Arizona","6'5\" target who wins anywhere. Washington's new #1.","#5a1414"),
+        (6,"Washington Commanders","Wide Receiver","Tetairoa McMillan","Arizona","6ft5 target who wins anywhere. Washington new number 1.","#5a1414"),
       ])}
     </div>
   </div>
