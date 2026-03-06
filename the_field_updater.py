@@ -31,7 +31,7 @@ from datetime import datetime, timedelta
 # ── CONFIGURATION ────────────────────────────────────────────────────────────
 OUTPUT_DIR  = os.path.dirname(os.path.abspath(__file__))   # folder for all HTML files
 EXCEL_PATH  = os.path.expanduser("~/Desktop/ALLSPORTS/NBA_Game_Predictor.xlsx")
-LOG_FILE    = os.path.expanduser("~/Desktop/ALLSPORTS/updater_log.txt")
+LOG_FILE    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "updater_log.txt")
 # Optional: set these to auto-publish to Netlify via API
 NETLIFY_SITE_ID  = ""   # e.g. "abc123.netlify.app" — leave blank to skip
 NETLIFY_TOKEN    = ""   # Personal access token from netlify.com/user/applications
