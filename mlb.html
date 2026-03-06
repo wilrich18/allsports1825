@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE FIELD — MLB Baseball</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#001f4e;--red:#c6011f;--gold:#f5c842;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
 body{background:#030d1e;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
 nav{position:sticky;top:0;z-index:100;background:rgba(3,13,30,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}
-.nav-home{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}
-.nav-home:hover{color:var(--white);}
+.nav-home{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}.nav-home:hover{color:var(--white);}
 .nav-sep{color:var(--border);font-size:18px;margin-right:12px;}
-.nav-sport{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#f5c842;margin-right:20px;}
+.nav-sport{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-right:20px;}
 .nav-links{display:flex;gap:2px;flex:1;}
 .nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
 .nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
-.spring-pill{background:rgba(245,200,66,0.15);color:#f5c842;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;border:1px solid rgba(245,200,66,0.3);}
+.spring-pill{background:rgba(245,200,66,0.15);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;border:1px solid rgba(245,200,66,0.3);}
+.live-pill{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
 .page{display:none;}.page.active{display:block;animation:fadeUp 0.3s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .hero{background:linear-gradient(135deg,#030d1e 0%,#0a1f3d 50%,#030d1e 100%);padding:48px 24px 40px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(198,1,31,0.08),transparent);pointer-events:none;}
 .hero-inner{max-width:1100px;margin:0 auto;position:relative;}
 .hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:12px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;margin-bottom:12px;}
 .hero-title em{color:var(--red);font-style:normal;}
 .hero-sub{color:var(--gray);font-size:15px;max-width:480px;margin-bottom:24px;}
 .hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
@@ -35,48 +33,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(3,13,30,0.97);backdrop-fil
 .section{max-width:1100px;margin:0 auto;padding:32px 24px;}
 .section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-/* STANDINGS */
-.division-block{margin-bottom:28px;}
-.div-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.std-table{width:100%;border-collapse:collapse;font-size:14px;}
-.std-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:6px 10px;text-align:center;border-bottom:1px solid var(--border);}
-.std-table th:nth-child(2){text-align:left;}
-.std-table td{padding:9px 10px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.03);}
-.std-table td:nth-child(2){text-align:left;}
-.std-table tr:hover td{background:var(--card2);}
-.team-name-cell{font-weight:600;}
-.spring-note{background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.2);border-radius:10px;padding:20px 24px;margin-bottom:24px;font-size:14px;color:#e0c86a;line-height:1.7;}
-.spring-note strong{color:var(--gold);}
-/* PREDICTOR */
-.pred-wrap{max-width:680px;margin:0 auto;}
-.team-row{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}
-.team-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
-.tbadge{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}
-.tbadge-h{background:rgba(74,222,128,0.12);color:#4ade80;}.tbadge-a{background:rgba(248,113,113,0.12);color:#f87171;}
-.tlabel{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
-select.tsel{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-select.tsel:focus{outline:none;border-color:var(--gold);}select.tsel option{background:#0a1f3d;}
-.vs-mid{display:flex;align-items:center;justify-content:center;padding-top:28px;}
-.vs-big{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}
-.pred-btn{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,var(--navy),#0a2a5e);border:1px solid rgba(245,200,66,0.3);border-radius:10px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
-.pred-btn:hover{background:linear-gradient(135deg,#0a2a5e,#0f3470);border-color:rgba(245,200,66,0.6);}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
-.result-card.w{border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);}
-.r-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
-.r-val{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}
-.r-val.gold{color:var(--gold);}.r-sub{font-size:12px;color:var(--gray);margin-top:3px;}
-.bar-wrap{margin:16px 0;}.bar-labels{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}
-.bar-track{height:10px;border-radius:5px;background:rgba(248,113,113,0.2);overflow:hidden;}
-.bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
-.winner-banner{text-align:center;padding:16px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:1px;}
-.winner-sub{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}
-/* DIGEST */
-.digest-lead{background:linear-gradient(135deg,#060f1a,#1a0608);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
-.digest-lead::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(198,1,31,0.08),transparent 70%);}
-.dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.dhl{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}
-.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:560px;}
 .article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
 .art-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;}
 .art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;}
@@ -85,59 +41,30 @@ select.tsel:focus{outline:none;border-color:var(--gold);}select.tsel option{back
 .chev{transition:transform 0.2s;color:var(--gray);}.chev.open{transform:rotate(180deg);}
 .art-body{display:none;padding:16px 20px;border-top:1px solid var(--border);}.art-body.open{display:block;}
 .art-body p{color:#cbd5e1;line-height:1.75;font-size:14px;}
-/* MAGAZINE */
-.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
-.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
-.rank-item:last-child{border-bottom:none;}
-.rank-n{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.1);min-width:40px;text-align:center;padding-top:2px;}
-.rank-n.t3{color:var(--gold);}
-.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
-.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
-.tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
-.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
-.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.sc-row:last-child{border-bottom:none;}
-.sc-team{font-weight:600;}.sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
-/* PROPS */
-.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
-.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.prop-card.high::before{background:linear-gradient(90deg,#4ade80,#22c55e);}.prop-card.medium::before{background:linear-gradient(90deg,var(--gold),#f59e0b);}
-.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}
-.prop-team{font-size:12px;color:var(--gray);margin-bottom:9px;}
-.prop-line{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}
-.prop-odds{font-size:12px;color:var(--gray);margin-bottom:8px;}
-.prop-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
-.b-high{background:rgba(74,222,128,0.13);color:#4ade80;}.b-med{background:rgba(245,200,66,0.13);color:var(--gold);}
-.prop-reason{font-size:13px;color:#94a3b8;line-height:1.55;}
-.disclaimer{background:rgba(198,1,31,0.06);border:1px solid rgba(198,1,31,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}
+.digest-lead{background:linear-gradient(135deg,#060f1a,#1a0608);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;}
+.dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.dhl{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:560px;}
 footer{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
 footer strong{color:var(--white);}
-@media(max-width:768px){.team-row{grid-template-columns:1fr;}.vs-mid{padding-top:0;}.mag-layout{grid-template-columns:1fr;}}
-</style>
-</head>
-<body>
+</style></head><body>
 <nav>
   <a class="nav-home" href="index.html">THE FIELD</a>
   <span class="nav-sep">/</span>
   <span class="nav-sport">MLB</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="spring-pill">⚾ SPRING TRAINING</div>
+  <div class="spring-pill">SPRING TRAINING</div>
 </nav>
 
-<!-- STANDINGS -->
 <div id="page-standings" class="page active">
   <div class="hero"><div class="hero-inner">
     <div class="hero-eyebrow">2026 Season · Spring Training</div>
     <h1 class="hero-title">MLB<br><em>STANDINGS</em></h1>
-    <p class="hero-sub">Regular season opens March 26, 2026. All 30 teams listed by division.</p>
+    <p class="hero-sub">Regular season opens March 26, 2026. All teams currently 0-0.</p>
     <div class="hero-stats">
       <div><div class="hero-stat-val">30</div><div class="hero-stat-lbl">Teams</div></div>
       <div><div class="hero-stat-val">162</div><div class="hero-stat-lbl">Games/Season</div></div>
@@ -145,449 +72,210 @@ footer strong{color:var(--white);}
     </div>
   </div></div>
   <div class="section">
-    <div class="spring-note">
-      <strong>🌴 Spring Training — March 6, 2026</strong><br>
-      The 2026 regular season begins <strong>March 26</strong>. All records show 0-0 — spring training games are underway in Arizona and Florida. Standings will update automatically once the regular season begins. Check back after Opening Day for live standings, run differentials, and playoff race tracking.
+    
+    <div style="background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.2);border-radius:10px;padding:20px 24px;margin-bottom:24px;font-size:14px;color:#e0c86a;line-height:1.7;">
+      <strong style="color:#f5c842">🌴 Spring Training — Season opens March 26, 2026</strong><br>
+      All 30 teams are 0-0. Standings will update automatically starting Opening Day.
     </div>
-    <div class="section-title">American League East</div>
-    <div id="al-east"></div>
-    <div class="section-title" style="margin-top:24px">American League Central</div>
-    <div id="al-central"></div>
-    <div class="section-title" style="margin-top:24px">American League West</div>
-    <div id="al-west"></div>
-    <div class="section-title" style="margin-top:24px">National League East</div>
-    <div id="nl-east"></div>
-    <div class="section-title" style="margin-top:24px">National League Central</div>
-    <div id="nl-central"></div>
-    <div class="section-title" style="margin-top:24px">National League West</div>
-    <div id="nl-west"></div>
+    <div id="div-tables"></div>
   </div>
 </div>
 
-<!-- PREDICTOR -->
-<div id="page-predictor" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2026 Season Preview</div>
-    <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
-    <p class="hero-sub">Select any two MLB teams for a matchup prediction based on 2025 season stats and 2026 projections.</p>
-  </div></div>
-  <div class="section">
-    <div class="spring-note">
-      <strong>⚾ Spring Training Mode</strong> — Predictions are based on 2025 final stats and 2026 preseason projections. Regular season win probabilities will update live starting March 26.
-    </div>
-    <div class="pred-wrap">
-      <div class="team-row">
-        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
-        <div class="vs-mid"><div class="vs-big">VS</div></div>
-        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
-      </div>
-      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
-      <div id="pred-out"></div>
-    </div>
-  </div>
-</div>
-
-<!-- DIGEST -->
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">March 6, 2026 · Spring Training Update</div>
-      <div class="dhl">AROUND THE GRAPEFRUIT & CACTUS LEAGUES</div>
-      <div class="ddeck">Spring training is in full swing. Here's what's happening across both leagues as teams prepare for Opening Day on March 26.</div>
+      <div class="dlabel">FRIDAY, March 6, 2026</div>
+      <div class="dhl">SPRING TRAINING REPORT</div>
+      <div class="ddeck">Spring training games are underway. Opening Day is March 26, 2026.</div>
     </div>
-    <div class="section-title">Spring Training Storylines</div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">Dodgers Spring Preview</span></div><div class="art-sub">NL West Favorites</div></div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>The Los Angeles Dodgers enter 2026 as the heavy favorites in the National League West after their 2025 World Series title. Shohei Ohtani is fully healthy and pitching AND hitting this spring — his two-way capability makes LA arguably the most talented roster in baseball history. Freddie Freeman, Mookie Betts, and Will Smith anchor a lineup that ranked #1 in runs scored last season. The rotation is deep with Tyler Glasnow and Yoshinobu Yamamoto both projected healthy. Expect LA to contend for back-to-back titles.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">Yankees Reload</span></div><div class="art-sub">AL East Contenders</div></div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>New York made several key acquisitions this offseason and enters spring training with genuine World Series aspirations. Juan Soto is locked in as the centerpiece of their lineup after his massive extension. The rotation question marks from 2025 appear addressed with a new front-of-the-rotation arm. Manager Aaron Boone enters the season with a roster that looks built to go deep in October. The AL East will be competitive with Baltimore and Boston both showing strong rosters.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">Detroit Tigers: Year 3</span></div><div class="art-sub">AL Central Favorites</div></div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>The Detroit Tigers are entering Year 3 of their rebuild and this is the year expectations shift to contention. Tarik Skubal, their ace, is coming off a Cy Young season and looks like one of the best pitchers in baseball. Kerry Carpenter and Riley Greene give them a young core in the lineup. Detroit added some veteran pieces this winter and the AL Central — without a clear dominant team — is ripe for the taking. The Tigers are the team to watch in the Central.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">Opening Day Preview</span></div><div class="art-sub">March 26, 2026</div></div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Opening Day 2026 is March 26. All 30 teams will be in action on the first Thursday of the season. The marquee matchup features the defending champion Dodgers hosting the rival Giants in Los Angeles, while the Yankees will host the Red Sox in an AL East showdown. Other notable matchups: Cubs at Cardinals, Braves at Phillies, and the Astros at the Mariners in a rematch of last year's ALCS. Check back after Opening Day for live game recaps and standings.</p></div>
-    </div>
+    <div class="section-title">Spring Storylines</div>
+    
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score" style="color:#f0f4f8">Dodgers Spring Preview</div><div class="art-sub">NL West Favorites</div></div><span class="chev">▾</span></div><div class="art-body"><p>Shohei Ohtani is healthy and throwing off the mound in Arizona. The defending champions look every bit the part of repeat favorites. Yoshinobu Yamamoto looks sharp. Opening Day at Dodger Stadium against the Giants will be must-watch TV.</p></div></div>
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score" style="color:#f0f4f8">Yankees Reload</div><div class="art-sub">AL East Contenders</div></div><span class="chev">▾</span></div><div class="art-body"><p>Juan Soto looks locked in after signing his mega-extension. The Yankees rotation is healthier than it has been in years. Aaron Judge is chasing history. New York looks genuinely dangerous heading into 2026.</p></div></div>
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score" style="color:#f0f4f8">Detroit Tigers Breakout Year</div><div class="art-sub">AL Central Dark Horse</div></div><span class="chev">▾</span></div><div class="art-body"><p>Tarik Skubal is the best young pitcher in the American League and he looks even better this spring. Kerry Carpenter has impressed at the plate. Detroit is the most dangerous team no one is talking about yet.</p></div></div>
+    
   </div>
 </div>
 
-<!-- MAGAZINE -->
 <div id="page-magazine" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2026 Season Preview · March 6</div>
+    <div class="hero-eyebrow">2026 Season Preview · March 6, 2026</div>
     <h1 class="hero-title">MLB<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">2026 preseason power rankings, division favorites, and key storylines heading into Opening Day.</p>
+    <p class="hero-sub">Preseason power rankings and division outlooks for 2026.</p>
   </div></div>
   <div class="section">
-    <div class="mag-layout">
-      <div>
-        <div class="section-title">2026 Preseason Power Rankings</div>
-        <div id="rankings">
-          <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Los Angeles Dodgers</div><div class="rank-rec">Defending Champions · NL West</div><div class="rank-note">Ohtani two-way, Freeman, Betts. The deepest roster in baseball. Back-to-back title window is wide open.</div><div class="rank-trend tu">↑ Favorites</div></div></div>
-          <div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">New York Yankees</div><div class="rank-rec">AL East · Loaded offseason</div><div class="rank-note">Soto extension locked in. Rotation addressed. This team has October written all over it.</div><div class="rank-trend tu">↑ World Series contender</div></div></div>
-          <div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Atlanta Braves</div><div class="rank-rec">NL East · Ronald Acuña Jr. healthy</div><div class="rank-note">Acuña returns fully healthy from ACL. Ozzie Albies and Austin Riley give them a lineup that can compete with anyone. Spencer Strider looks ready.</div><div class="rank-trend tu">↑ NL East favorites</div></div></div>
-          <div class="rank-item"><div class="rank-n">4</div><div><div class="rank-team">Philadelphia Phillies</div><div class="rank-rec">NL East · Trea Turner locked in</div><div class="rank-note">Bryce Harper + Trea Turner is the best 1-2 in the NL. Rotation depth is the question mark but they have the lineup to survive it.</div><div class="rank-trend tf">→ Holding steady</div></div></div>
-          <div class="rank-item"><div class="rank-n">5</div><div><div class="rank-team">Houston Astros</div><div class="rank-rec">AL West · Experienced core</div><div class="rank-note">Altuve and Bregman give them veteran leadership. Framber Valdez anchors a solid rotation. The window is still open for one more run.</div><div class="rank-trend tf">→ AL West contenders</div></div></div>
-          <div class="rank-item"><div class="rank-n">6</div><div><div class="rank-team">Detroit Tigers</div><div class="rank-rec">AL Central · Breakout year incoming</div><div class="rank-note">Tarik Skubal is an ace. Young core of Greene, Carpenter ready to take the next step. This is their year to contend for real.</div><div class="rank-trend tu">↑ Dark horse</div></div></div>
-          <div class="rank-item"><div class="rank-n">7</div><div><div class="rank-team">Cleveland Guardians</div><div class="rank-rec">AL Central · Pitching-first team</div><div class="rank-note">Jose Ramirez is still elite. Their pitching staff is underrated. Guardians should compete for the AL Central title.</div><div class="rank-trend tf">→ AL Central threat</div></div></div>
-          <div class="rank-item"><div class="rank-n">8</div><div><div class="rank-team">Baltimore Orioles</div><div class="rank-rec">AL East · Young stars</div><div class="rank-note">Gunnar Henderson and Adley Rutschman are the future of this franchise. Corbin Burnes leads a rotation primed for a big year.</div><div class="rank-trend tf">→ AL East contender</div></div></div>
-        </div>
-      </div>
-      <div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Division Favorites</div>
-          <div class="sc-row"><span class="sc-team">AL East — Yankees</span><span class="sc-val hot">-140</span></div>
-          <div class="sc-row"><span class="sc-team">AL Central — Tigers</span><span class="sc-val hot">+120</span></div>
-          <div class="sc-row"><span class="sc-team">AL West — Astros</span><span class="sc-val">+105</span></div>
-          <div class="sc-row"><span class="sc-team">NL East — Braves</span><span class="sc-val">-115</span></div>
-          <div class="sc-row"><span class="sc-team">NL Central — Cubs</span><span class="sc-val">+130</span></div>
-          <div class="sc-row"><span class="sc-team">NL West — Dodgers</span><span class="sc-val hot">-200</span></div>
-        </div>
-        <div class="sidebar-card"><div class="sc-title">⭐ Players to Watch</div>
-          <div class="sc-row"><span class="sc-team">Shohei Ohtani</span><span class="sc-val hot">LAD</span></div>
-          <div class="sc-row"><span class="sc-team">Ronald Acuña Jr.</span><span class="sc-val hot">ATL</span></div>
-          <div class="sc-row"><span class="sc-team">Tarik Skubal</span><span class="sc-val">DET</span></div>
-          <div class="sc-row"><span class="sc-team">Juan Soto</span><span class="sc-val">NYY</span></div>
-          <div class="sc-row"><span class="sc-team">Gunnar Henderson</span><span class="sc-val">BAL</span></div>
-        </div>
-      </div>
-    </div>
+    <p style="color:#94a3b8;line-height:1.75;font-size:14px;max-width:700px">
+      The 2026 MLB season kicks off March 26. The Los Angeles Dodgers enter as defending champions
+      with Shohei Ohtani healthy and pitching. The New York Yankees, Atlanta Braves, and Philadelphia
+      Phillies are the primary NL threats. In the AL, the Yankees, Detroit Tigers, and Baltimore
+      Orioles headline a deep field. Full in-season power rankings will appear here starting Opening Day.
+    </p>
   </div>
 </div>
 
-<!-- PROPS -->
-<div id="page-props" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2026 Season · Spring Preview</div>
-    <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
-    <p class="hero-sub">2026 season-long player prop projections. Regular season lines drop March 26.</p>
-  </div></div>
-  <div class="section">
-    <div class="section-title">2026 Season-Long Props — Opening Projections</div>
-    <div class="spring-note" style="margin-bottom:20px"><strong>📋 Spring Training Props</strong> — These are projected season-long totals for 2026. Individual game props will be available starting Opening Day, March 26.</div>
-    <div class="props-grid">
-      <div class="prop-card high"><div class="prop-player">Shohei Ohtani</div><div class="prop-team">Los Angeles Dodgers — 2-Way</div><div class="prop-line">Over 40.5 HR</div><div class="prop-odds">-115 · Season total</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Fully healthy and pitching again, Ohtani could put up historic numbers as a full two-way player. His 2024 season (44 HR, 310 AVG) set the baseline. Over 40 is live.</div></div>
-      <div class="prop-card high"><div class="prop-player">Ronald Acuña Jr.</div><div class="prop-team">Atlanta Braves — CF/RF</div><div class="prop-line">Over 30.5 HR + 40 SB</div><div class="prop-odds">+120 · Season combo</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Back fully healthy after tearing his ACL in June 2024. Before the injury he was on pace for a 40/60 season. Full health Acuña is the best player in the NL.</div></div>
-      <div class="prop-card medium"><div class="prop-player">Tarik Skubal</div><div class="prop-team">Detroit Tigers — SP</div><div class="prop-line">Over 200.5 Strikeouts</div><div class="prop-odds">-110 · Season total</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">Coming off his Cy Young season with 228 K's, Skubal is the best young pitcher in the AL. If healthy all year, 200+ strikeouts is very achievable.</div></div>
-      <div class="prop-card medium"><div class="prop-player">Juan Soto</div><div class="prop-team">New York Yankees — RF</div><div class="prop-line">Over 0.290 AVG</div><div class="prop-odds">+105 · Season average</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">Soto in Yankee Stadium with that lineup protection should see better pitches than ever. His career .292 average is the baseline. Comfortable over in this park.</div></div>
-      <div class="prop-card high"><div class="prop-player">Gunnar Henderson</div><div class="prop-team">Baltimore Orioles — SS</div><div class="prop-line">Over 32.5 HR</div><div class="prop-odds">-108 · Season total</div><div class="prop-badge b-high">HIGH</div><div class="prop-reason">Henderson hit 37 HR in 2024 as a 22-year-old. In his age-24 season, a step forward is expected. One of the best young hitters in baseball entering his prime.</div></div>
-      <div class="prop-card medium"><div class="prop-player">Corbin Burnes</div><div class="prop-team">Baltimore Orioles — SP</div><div class="prop-line">Under 3.25 ERA</div><div class="prop-odds">+110 · Season ERA</div><div class="prop-badge b-med">MEDIUM</div><div class="prop-reason">Burnes has never had an ERA above 3.19 in a full season. Moving to Baltimore gives him solid defense. The AL East is tough but Burnes is elite.</div></div>
-    </div>
-    <div class="disclaimer">⚠️ All props are for entertainment only. Not financial or gambling advice. Season-long lines are projections. Game-day lines available from Opening Day March 26. Gamble responsibly. 1-800-GAMBLER.</div>
-  </div>
-</div>
-
-<footer><strong>THE FIELD — MLB</strong> · Baseball Analytics · 2026 Season · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></footer>
+<footer><strong>THE FIELD — MLB</strong> · Baseball Analytics · 2026 Season · Updated March 6, 2026<br>
+<span>Data via ESPN · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span></footer>
 
 <script>
-const DIVISIONS={
-  "al-east":   ["Baltimore Orioles","Boston Red Sox","New York Yankees","Tampa Bay Rays","Toronto Blue Jays"],
-  "al-central":["Chicago White Sox","Cleveland Guardians","Detroit Tigers","Kansas City Royals","Minnesota Twins"],
-  "al-west":   ["Athletics","Houston Astros","Los Angeles Angels","Seattle Mariners","Texas Rangers"],
-  "nl-east":   ["Atlanta Braves","Miami Marlins","New York Mets","Philadelphia Phillies","Washington Nationals"],
-  "nl-central":["Chicago Cubs","Cincinnati Reds","Milwaukee Brewers","Pittsburgh Pirates","St. Louis Cardinals"],
-  "nl-west":   ["Arizona Diamondbacks","Colorado Rockies","Los Angeles Dodgers","San Diego Padres","San Francisco Giants"],
-};
-
-// 2025 final projected stats for predictor (W%, RunsFor, RunsAgainst)
-const TEAM_STATS={
-  "Baltimore Orioles":      [0.568,4.8,4.1],
-  "Boston Red Sox":         [0.519,4.6,4.5],
-  "New York Yankees":       [0.580,4.9,4.0],
-  "Tampa Bay Rays":         [0.494,4.4,4.5],
-  "Toronto Blue Jays":      [0.500,4.5,4.5],
-  "Chicago White Sox":      [0.321,3.6,5.2],
-  "Cleveland Guardians":    [0.549,4.4,3.9],
-  "Detroit Tigers":         [0.549,4.5,4.0],
-  "Kansas City Royals":     [0.512,4.5,4.4],
-  "Minnesota Twins":        [0.500,4.4,4.5],
-  "Athletics":              [0.395,3.9,4.9],
-  "Houston Astros":         [0.525,4.7,4.3],
-  "Los Angeles Angels":     [0.432,4.1,4.8],
-  "Seattle Mariners":       [0.512,4.3,4.2],
-  "Texas Rangers":          [0.500,4.5,4.5],
-  "Atlanta Braves":         [0.562,4.9,4.1],
-  "Miami Marlins":          [0.389,3.8,5.0],
-  "New York Mets":          [0.537,4.6,4.2],
-  "Philadelphia Phillies":  [0.568,4.8,4.1],
-  "Washington Nationals":   [0.432,4.1,4.8],
-  "Chicago Cubs":           [0.525,4.6,4.3],
-  "Cincinnati Reds":        [0.481,4.4,4.6],
-  "Milwaukee Brewers":      [0.556,4.5,4.0],
-  "Pittsburgh Pirates":     [0.444,4.0,4.7],
-  "St. Louis Cardinals":    [0.469,4.2,4.6],
-  "Arizona Diamondbacks":   [0.543,4.6,4.2],
-  "Colorado Rockies":       [0.346,4.2,5.5],
-  "Los Angeles Dodgers":    [0.642,5.2,3.7],
-  "San Diego Padres":       [0.543,4.6,4.2],
-  "San Francisco Giants":   [0.475,4.3,4.6],
-};
-
-const ALL_TEAMS=Object.keys(TEAM_STATS).sort();
-
-function renderDivision(divId){
-  const teams=DIVISIONS[divId];
-  const el=document.getElementById(divId);
-  let h=`<table class="std-table"><thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>RF</th><th>RA</th></tr></thead><tbody>`;
-  teams.forEach((t,i)=>{
-    h+=`<tr><td>${i+1}</td><td><span class="team-name-cell">${t}</span></td><td style="color:var(--gray)">—</td><td style="color:var(--gray)">—</td><td style="color:var(--gray)">.000</td><td style="color:var(--gray)">—</td><td style="color:var(--gray)">—</td></tr>`;
-  });
-  h+=`</tbody></table>`;
-  el.innerHTML=h;
-}
-
-function buildSelects(){
-  ['home-sel','away-sel'].forEach((id,i)=>{
-    const s=document.getElementById(id);
-    ALL_TEAMS.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o);});
-    s.selectedIndex=i;
-  });
-  predict();
-}
-
-function predict(){
-  const hn=document.getElementById('home-sel').value;
-  const an=document.getElementById('away-sel').value;
-  const out=document.getElementById('pred-out');
-  if(hn===an){out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Please select two different teams.</p>';return;}
-  const H=TEAM_STATS[hn],A=TEAM_STATS[an];if(!H||!A)return;
-  // Run scoring model
-  const hrs=((H[1]*0.5+A[2]*0.5)+0.15).toFixed(1);
-  const ars=((A[1]*0.5+H[2]*0.5)-0.15).toFixed(1);
-  // Win probability
-  const hAdv=0.04; // home field
-  const hp=Math.min(0.92,Math.max(0.08,H[0]*0.5+A[0]*-0.5+0.5+hAdv));
-  const ap=1-hp;
-  const hw=hp>0.5;
-  const cf=Math.min(92,Math.max(50,50+Math.abs(H[0]-A[0])*120)).toFixed(0);
-  out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${hw?'w':''}"><div class="r-label">🏠 HOME — ${hn}</div><div class="r-val">${hrs}</div><div class="r-sub">${(hp*100).toFixed(1)}% win probability</div></div>
-    <div class="result-card ${!hw?'w':''}"><div class="r-label">✈️ AWAY — ${an}</div><div class="r-val">${ars}</div><div class="r-sub">${(ap*100).toFixed(1)}% win probability</div></div>
-    <div class="result-card"><div class="r-label">Run Line</div><div class="r-val gold" style="font-size:22px">${hw?hn.split(' ').slice(-1)[0]+' -1.5':an.split(' ').slice(-1)[0]+' -1.5'}</div></div>
-    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${cf}<span style="font-size:18px">/100</span></div></div>
-  </div>
-  <div class="bar-wrap">
-    <div class="bar-labels"><span style="color:#4ade80">${hn} ${(hp*100).toFixed(0)}%</span><span style="color:#f87171">${an} ${(ap*100).toFixed(0)}%</span></div>
-    <div class="bar-track"><div class="bar-fill" style="width:${(hp*100).toFixed(0)}%"></div></div>
-  </div>
-  <div class="winner-banner">${hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}<span class="winner-sub">${(Math.max(hp,ap)*100).toFixed(1)}% probability · ${cf}/100 confidence</span></div>`;
-}
-
-function tog(hdr){const body=hdr.nextElementSibling;const chev=hdr.querySelector('.chev');body.classList.toggle('open');chev.classList.toggle('open');}
+function tog(hdr){const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}
 function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-
-Object.keys(DIVISIONS).forEach(renderDivision);
-buildSelects();
 </script>
 
-<!-- LIVE SCORE TICKER -->
 <script>
-
-// ── LIVE SCORE TICKER ──────────────────────────────────────────────────────
 (function(){
-  // Detect sport from page
   const path = window.location.pathname.toLowerCase();
-  let sport = 'nba', espnSport = 'basketball/nba', sportLabel = 'NBA', accentColor = '#fdb927';
-  if(path.includes('nhl')){ sport='nhl'; espnSport='hockey/nhl'; sportLabel='NHL'; accentColor='#4ab3ff'; }
-  else if(path.includes('mlb')){ sport='mlb'; espnSport='baseball/mlb'; sportLabel='MLB'; accentColor='#f5c842'; }
-  else if(path.includes('nfl')){ sport='nfl'; espnSport='football/nfl'; sportLabel='NFL'; accentColor='#d4001c'; }
-  else if(path.includes('index') || path === '/' || path.endsWith('/')){ return; } // no ticker on hub
+  let espnSport='basketball/nba', sportLabel='NBA', accentColor='#fdb927';
+  if(path.includes('nhl')){ espnSport='hockey/nhl'; sportLabel='NHL'; accentColor='#4ab3ff'; }
+  else if(path.includes('mlb')){ espnSport='baseball/mlb'; sportLabel='MLB'; accentColor='#f5c842'; }
+  else if(path.includes('nfl')){ espnSport='football/nfl'; sportLabel='NFL'; accentColor='#d4001c'; }
+  else if(path==='/'||path.endsWith('index.html')){ return; }
 
-  // Inject CSS
-  const style = document.createElement('style');
-  style.textContent = `
-/* ── LIVE TICKER ── */
-.ticker-bar{
-  position:sticky;top:54px;z-index:99;
-  background:rgba(0,0,0,0.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(255,255,255,0.06);
-  height:34px;overflow:hidden;
-  display:flex;align-items:center;
-}
-.ticker-sport-tag{
-  flex-shrink:0;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:12px;letter-spacing:2px;
-  padding:0 14px;
-  height:100%;display:flex;align-items:center;
-  border-right:1px solid rgba(255,255,255,0.08);
-  white-space:nowrap;
-}
-.ticker-track{
-  flex:1;overflow:hidden;position:relative;
-}
-.ticker-inner{
-  display:flex;align-items:center;gap:0;
-  white-space:nowrap;
-  animation:tickerScroll 60s linear infinite;
-  width:max-content;
-}
-.ticker-inner:hover{animation-play-state:paused;}
-@keyframes tickerScroll{
-  0%{transform:translateX(0)}
-  100%{transform:translateX(-50%)}
-}
-.ticker-game{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:0 20px;
-  border-right:1px solid rgba(255,255,255,0.06);
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:13px;font-weight:700;
-  letter-spacing:0.5px;
-}
-.t-status{
-  font-size:10px;letter-spacing:1px;
-  padding:2px 6px;border-radius:3px;
-  font-weight:700;
-}
-.t-live{background:rgba(248,113,113,0.2);color:#f87171;}
-.t-final{background:rgba(100,100,100,0.2);color:#6a7d94;}
-.t-soon{background:rgba(74,179,255,0.15);color:#4ab3ff;}
-.t-teams{color:var(--white);}
-.t-score{color:var(--gold,#f5c842);font-size:14px;}
-.t-sep{color:rgba(255,255,255,0.15);}
-.ticker-refresh{
-  flex-shrink:0;padding:0 12px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:10px;letter-spacing:1px;
-  color:rgba(255,255,255,0.2);
-  border-left:1px solid rgba(255,255,255,0.06);
-  cursor:pointer;height:100%;
-  display:flex;align-items:center;
-  transition:color 0.2s;
-}
-.ticker-refresh:hover{color:rgba(255,255,255,0.5);}
-.ticker-loading{
-  padding:0 20px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:12px;letter-spacing:1px;
-  color:rgba(255,255,255,0.2);
-}
-`;
+  const style=document.createElement('style');
+  style.textContent=`.ticker-bar{position:sticky;top:54px;z-index:99;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:34px;overflow:hidden;display:flex;align-items:center;}.ticker-sport-tag{flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:0 14px;height:100%;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,0.08);white-space:nowrap;}.ticker-track{flex:1;overflow:hidden;position:relative;}.ticker-inner{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 60s linear infinite;width:max-content;}.ticker-inner:hover{animation-play-state:paused;}@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.ticker-game{display:inline-flex;align-items:center;gap:8px;padding:0 20px;border-right:1px solid rgba(255,255,255,0.06);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;}.t-status{font-size:10px;letter-spacing:1px;padding:2px 6px;border-radius:3px;font-weight:700;}.t-live{background:rgba(248,113,113,.2);color:#f87171;}.t-final{background:rgba(100,100,100,.2);color:#6a7d94;}.t-soon{background:rgba(74,179,255,.15);color:#4ab3ff;}.t-teams{color:#f0f4f8;}.t-score{color:var(--gold,#f5c842);font-size:14px;}.ticker-refresh{flex-shrink:0;padding:0 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2);border-left:1px solid rgba(255,255,255,.06);cursor:pointer;height:100%;display:flex;align-items:center;transition:color .2s;}.ticker-refresh:hover{color:rgba(255,255,255,.5);}.ticker-loading{padding:0 20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,255,255,.2);}`;
   document.head.appendChild(style);
 
-  // Build ticker bar
-  const bar = document.createElement('div');
-  bar.className = 'ticker-bar';
-  bar.innerHTML = `
-    <div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel} SCORES</div>
-    <div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div>
-    <div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh scores">↻ LIVE</div>
-  `;
+  const bar=document.createElement('div'); bar.className='ticker-bar';
+  bar.innerHTML=`<div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel} SCORES</div><div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div><div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh">↻ LIVE</div>`;
+  const nav=document.querySelector('nav');
+  if(nav&&nav.parentNode) nav.parentNode.insertBefore(bar,nav.nextSibling);
 
-  // Insert after nav
-  const nav = document.querySelector('nav');
-  if(nav && nav.parentNode) nav.parentNode.insertBefore(bar, nav.nextSibling);
-
-  function fmtTime(iso){
-    const d = new Date(iso);
-    return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(':00','');
-  }
+  function fmtTime(iso){const d=new Date(iso);return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(':00','');}
 
   function buildHTML(games){
-    if(!games || !games.length) return '<div class="ticker-loading">No games today</div>';
-    let html = '';
-    games.forEach(g => {
-      const teams = g.teams || {};
-      const keys = Object.keys(teams);
-      if(keys.length < 2) return;
-      // figure home/away
-      const homeKey = keys.find(k => teams[k] === g.home_team) || keys[1];
-      const awayKey = keys.find(k => teams[k] === g.away_team) || keys[0];
-      const homeName = teams[homeKey]?.abbreviation || homeKey;
-      const awayName = teams[awayKey]?.abbreviation || awayKey;
-      const hScore = g.score ? (g.score[homeKey] ?? '') : '';
-      const aScore = g.score ? (g.score[awayKey] ?? '') : '';
-      let statusHtml = '';
-      let scoreHtml = '';
-      if(g.status === 'inprogress'){
-        const clock = g.clock ? ` ${g.clock}` : '';
-        const period = g.period ? ` P${g.period}` : '';
-        statusHtml = `<span class="t-status t-live">LIVE${clock}${period}</span>`;
-        scoreHtml = `<span class="t-score">${aScore} – ${hScore}</span>`;
-      } else if(g.status === 'closed' || g.status === 'complete'){
-        statusHtml = `<span class="t-status t-final">FINAL</span>`;
-        scoreHtml = `<span class="t-score">${aScore} – ${hScore}</span>`;
+    if(!games||!games.length) return '<div class="ticker-loading">No games today</div>';
+    let html='';
+    games.forEach(g=>{
+      const keys=Object.keys(g.teams||{});
+      if(keys.length<2) return;
+      const hk=keys[1],ak=keys[0];
+      const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
+      const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
+      const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
+      let statusHtml='', scoreHtml='';
+      if(g.status==='inprogress'){
+        const cl=g.clock?` ${g.clock}`:''; const p=g.period?` P${g.period}`:'';
+        statusHtml=`<span class="t-status t-live">LIVE${cl}${p}</span>`;
+        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
+      } else if(g.status==='closed'||g.status==='complete'){
+        statusHtml=`<span class="t-status t-final">FINAL</span>`;
+        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
       } else {
-        statusHtml = `<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
-        scoreHtml = '';
+        statusHtml=`<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
       }
-      html += `<div class="ticker-game">${statusHtml}<span class="t-teams">${awayName} @ ${homeName}</span>${scoreHtml ? '<span class="t-sep">|</span>' + scoreHtml : ''}</div>`;
+      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} @ ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
     });
-    // Duplicate for seamless loop
-    return html + html;
+    return html+html;
   }
 
   async function fetchScores(){
-    try {
-      // Use ESPN public API — no key needed
-      const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-      const url = `https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const events = data.events || [];
-      // Map ESPN format to our format
-      const games = events.map(e => {
-        const comp = e.competitions?.[0];
-        if(!comp) return null;
-        const home = comp.competitors?.find(c => c.homeAway === 'home');
-        const away = comp.competitors?.find(c => c.homeAway === 'away');
-        if(!home || !away) return null;
-        const statusType = e.status?.type?.name;
-        let status = 'scheduled';
-        if(statusType === 'STATUS_IN_PROGRESS') status = 'inprogress';
-        else if(statusType === 'STATUS_FINAL') status = 'closed';
-        const clock = e.status?.displayClock;
-        const period = e.status?.period;
-        return {
-          status,
-          start_time: e.date,
-          clock: (status==='inprogress' && clock && clock !== '0:00') ? clock : null,
-          period: status==='inprogress' ? period : null,
-          teams: {
-            [home.team.abbreviation]: {abbreviation: home.team.abbreviation},
-            [away.team.abbreviation]: {abbreviation: away.team.abbreviation},
-          },
-          score: status !== 'scheduled' ? {
-            [home.team.abbreviation]: parseInt(home.score) || 0,
-            [away.team.abbreviation]: parseInt(away.score) || 0,
-          } : null,
-          home_team: home.team.abbreviation,
-          away_team: away.team.abbreviation,
-        };
+    try{
+      const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const res=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`);
+      const data=await res.json();
+      const events=data.events||[];
+      const games=events.map(e=>{
+        const comp=e.competitions?.[0]; if(!comp) return null;
+        const home=comp.competitors?.find(c=>c.homeAway==='home');
+        const away=comp.competitors?.find(c=>c.homeAway==='away');
+        if(!home||!away) return null;
+        const sn=e.status?.type?.name||'';
+        let status='scheduled';
+        if(sn==='STATUS_IN_PROGRESS') status='inprogress';
+        else if(sn==='STATUS_FINAL') status='closed';
+        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,
+          teams:{[home.team.abbreviation]:{abbreviation:home.team.abbreviation},[away.team.abbreviation]:{abbreviation:away.team.abbreviation}},
+          score:status!=='scheduled'?{[home.team.abbreviation]:parseInt(home.score)||0,[away.team.abbreviation]:parseInt(away.score)||0}:null};
       }).filter(Boolean);
-
-      const inner = document.getElementById('ticker-inner');
-      if(inner) inner.innerHTML = buildHTML(games);
-    } catch(e) {
-      const inner = document.getElementById('ticker-inner');
-      if(inner) inner.innerHTML = '<div class="ticker-loading">Scores unavailable</div>';
+      const inner=document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML=buildHTML(games);
+    }catch(e){
+      const inner=document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML='<div class="ticker-loading">Scores unavailable</div>';
     }
   }
-
-  window._tickerFetch = fetchScores;
+  window._tickerFetch=fetchScores;
   fetchScores();
-  // Auto-refresh every 30 seconds
-  setInterval(fetchScores, 30000);
+  setInterval(fetchScores,30000);
 })();
-
 </script>
 
-</body>
-</html>
+
+<script>
+(function(){
+  const path = window.location.pathname.toLowerCase();
+  let espnSport='basketball/nba', sportLabel='NBA', accentColor='#fdb927';
+  if(path.includes('nhl')){ espnSport='hockey/nhl'; sportLabel='NHL'; accentColor='#4ab3ff'; }
+  else if(path.includes('mlb')){ espnSport='baseball/mlb'; sportLabel='MLB'; accentColor='#f5c842'; }
+  else if(path.includes('nfl')){ espnSport='football/nfl'; sportLabel='NFL'; accentColor='#d4001c'; }
+  else if(path==='/'||path.endsWith('index.html')){ return; }
+
+  const style=document.createElement('style');
+  style.textContent=`.ticker-bar{position:sticky;top:54px;z-index:99;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:34px;overflow:hidden;display:flex;align-items:center;}.ticker-sport-tag{flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:0 14px;height:100%;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,0.08);white-space:nowrap;}.ticker-track{flex:1;overflow:hidden;position:relative;}.ticker-inner{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 60s linear infinite;width:max-content;}.ticker-inner:hover{animation-play-state:paused;}@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.ticker-game{display:inline-flex;align-items:center;gap:8px;padding:0 20px;border-right:1px solid rgba(255,255,255,0.06);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;}.t-status{font-size:10px;letter-spacing:1px;padding:2px 6px;border-radius:3px;font-weight:700;}.t-live{background:rgba(248,113,113,.2);color:#f87171;}.t-final{background:rgba(100,100,100,.2);color:#6a7d94;}.t-soon{background:rgba(74,179,255,.15);color:#4ab3ff;}.t-teams{color:#f0f4f8;}.t-score{color:var(--gold,#f5c842);font-size:14px;}.ticker-refresh{flex-shrink:0;padding:0 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2);border-left:1px solid rgba(255,255,255,.06);cursor:pointer;height:100%;display:flex;align-items:center;transition:color .2s;}.ticker-refresh:hover{color:rgba(255,255,255,.5);}.ticker-loading{padding:0 20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,255,255,.2);}`;
+  document.head.appendChild(style);
+
+  const bar=document.createElement('div'); bar.className='ticker-bar';
+  bar.innerHTML=`<div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel} SCORES</div><div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div><div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh">↻ LIVE</div>`;
+  const nav=document.querySelector('nav');
+  if(nav&&nav.parentNode) nav.parentNode.insertBefore(bar,nav.nextSibling);
+
+  function fmtTime(iso){const d=new Date(iso);return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(':00','');}
+
+  function buildHTML(games){
+    if(!games||!games.length) return '<div class="ticker-loading">No games today</div>';
+    let html='';
+    games.forEach(g=>{
+      const keys=Object.keys(g.teams||{});
+      if(keys.length<2) return;
+      const hk=keys[1],ak=keys[0];
+      const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
+      const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
+      const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
+      let statusHtml='', scoreHtml='';
+      if(g.status==='inprogress'){
+        const cl=g.clock?` ${g.clock}`:''; const p=g.period?` P${g.period}`:'';
+        statusHtml=`<span class="t-status t-live">LIVE${cl}${p}</span>`;
+        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
+      } else if(g.status==='closed'||g.status==='complete'){
+        statusHtml=`<span class="t-status t-final">FINAL</span>`;
+        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
+      } else {
+        statusHtml=`<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
+      }
+      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} @ ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
+    });
+    return html+html;
+  }
+
+  async function fetchScores(){
+    try{
+      const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const res=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`);
+      const data=await res.json();
+      const events=data.events||[];
+      const games=events.map(e=>{
+        const comp=e.competitions?.[0]; if(!comp) return null;
+        const home=comp.competitors?.find(c=>c.homeAway==='home');
+        const away=comp.competitors?.find(c=>c.homeAway==='away');
+        if(!home||!away) return null;
+        const sn=e.status?.type?.name||'';
+        let status='scheduled';
+        if(sn==='STATUS_IN_PROGRESS') status='inprogress';
+        else if(sn==='STATUS_FINAL') status='closed';
+        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,
+          teams:{[home.team.abbreviation]:{abbreviation:home.team.abbreviation},[away.team.abbreviation]:{abbreviation:away.team.abbreviation}},
+          score:status!=='scheduled'?{[home.team.abbreviation]:parseInt(home.score)||0,[away.team.abbreviation]:parseInt(away.score)||0}:null};
+      }).filter(Boolean);
+      const inner=document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML=buildHTML(games);
+    }catch(e){
+      const inner=document.getElementById('ticker-inner');
+      if(inner) inner.innerHTML='<div class="ticker-loading">Scores unavailable</div>';
+    }
+  }
+  window._tickerFetch=fetchScores;
+  fetchScores();
+  setInterval(fetchScores,30000);
+})();
+</script>
+
+</body></html>
