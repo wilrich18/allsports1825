@@ -123,12 +123,26 @@ def parse_game(event, sport="nba"):
                        "solid" if margin > 3 else "narrow")
         unit = {"nba":"pts","nhl":"goals","mlb":"runs","nfl":"pts"}.get(sport,"pts")
         summary = f"{winner} earned a {tone} {ws}-{ls} {unit} win over {loser}."
+        odds = comp.get("odds", [{}])[0] if comp.get("odds") else {}
+        h_win_prob = None; a_win_prob = None
+        try:
+            for odd in comp.get("odds", []):
+                if "homeTeamOdds" in odd:
+                    h_win_prob = round(float(odd["homeTeamOdds"].get("winPercentage", 50)), 0)
+                    a_win_prob = round(100 - h_win_prob, 0)
+        except Exception:
+            pass
+        ou = odds.get("overUnder", None)
+        spread = odds.get("spread", None)
+        favored = odds.get("favorite", {}).get("displayName", None) if odds.get("favorite") else None
         return dict(home=hn, away=an, habrv=habrv, aabrv=aabrv,
                     h_score=hs, a_score=as_, winner=winner, loser=loser,
                     ws=ws, ls=ls, summary=summary,
                     result=f"{an} {as_}, {hn} {hs}",
                     is_final=is_final, is_live=is_live,
-                    clock=clock, period=period, start=start)
+                    clock=clock, period=period, start=start,
+                    h_win_prob=h_win_prob, a_win_prob=a_win_prob,
+                    ou=ou, spread=spread, favored=favored)
     except Exception as e:
         return None
 
@@ -784,6 +798,20 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
                       if (isLive or isFinal) else '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:14px;color:#6a7d94;padding:0 8px">vs</div>')
+        hp = g.get("h_win_prob"); ap = g.get("a_win_prob")
+        fav_html = ""
+        if hp and not isFinal and not isLive:
+            fav = g["home"] if hp >= 50 else g["away"]
+            fav_pct = max(hp, ap) if ap else hp
+            fav_html = f'<div style="margin-top:8px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(fav_pct)}%</span></div>'
+        ou = g.get("ou"); spread = g.get("spread"); favored = g.get("favored")
+        lines_html = ""
+        if ou and not isFinal:
+            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">O/U {ou}</span> '
+        if spread and favored and not isFinal:
+            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">{favored.split()[-1].upper()} {spread}</span>'
+        if lines_html:
+            lines_html = f'<div style="margin-top:8px;display:flex;gap:6px">{lines_html}</div>'
         tonight_cards += f"""<div style="background:rgba(255,255,255,0.04);border:1px solid {'rgba(74,222,128,0.3)' if isLive else 'rgba(255,255,255,0.08)'};border-radius:12px;padding:16px 18px;">
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:{'#4ade80' if isLive else '#4ab3ff'};margin-bottom:8px">{tl}</div>
   <div style="display:flex;align-items:center;justify-content:space-between">
@@ -791,6 +819,7 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     {score_html}
     <div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#6a7d94;margin-bottom:2px">AWAY</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px">{g["away"]}</div></div>
   </div>
+  {fav_html}{lines_html}
 </div>"""
 
     if not tonight_cards:
