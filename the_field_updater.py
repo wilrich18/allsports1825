@@ -494,7 +494,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="live-pill">🔴 LIVE TONIGHT</div>
+  <div class="live-pill">LIVE TONIGHT</div>
 </nav>
 
 <div id="page-standings" class="page active">
@@ -682,9 +682,11 @@ renderTonightGrid();
 buildSelects();
 renderProps();
 </script>
-{TICKER_JS}
 </body></html>"""
 
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "
+</body></html>")
     out = os.path.join(OUTPUT_DIR, "nba.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nba.html saved ({len(html):,} chars)")
@@ -861,7 +863,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="live-pill">🔴 LIVE TONIGHT</div>
+  <div class="live-pill">LIVE TONIGHT</div>
 </nav>
 
 <div id="page-standings" class="page active">
@@ -956,9 +958,11 @@ footer strong{{color:var(--white);}}
 function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 </script>
-{TICKER_JS}
 </body></html>"""
 
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "
+</body></html>")
     out = os.path.join(OUTPUT_DIR, "nhl.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nhl.html saved ({len(html):,} chars)")
@@ -1083,7 +1087,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
   </div>
-  <div class="spring-pill">SPRING TRAINING</div>
+  <div class="{"spring-pill" if is_spring else "live-pill"}">{"SPRING TRAINING" if is_spring else "IN SEASON"}</div>
 </nav>
 
 <div id="page-standings" class="page active">
@@ -1141,9 +1145,11 @@ footer strong{{color:var(--white);}}
 function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 </script>
-{TICKER_JS}
 </body></html>"""
 
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "
+</body></html>")
     out = os.path.join(OUTPUT_DIR, "mlb.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ mlb.html saved ({len(html):,} chars)")
@@ -1263,11 +1269,12 @@ footer strong{{color:var(--white);}}
   <span class="nav-sep">/</span>
   <span class="nav-sport">NFL</span>
   <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('standings',this)">{"Final Standings" if is_offseason else "Standings"}</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Power Rankings</button>
-    <button class="nav-link" onclick="showPage('draft',this)">Draft Preview</button>
-  </div>
-  <div class="off-pill">OFFSEASON</div>
+    <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
+    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
+    <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
+    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+  <div class="{"off-pill" if is_offseason else "live-pill"}">{"OFFSEASON" if is_offseason else "IN SEASON"}</div>
 </nav>
 
 <div id="page-standings" class="page active">
@@ -1336,10 +1343,11 @@ footer strong{{color:var(--white);}}
 <script>
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 </script>
-</script>
-""" + TICKER_JS + """
 </body></html>"""
 
+    html = html.replace("</body></html>", TICKER_JS + "\n</body></html>")
+    html = html.replace("</body></html>", TICKER_JS + "
+</body></html>")
     out = os.path.join(OUTPUT_DIR, "nfl.html")
     with open(out, "w") as f: f.write(html)
     log(f"  ✅ nfl.html saved ({len(html):,} chars)")
@@ -1352,10 +1360,10 @@ function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.cla
 def generate_hub_html():
     log("🌐 Generating index.html...")
     today = fmt_date()
-    nba_status = ("Season In Progress", "dot-live", "🔴 LIVE TONIGHT")
-    mlb_status = ("Spring Training", "dot-spring", "⚾ SPRING TRAINING") if datetime.now() < datetime(2026, 3, 26) else ("Season In Progress", "dot-live", "🔴 LIVE TODAY")
-    nhl_status = ("Season In Progress", "dot-live", "🔴 LIVE TONIGHT")
-    nfl_status = ("Offseason · 2025 Final", "dot-off", "⏸ OFFSEASON")
+    nba_status = ("Season In Progress", "dot-live", "LIVE TONIGHT")
+    mlb_status = ("Spring Training", "dot-spring", "SPRING TRAINING") if datetime.now() < datetime(2026, 3, 26) else ("Season In Progress", "dot-live", "LIVE TODAY")
+    nhl_status = ("Season In Progress", "dot-live", "LIVE TONIGHT")
+    nfl_status = ("Offseason · 2025 Final", "dot-off", "OFFSEASON")
 
     def sport_card(href, cls, logo_color, logo, name, fullname, features, dot_cls, status_text, cta):
         feats = "".join(f'<span class="card-feat">{f}</span>' for f in features)
