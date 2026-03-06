@@ -153,7 +153,7 @@ TICKER_JS = r"""
   document.head.appendChild(style);
 
   const bar=document.createElement('div'); bar.className='ticker-bar';
-  bar.innerHTML=`<div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel} SCORES</div><div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div><div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh">↻ LIVE</div>`;
+  bar.innerHTML=`<div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel}</div><div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div><div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh">↻ LIVE</div>`;
   const nav=document.querySelector('nav');
   if(nav&&nav.parentNode) nav.parentNode.insertBefore(bar,nav.nextSibling);
 
