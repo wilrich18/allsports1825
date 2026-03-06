@@ -762,6 +762,9 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
 
     east_rows = "".join(row(t,i) for i,t in enumerate(east))
     west_rows = "".join(row(t,i) for i,t in enumerate(west))
+    def tj(t): return "{" + f't:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t.get("ppg",0)},opp:{t.get("opp",0)},net:{t.get("net",0)},pct:{t.get("pct",0)}' + "}"
+    east_js = "[" + ",".join(tj(t) for t in east) + "]"
+    west_js = "[" + ",".join(tj(t) for t in west) + "]"
 
     # Tonight's games cards
     tonight_cards = ""
