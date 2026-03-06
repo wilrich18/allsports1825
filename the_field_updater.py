@@ -798,20 +798,25 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
                       if (isLive or isFinal) else '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:14px;color:#6a7d94;padding:0 8px">vs</div>')
-        hp = g.get("h_win_prob"); ap = g.get("a_win_prob")
-        fav_html = ""
-        if hp and not isFinal and not isLive:
-            fav = g["home"] if hp >= 50 else g["away"]
-            fav_pct = max(hp, ap) if ap else hp
-            fav_html = f'<div style="margin-top:8px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(fav_pct)}%</span></div>'
-        ou = g.get("ou"); spread = g.get("spread"); favored = g.get("favored")
+        # Calculate win prob from standings if not available from API
+        all_teams = {t["t"]: t for t in (east + west)}
+        h_data = all_teams.get(g["home"], {}); a_data = all_teams.get(g["away"], {})
+        h_pct = h_data.get("pct", 0.5); a_pct = a_data.get("pct", 0.5)
+        total = h_pct + a_pct if (h_pct + a_pct) > 0 else 1
+        hp = round((h_pct / total) * 100 + 3, 0)  # +3 for home court
+        ap = round(100 - hp, 0)
+        h_ppg = h_data.get("ppg", 112); a_ppg = a_data.get("ppg", 112)
+        calc_ou = round((h_ppg + a_ppg) / 2 * 2 * 0.97, 1)
+        fav = g["home"] if hp >= 50 else g["away"]
+        fav_pct = max(hp, ap)
+        fav_html = f'<div style="margin-top:8px;font-size:11px;color:#6a7d94;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">FAVORED: <span style="color:#f0f4f8">{fav.split()[-1].upper()} {int(fav_pct)}%</span></div>'
         lines_html = ""
-        if ou and not isFinal:
-            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">O/U {ou}</span> '
-        if spread and favored and not isFinal:
-            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">{favored.split()[-1].upper()} {spread}</span>'
+        if not isFinal:
+            lines_html += f'<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 8px;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:1px">O/U {calc_ou}</span> '
         if lines_html:
             lines_html = f'<div style="margin-top:8px;display:flex;gap:6px">{lines_html}</div>'
+        if isFinal or isLive:
+            fav_html = ""; lines_html = "" 
         tonight_cards += f"""<div style="background:rgba(255,255,255,0.04);border:1px solid {'rgba(74,222,128,0.3)' if isLive else 'rgba(255,255,255,0.08)'};border-radius:12px;padding:16px 18px;">
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:{'#4ade80' if isLive else '#4ab3ff'};margin-bottom:8px">{tl}</div>
   <div style="display:flex;align-items:center;justify-content:space-between">
