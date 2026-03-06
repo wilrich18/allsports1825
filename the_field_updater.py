@@ -985,8 +985,43 @@ footer strong{{color:var(--white);}}
 <span>Data via ESPN · <a href="index.html" style="color:#4ab3ff">← Back to Hub</a></span></footer>
 
 <script>
+const EAST={east_js};
+const WEST={west_js};
+const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
 function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
+function getT(n){{return ALL.find(t=>t.t===n);}}
+function predict(){{
+  const hn=document.getElementById('home-sel').value;
+  const an=document.getElementById('away-sel').value;
+  const out=document.getElementById('pred-out');
+  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
+  const H=getT(hn),A=getT(an);if(!H||!A)return;
+  const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+0.15).toFixed(2));
+  const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(2));
+  const sp=hs-as_;
+  const hp=Math.min(0.93,Math.max(0.07,1/(1+Math.exp(-1.2*sp))));
+  const ap=1-hp; const hw=hp>0.5;
+  const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*4)).toFixed(0);
+  out.innerHTML=`<div class="result-grid">
+    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{hs.toFixed(1)}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
+    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{as_.toFixed(1)}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
+    <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${{sp>0?hn.split(' ').pop()+' -'+Math.abs(sp).toFixed(1):an.split(' ').pop()+' -'+Math.abs(sp).toFixed(1)}}</div></div>
+    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${{cf}}<span style="font-size:18px">/100</span></div></div>
+  </div>
+  <div class="bar-wrap"><div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
+  <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
+  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
+}}
+function buildSelects(){{
+  ['home-sel','away-sel'].forEach((id,i)=>{{
+    const s=document.getElementById(id);if(!s)return;
+    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
+    s.selectedIndex=i;
+  }});
+  predict();
+}}
+buildSelects();
 </script>
 </body></html>"""
 
