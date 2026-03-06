@@ -772,24 +772,12 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
         if not g: continue
         isLive = g["is_live"]; isFinal = g["is_final"]
         try:
-            from datetime import timezone
+            import dateutil.parser as _dp
             _dt = g.get("start","")
             if _dt and not isFinal and not isLive:
-                import dateutil.parser as _dp
-                _d = _dp.parse(_dt).astimezone()
-                tl = _d.strftime("%-I:%M %p ET")
+                tl = _dp.parse(_dt).astimezone().strftime("%-I:%M %p ET")
             else:
-                try:
-            import dateutil.parser as _dp
-            _d = _dp.parse(g.get("start","")).astimezone() if g.get("start") and not isFinal and not isLive else None
-            tl = _d.strftime("%-I:%M %p ET") if _d else ("🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT"))
-        except:
-            tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
-        except:
-            try:
-            import dateutil.parser as _dp
-            _d = _dp.parse(g.get("start","")).astimezone() if g.get("start") and not isFinal and not isLive else None
-            tl = _d.strftime("%-I:%M %p ET") if _d else ("🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT"))
+                tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         except:
             tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
