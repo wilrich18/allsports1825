@@ -165,8 +165,8 @@ TICKER_JS = r"""
     games.forEach(g=>{
       const keys=Object.keys(g.teams||{});
       if(keys.length<2) return;
-      const hAbrv=g.home||'HOME';
-      const aAbrv=g.away||'AWAY';
+      const hAbrv=g.home_abbr||'HOME';
+      const aAbrv=g.away_abbr||'AWAY';
       const hS=g.score?g.score[hAbrv]:''; const aS=g.score?g.score[aAbrv]:'';
       let statusHtml='', scoreHtml='';
       if(g.status==='inprogress'){
@@ -282,7 +282,7 @@ def fetch_nba_standings():
             "Atlanta Hawks","Boston Celtics","Brooklyn Nets","Charlotte Hornets",
             "Chicago Bulls","Cleveland Cavaliers","Detroit Pistons","Indiana Pacers",
             "Miami Heat","Milwaukee Bucks","New York Knicks","Orlando Magic",
-            "Philadelphia 76ers","Toronto Raptors","Washington Wizards","San Antonio Spurs"
+            "Philadelphia 76ers","Toronto Raptors","Washington Wizards"
         }
         for conf in r.json().get("children", []):
             for entry in conf.get("standings", {}).get("entries", []):
