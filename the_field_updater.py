@@ -165,7 +165,7 @@ TICKER_JS = r"""
     games.forEach(g=>{
       const keys=Object.keys(g.teams||{});
       if(keys.length<2) return;
-      const hk=keys[0],ak=keys[1];
+      const hk=keys[1],ak=keys[0];
       const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
       const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
       const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
@@ -300,10 +300,7 @@ def fetch_nba_standings():
                     except:
                         l10 = "—"
                     t = dict(t=name, w=w, l=l, ppg=ppg, opp=opp, net=net, pct=pct, l10=l10)
-                    WEST_FORCE = {"San Antonio Spurs","Dallas Mavericks","Houston Rockets","Memphis Grizzlies","New Orleans Pelicans","Oklahoma City Thunder","Denver Nuggets","Minnesota Timberwolves","Utah Jazz","Portland Trail Blazers","Golden State Warriors","Los Angeles Lakers","Los Angeles Clippers","Sacramento Kings","Phoenix Suns"}
-                    if name in WEST_FORCE:
-                        west.append(t)
-                    elif name in EAST_TEAMS:
+                    if name in EAST_TEAMS:
                         east.append(t)
                     else:
                         west.append(t)
@@ -766,11 +763,6 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     east_rows = "".join(row(t,i) for i,t in enumerate(east))
     west_rows = "".join(row(t,i) for i,t in enumerate(west))
 
-    # JS data for predictor
-    def tj(t): return "{" + f't:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t.get("ppg",0)},opp:{t.get("opp",0)},net:{t.get("net",0)},pct:{t.get("pct",0)}' + "}"
-    east_js = "[" + ",".join(tj(t) for t in east) + "]"
-    west_js = "[" + ",".join(tj(t) for t in west) + "]"
-
     # Tonight's games cards
     tonight_cards = ""
     for g in today_games:
@@ -925,21 +917,11 @@ footer strong{{color:var(--white);}}
   <div class="hero"><div class="hero-inner">
     <div class="hero-eyebrow">2025-26 Season</div>
     <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
-    <p class="hero-sub">Tonight's schedule plus a custom matchup predictor for any two teams.</p>
+    <p class="hero-sub">Tonight's NHL schedule plus custom matchup predictions.</p>
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Games — {dow}, {today}</div>
     <div class="games-grid">{tonight_cards}</div>
-    <div class="section-title">Custom Matchup Predictor</div>
-    <div class="pred-wrap">
-      <div class="team-row">
-        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
-        <div class="vs-mid"><div class="vs-big">VS</div></div>
-        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
-      </div>
-      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
-      <div id="pred-out"></div>
-    </div>
   </div>
 </div>
 
@@ -994,47 +976,8 @@ footer strong{{color:var(--white);}}
 <span>Data via ESPN · <a href="index.html" style="color:#4ab3ff">← Back to Hub</a></span></footer>
 
 <script>
-const EAST={east_js};
-const WEST={west_js};
-const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
 function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
-function getT(n){{return ALL.find(t=>t.t===n);}}
-function predict(){{
-  const hn=document.getElementById('home-sel').value;
-  const an=document.getElementById('away-sel').value;
-  const out=document.getElementById('pred-out');
-  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
-  const H=getT(hn),A=getT(an);if(!H||!A)return;
-  const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+0.15).toFixed(2));
-  const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(2));
-  const sp=hs-as_;
-  const hp=Math.min(0.93,Math.max(0.07,1/(1+Math.exp(-1.2*sp))));
-  const ap=1-hp; const hw=hp>0.5;
-  const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*4)).toFixed(0);
-  const winner=hw?hn:an; const loser=hw?an:hn;
-  const wPct=(hw?hp:ap)*100; const lPct=(hw?ap:hp)*100;
-  const spStr=sp>0?`${{hn.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`:`${{an.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`;
-  out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{Math.round(hs)}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{Math.round(as_)}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${{spStr}}</div></div>
-    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${{cf}}<span style="font-size:18px">/100</span></div></div>
-  </div>
-  <div class="bar-wrap"><div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
-  <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
-  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
-}}
-function buildSelects(){{
-  ['home-sel','away-sel'].forEach((id,i)=>{{
-    const s=document.getElementById(id);
-    if(!s) return;
-    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
-    s.selectedIndex=i;
-  }});
-  predict();
-}}
-buildSelects();
 </script>
 </body></html>"""
 
