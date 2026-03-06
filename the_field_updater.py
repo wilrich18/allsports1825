@@ -560,7 +560,7 @@ footer strong{{color:var(--white);}}
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
+    <div class="games-grid">{tonight_cards}</div>
     <div class="section-title">Custom Matchup Predictor</div>
     <div class="pred-wrap">
       <div class="team-row">
@@ -766,6 +766,11 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     east_rows = "".join(row(t,i) for i,t in enumerate(east))
     west_rows = "".join(row(t,i) for i,t in enumerate(west))
 
+    # JS data for predictor
+    def tj(t): return "{" + f't:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t.get("ppg",0)},opp:{t.get("opp",0)},net:{t.get("net",0)},pct:{t.get("pct",0)}' + "}"
+    east_js = "[" + ",".join(tj(t) for t in east) + "]"
+    west_js = "[" + ",".join(tj(t) for t in west) + "]"
+
     # Tonight's games cards
     tonight_cards = ""
     for g in today_games:
@@ -924,7 +929,7 @@ footer strong{{color:var(--white);}}
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Games — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
+    <div class="games-grid">{tonight_cards}</div>
     <div class="section-title">Custom Matchup Predictor</div>
     <div class="pred-wrap">
       <div class="team-row">
