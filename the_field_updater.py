@@ -279,7 +279,7 @@ def fetch_nba_standings():
             "Atlanta Hawks","Boston Celtics","Brooklyn Nets","Charlotte Hornets",
             "Chicago Bulls","Cleveland Cavaliers","Detroit Pistons","Indiana Pacers",
             "Miami Heat","Milwaukee Bucks","New York Knicks","Orlando Magic",
-            "Philadelphia 76ers","Toronto Raptors","Washington Wizards","San Antonio Spurs"
+            "Philadelphia 76ers","Toronto Raptors","Washington Wizards"
         }
         for conf in r.json().get("children", []):
             for entry in conf.get("standings", {}).get("entries", []):
