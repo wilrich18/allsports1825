@@ -381,6 +381,13 @@ function renderTonightGrid(){
     const isLive=gm.is_live,isFinal=gm.is_final;
     const timeLabel=isLive?'🔴 LIVE':isFinal?'FINAL':gm.time;
     const score=isFinal||isLive?`<div class="game-score">${gm.a_score} – ${gm.h_score}</div>`:'';
+    const H=ALL.find(t=>t.t===gm.home)||{};
+    const A=ALL.find(t=>t.t===gm.away)||{};
+    const hp=H.pct||0.5,ap=A.pct||0.5,tot=(hp+ap)||1;
+    const hWin=Math.round((hp/tot)*100+3),aWin=100-hWin;
+    const fav=hWin>=50?gm.home:gm.away,favPct=Math.max(hWin,aWin);
+    const ou=((H.ppg||112)+(A.ppg||112))*0.97;
+    const linesHtml=!isFinal?`<div style="margin-top:8px;display:flex;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px"><span style="color:#f0f4f8">FAV: ${fav.split(' ').pop().toUpperCase()} ${favPct}%</span><span style="color:var(--gray)">·</span><span style="color:var(--gold)">O/U ${ou.toFixed(1)}</span></div>`:'';
     g.innerHTML+=`<div class="game-card ${isLive?'live':''}">
       <div class="game-card-top">
         <div class="game-time ${isLive?'live-time':""}">${timeLabel}</div>
@@ -389,6 +396,7 @@ function renderTonightGrid(){
           ${score||'<div class="game-vs">vs</div>'}
           <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${gm.away}</div></div>
         </div>
+        ${linesHtml}
       </div>
     </div>`;
   });
