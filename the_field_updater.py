@@ -779,7 +779,17 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
                 _d = _dp.parse(_dt).astimezone()
                 tl = _d.strftime("%-I:%M %p ET")
             else:
-                tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
+                try:
+            import dateutil.parser as _dp
+            _d = _dp.parse(g.get("start","")).astimezone() if g.get("start") and not isFinal and not isLive else None
+            tl = _d.strftime("%-I:%M %p ET") if _d else ("🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT"))
+        except:
+            tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
+        except:
+            try:
+            import dateutil.parser as _dp
+            _d = _dp.parse(g.get("start","")).astimezone() if g.get("start") and not isFinal and not isLive else None
+            tl = _d.strftime("%-I:%M %p ET") if _d else ("🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT"))
         except:
             tl = "🔴 IN PROGRESS" if isLive else ("FINAL" if isFinal else "TONIGHT")
         score_html = (f'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#4ab3ff;padding:0 8px">{g["a_score"]} – {g["h_score"]}</div>'
@@ -800,6 +810,7 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     {score_html}
     <div style="text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#6a7d94;margin-bottom:2px">AWAY</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px">{g["away"]}</div></div>
   </div>
+  {prob_html}
 </div>"""
 
     if not tonight_cards:
