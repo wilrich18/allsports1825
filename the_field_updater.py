@@ -672,24 +672,6 @@ footer strong{{color:var(--white);}}
   <div class="section">
     <div class="section-title">Tonight's Games — {dow}, {today}</div>
     <div class="games-grid" id="lines-grid"></div>
-    <div class="section-title">Custom Matchup Predictor</div>
-    <div class="pred-wrap">
-      <div class="team-row">
-        <div class="team-box">
-          <div class="tbadge tbadge-h">🏠 Home</div>
-          <div class="tlabel">Home Team</div>
-          <select class="tsel" id="home-sel" onchange="predict()"></select>
-        </div>
-        <div class="vs-mid"><div class="vs-big">VS</div></div>
-        <div class="team-box">
-          <div class="tbadge tbadge-a">✈️ Away</div>
-          <div class="tlabel">Away Team</div>
-          <select class="tsel" id="away-sel" onchange="predict()"></select>
-        </div>
-      </div>
-      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
-      <div id="pred-out"></div>
-    </div>
   </div>
 </div>
 
@@ -752,7 +734,6 @@ footer strong{{color:var(--white);}}
 <script>
 const EAST={east_js};
 const WEST={west_js};
-const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
 const TONIGHT={tonight_js};
 const PROPS={PROPS_JS};
 
@@ -785,22 +766,8 @@ function renderLines(){{
   }});
 }}
 
-function buildSelects(){{
-  ['home-sel','away-sel'].forEach((id,i)=>{{
-    const s=document.getElementById(id);
-    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
-    s.selectedIndex=i;
-  }});
-  predict();
-}}
 
-function getT(n){{return ALL.find(t=>t.t===n);}}
 
-function predict(){{
-  const hn=document.getElementById('home-sel').value;
-  const an=document.getElementById('away-sel').value;
-  const out=document.getElementById('pred-out');
-  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
   const H=getT(hn),A=getT(an);if(!H||!A)return;
   const hs=Math.round((H.ppg*0.4+A.opp*0.4+H.net*0.15+5)+3);
   const as_=Math.round(A.ppg*0.4+H.opp*0.4+A.net*0.15+5);
@@ -850,7 +817,6 @@ function showPage(name,btn){{
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
 renderLines();
-buildSelects();
 renderProps();
 </script>
 </body>
@@ -880,8 +846,8 @@ def fetch_nhl_standings():
                     net = round(ppg - opp, 1)
                     l10 = "—"
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_west: west.append(t)
-                    else:       east.append(t)
+                    if is_al:   east.append(t)
+                    else:       west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -1060,6 +1026,20 @@ tr.playin-line td{{border-top:2px dashed rgba(253,185,39,0.4)!important;}}
 footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
 @media(max-width:768px){{.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
+.props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
+.prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
+.prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
+.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}
+.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
+.prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
+.prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
+.prop-line{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;margin-bottom:3px;}}
+.prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
+.prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
+.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}
+.b-med{{background:rgba(253,185,39,0.13);color:var(--gold);}}
+.prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
+.disclaimer{{background:rgba(74,179,255,0.07);border:1px solid rgba(74,179,255,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#4ab3ff;line-height:1.5;text-align:center;}}
 </style>
 </head>
 <body>
@@ -1071,6 +1051,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
   <div class="live-pill">🔴 LIVE TONIGHT</div>
 </nav>
@@ -1163,6 +1144,21 @@ footer strong{{color:var(--white);}}
   </div>
 </div>
 
+<div id="page-props" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">{today} · Tonight\'s Slate</div>
+      <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+      <p class="hero-sub">Top prop picks with confidence ratings for tonight\'s games.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Tonight\'s Best Props</div>
+    <div class="props-grid" id="props-grid"></div>
+    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. 1-800-GAMBLER.</div>
+  </div>
+</div>
+
 <footer>
   <strong>THE FIELD — NHL</strong> · 2024-25 Season · Updated {today}<br>
   <span>Data via ESPN · Not affiliated with the NHL · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
@@ -1226,6 +1222,24 @@ function showPage(name,btn){{
 
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
+const PROPS_DATA=[
+  {{player:"Connor McDavid",team:"Edmonton Oilers",line:"Over 1.5 points",odds:"-130",conf:"HIGH",cls:"high",reason:"McDavid averages 1.8 pts/game. Hits this line in 60%+ of games."}},
+  {{player:"Nathan MacKinnon",team:"Colorado Avalanche",line:"Over 0.5 goals",odds:"-115",conf:"HIGH",cls:"high",reason:"MacKinnon leads the Avs in shots and scoring chances every night."}},
+  {{player:"Auston Matthews",team:"Toronto Maple Leafs",line:"Over 3.5 shots",odds:"-120",conf:"HIGH",cls:"high",reason:"Matthews averages 4.2 SOG — this line is below his season average."}},
+  {{player:"Leon Draisaitl",team:"Edmonton Oilers",line:"Over 1.5 points",odds:"-118",conf:"HIGH",cls:"high",reason:"Draisaitl racks up points in bunches. Power play alone drives this line."}},
+  {{player:"David Pastrnak",team:"Boston Bruins",line:"Over 0.5 goals",odds:"-108",conf:"MEDIUM",cls:"medium",reason:"Pastrnak is Boston's most dangerous scorer with premium power play time."}},
+  {{player:"Cale Makar",team:"Colorado Avalanche",line:"Over 1.5 shots",odds:"-125",conf:"MEDIUM",cls:"medium",reason:"Makar logs 25+ minutes and jumps into the rush — elite shot volume for a D-man."}},
+];
+const SPORT_PROPS=PROPS_DATA;
+function renderProps(){{
+  const g=document.getElementById('props-grid');
+  if(!g)return;
+  SPORT_PROPS.forEach(p=>{{
+    const bc=p.conf==='HIGH'?'b-high':'b-med';
+    g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
+  }});
+}}
+renderProps();
 renderGames();
 </script>
 </body>
@@ -1256,8 +1270,8 @@ def fetch_nhl_standings():
                     pct = round(w / gp, 3)
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, div=div)
-                    if is_west: west.append(t)
-                    else:       east.append(t)
+                    if is_al:   east.append(t)
+                    else:       west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -1433,6 +1447,20 @@ tr.playoff-line td{{border-top:2px solid var(--gold)!important;}}
 footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
 @media(max-width:768px){{.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
+.props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
+.prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
+.prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
+.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}
+.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
+.prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
+.prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
+.prop-line{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;margin-bottom:3px;}}
+.prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
+.prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
+.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}
+.b-med{{background:rgba(253,185,39,0.13);color:var(--gold);}}
+.prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
+.disclaimer{{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#22c55e;line-height:1.5;text-align:center;}}
 </style>
 </head>
 <body>
@@ -1444,6 +1472,7 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
   <div class="live-pill">⚾ 2025 SEASON</div>
 </nav>
@@ -1527,6 +1556,21 @@ footer strong{{color:var(--white);}}
   </div>
 </div>
 
+<div id="page-props" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">{today} · Tonight\'s Slate</div>
+      <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+      <p class="hero-sub">Top prop picks with confidence ratings for tonight\'s games.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Tonight\'s Best Props</div>
+    <div class="props-grid" id="props-grid"></div>
+    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. 1-800-GAMBLER.</div>
+  </div>
+</div>
+
 <footer>
   <strong>THE FIELD — MLB</strong> · 2025 Season · Updated {today}<br>
   <span>Data via ESPN · Not affiliated with MLB · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
@@ -1589,6 +1633,24 @@ function showPage(name,btn){{
 
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
+const PROPS_DATA=[
+  {{player:"Shohei Ohtani",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-125",conf:"HIGH",cls:"high",reason:"Ohtani barrels the ball at an elite rate. 1.5 total bases is achievable in a single hit."}},
+  {{player:"Aaron Judge",team:"New York Yankees",line:"Over 0.5 home runs",odds:"+185",conf:"HIGH",cls:"high",reason:"Judge leads MLB in HR. At +185 this is tremendous value for the best power hitter in baseball."}},
+  {{player:"Freddie Freeman",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-115",conf:"HIGH",cls:"high",reason:"Freeman is the Dodgers most consistent contact hitter. Makes hard contact every game."}},
+  {{player:"Juan Soto",team:"New York Yankees",line:"Over 0.5 walks",odds:"-130",conf:"HIGH",cls:"high",reason:"Soto has an elite eye and draws 1+ walks in the majority of his games."}},
+  {{player:"Mookie Betts",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-110",conf:"MEDIUM",cls:"medium",reason:"Betts is one of the most consistent performers in baseball."}},
+  {{player:"Ronald Acuna Jr.",team:"Atlanta Braves",line:"Over 0.5 stolen bases",odds:"+110",conf:"MEDIUM",cls:"medium",reason:"Acuna is the most dangerous baserunner in baseball. Plus money makes this great value."}},
+];
+const SPORT_PROPS=PROPS_DATA;
+function renderProps(){{
+  const g=document.getElementById('props-grid');
+  if(!g)return;
+  SPORT_PROPS.forEach(p=>{{
+    const bc=p.conf==='HIGH'?'b-high':'b-med';
+    g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
+  }});
+}}
+renderProps();
 renderGames();
 </script>
 </body>
@@ -1619,8 +1681,8 @@ def fetch_nhl_standings():
                     pct = round(w / gp, 3)
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, div=div)
-                    if is_west: west.append(t)
-                    else:       east.append(t)
+                    if is_al:   east.append(t)
+                    else:       west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -2002,8 +2064,8 @@ def fetch_nhl_standings():
                     net = round(ppg - opp, 1)
                     l10 = "—"
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_west: west.append(t)
-                    else:       east.append(t)
+                    if is_al:   east.append(t)
+                    else:       west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -2206,7 +2268,7 @@ def fetch_mlb_standings():
         east, west = [], []
         for conf_data in r.json().get("children", []):
             conf_name = conf_data.get("name", "").upper()
-            is_west = "NATIONAL" not in conf_name  # AL=west bucket, NL=east bucket
+            is_al   = "AMERICAN" in conf_name
             # Handle both flat and nested structures
             entries = conf_data.get("standings", {}).get("entries", [])
             if not entries:
@@ -2226,8 +2288,8 @@ def fetch_mlb_standings():
                     l10 = "—"
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_west: west.append(t)
-                    else:       east.append(t)
+                    if is_al:   east.append(t)
+                    else:       west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
