@@ -1,44 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>THE FIELD — NFL Football</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE FIELD — NFL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--nfl-red:#d4001c;--nfl-blue:#013369;--gold:#f5c842;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
+:root{--navy:#0a1628;--accent:#f97316;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
-body{background:#020810;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-nav{position:sticky;top:0;z-index:100;background:rgba(2,8,16,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}
-.nav-home{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}.nav-home:hover{color:var(--white);}
+body{background:#020c1a;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
+nav{position:sticky;top:0;z-index:100;background:rgba(2,12,26,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}
+.nav-home{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}
+.nav-home:hover{color:var(--white);}
 .nav-sep{color:var(--border);font-size:18px;margin-right:12px;}
-.nav-sport{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--nfl-red);margin-right:20px;}
+.nav-sport{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--accent);margin-right:20px;}
 .nav-links{display:flex;gap:2px;flex:1;}
 .nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
 .nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
-.off-pill{background:rgba(150,150,150,0.15);color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;border:1px solid rgba(150,150,150,0.2);}
-.live-pill{background:var(--nfl-red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
+.live-pill{background:var(--gray);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
 .page{display:none;}.page.active{display:block;animation:fadeUp 0.3s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.hero{background:linear-gradient(135deg,#020810 0%,#08172e 50%,#020810 100%);padding:48px 24px 40px;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(212,0,28,0.08),transparent);pointer-events:none;}
+.hero{position:relative;background:linear-gradient(135deg,#020c1a 0%,#0a1f3a 50%,#020c1a 100%);padding:48px 24px 40px;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(249,115,22,0.1),transparent);pointer-events:none;}
 .hero-inner{max-width:1100px;margin:0 auto;position:relative;}
-.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--nfl-red);text-transform:uppercase;margin-bottom:10px;}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;margin-bottom:12px;}
-.hero-title em{color:var(--nfl-red);font-style:normal;}
-.hero-sub{color:var(--gray);font-size:15px;max-width:480px;margin-bottom:24px;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:14px;}
+.hero-title em{color:var(--accent);font-style:normal;}
+.hero-sub{color:var(--gray);font-size:15px;max-width:500px;margin-bottom:28px;}
 .hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
-.hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--nfl-red);line-height:1;}
+.hero-stat-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--accent);line-height:1;}
 .hero-stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
-.section{max-width:1100px;margin:0 auto;padding:32px 24px;}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--nfl-red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section{max-width:1100px;margin:0 auto;padding:36px 24px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-.conf-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-@media(max-width:800px){.conf-grid{grid-template-columns:1fr;}}
-.off-banner{background:rgba(212,0,28,0.06);border:1px solid rgba(212,0,28,0.2);border-radius:12px;padding:18px 22px;margin-bottom:22px;font-size:14px;color:#f47a88;line-height:1.7;}
-.off-banner strong{color:var(--white);}
+.standings-wrap{overflow-x:auto;}
+.standings-table{width:100%;border-collapse:collapse;font-size:14px;}
+.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}
+.standings-table th:nth-child(2){text-align:left;}
+.standings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);}
+.standings-table td:nth-child(2){text-align:left;}
+.standings-table tr:hover td{background:var(--card2);}
+.team-name{font-weight:600;}.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}
+.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.record-w{color:var(--white);font-weight:600;}.record-l{color:var(--gray);}
+tr.playoff-line td{border-top:2px solid var(--accent)!important;}
+.sb-banner{background:linear-gradient(135deg,rgba(249,115,22,0.12),rgba(249,115,22,0.04));border:1px solid rgba(249,115,22,0.3);border-radius:14px;padding:24px 28px;margin-bottom:28px;display:flex;align-items:center;gap:24px;}
+.sb-trophy{font-size:48px;}
+.sb-info{flex:1;}
+.sb-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.sb-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,3vw,32px);line-height:1;margin-bottom:6px;}
+.sb-sub{font-size:13px;color:var(--gray);}
+.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}.rank-item:last-child{border-bottom:none;}
+.rank-n{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}.rank-n.t3{color:var(--accent);}
+.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
+.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
+.tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
+.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}.sc-row:last-child{border-bottom:none;}
+.sc-team{font-weight:600;}.sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.sc-val.hot{color:#4ade80;}
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
+.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.prop-card.high::before{background:linear-gradient(90deg,var(--accent),#fbbf24);}.prop-card.medium::before{background:linear-gradient(90deg,#6a7d94,#4a5568);}
+.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}
+.prop-team{font-size:12px;color:var(--gray);margin-bottom:9px;}
+.prop-line{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:3px;}
+.prop-odds{font-size:12px;color:var(--gray);margin-bottom:8px;}
+.prop-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
+.b-high{background:rgba(249,115,22,0.13);color:var(--accent);}.b-med{background:rgba(106,125,148,0.13);color:var(--gray);}
+.prop-reason{font-size:13px;color:#94a3b8;line-height:1.55;}
+.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a150a);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;}
+.dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.dhl{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}
+.recap-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:14px;}
+.recap-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.recap-hl{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:8px;}
+.recap-body{font-size:14px;color:#cbd5e1;line-height:1.75;}
 footer{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
 footer strong{color:var(--white);}
+@media(max-width:768px){.mag-layout{grid-template-columns:1fr;}.sb-banner{flex-direction:column;gap:12px;}}
 </style></head><body>
 <nav>
   <a class="nav-home" href="index.html">THE FIELD</a>
@@ -46,148 +91,177 @@ footer strong{color:var(--white);}
   <span class="nav-sport">NFL</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
-    <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
-  <div class="off-pill">OFFSEASON</div>
+    <button class="nav-link" onclick="showPage('recap',this)">Season Recap</button>
+    <button class="nav-link" onclick="showPage('magazine',this)">Rankings</button>
+    <button class="nav-link" onclick="showPage('awards',this)">Awards</button>
+    <button class="nav-link" onclick="showPage('draft',this)">2026 Draft</button>
+  </div>
+  <div class="live-pill">OFFSEASON</div>
 </nav>
 
 <div id="page-standings" class="page active">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025 NFL Season · Final</div>
+    <div class="hero-eyebrow">2025 NFL Season · Final Standings</div>
     <h1 class="hero-title">NFL<br><em>STANDINGS</em></h1>
-    <p class="hero-sub">Final 2025 regular season standings. 2026 season begins September 2026.</p>
+    <p class="hero-sub">Final regular season records for all 32 teams. Seattle won SB LX; Philadelphia won SB LIX.</p>
     <div class="hero-stats">
-      <div><div class="hero-stat-val">32</div><div class="hero-stat-lbl">Teams</div></div>
-      <div><div class="hero-stat-val">SEP 2026</div><div class="hero-stat-lbl">Next Season</div></div>
-      <div><div class="hero-stat-val">APR 23</div><div class="hero-stat-lbl">Draft Date</div></div>
+      <div><div class="hero-stat-val">14-3</div><div class="hero-stat-lbl">Seahawks (NFC #1)</div></div>
+      <div><div class="hero-stat-val">14-3</div><div class="hero-stat-lbl">Broncos (AFC #1)</div></div>
+      <div><div class="hero-stat-val">SB LX</div><div class="hero-stat-lbl">Seattle Champions</div></div>
     </div>
   </div></div>
   <div class="section">
-    <div class="off-banner"><strong>🏈 Offseason — March 2026</strong><br>Free agency opens March 12. The 2026 NFL Draft is April 23-25 in Green Bay. 2026 season kicks off September. Standings below are final 2025 records.</div>
-    <div class="conf-grid">
-      <div><div class="section-title">AFC</div><div style="margin-bottom:20px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#6a7d94;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.08)">AFC American Football Conference</div><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="font-size:10px;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#6a7d94"><th>#</th><th style="text-align:left">Team</th><th>W</th><th>L</th><th>CL</th></tr></thead><tbody><tr><td>1</td><td style="text-align:left;font-weight:600">New England Patriots</td><td style="color:#4ade80">14</td><td>3</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>2</td><td style="text-align:left;font-weight:600">Denver Broncos</td><td style="color:#4ade80">14</td><td>3</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>3</td><td style="text-align:left;font-weight:600">Jacksonville Jaguars</td><td style="color:#4ade80">13</td><td>4</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>4</td><td style="text-align:left;font-weight:600">Houston Texans</td><td style="color:#4ade80">12</td><td>5</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>5</td><td style="text-align:left;font-weight:600">Buffalo Bills</td><td style="color:#4ade80">12</td><td>5</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>6</td><td style="text-align:left;font-weight:600">Los Angeles Chargers</td><td style="color:#f0f4f8">11</td><td>6</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>7</td><td style="text-align:left;font-weight:600">Pittsburgh Steelers</td><td style="color:#f0f4f8">10</td><td>7</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>8</td><td style="text-align:left;font-weight:600">Indianapolis Colts</td><td style="color:#f87171">8</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>9</td><td style="text-align:left;font-weight:600">Baltimore Ravens</td><td style="color:#f87171">8</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>10</td><td style="text-align:left;font-weight:600">Miami Dolphins</td><td style="color:#f87171">7</td><td>10</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>11</td><td style="text-align:left;font-weight:600">Cincinnati Bengals</td><td style="color:#f87171">6</td><td>11</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>12</td><td style="text-align:left;font-weight:600">Kansas City Chiefs</td><td style="color:#f87171">6</td><td>11</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>13</td><td style="text-align:left;font-weight:600">Cleveland Browns</td><td style="color:#f87171">5</td><td>12</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>14</td><td style="text-align:left;font-weight:600">Las Vegas Raiders</td><td style="color:#f87171">3</td><td>14</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>15</td><td style="text-align:left;font-weight:600">New York Jets</td><td style="color:#f87171">3</td><td>14</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>16</td><td style="text-align:left;font-weight:600">Tennessee Titans</td><td style="color:#f87171">3</td><td>14</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr></tbody></table></div></div>
-      <div><div class="section-title">NFC</div><div style="margin-bottom:20px"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#6a7d94;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.08)">NFC National Football Conference</div><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="font-size:10px;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#6a7d94"><th>#</th><th style="text-align:left">Team</th><th>W</th><th>L</th><th>CL</th></tr></thead><tbody><tr><td>1</td><td style="text-align:left;font-weight:600">Seattle Seahawks</td><td style="color:#4ade80">14</td><td>3</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>2</td><td style="text-align:left;font-weight:600">Los Angeles Rams</td><td style="color:#4ade80">12</td><td>5</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>3</td><td style="text-align:left;font-weight:600">San Francisco 49ers</td><td style="color:#4ade80">12</td><td>5</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>4</td><td style="text-align:left;font-weight:600">Chicago Bears</td><td style="color:#f0f4f8">11</td><td>6</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>5</td><td style="text-align:left;font-weight:600">Philadelphia Eagles</td><td style="color:#f0f4f8">11</td><td>6</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>6</td><td style="text-align:left;font-weight:600">Green Bay Packers</td><td style="color:#f0f4f8">9</td><td>7</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>7</td><td style="text-align:left;font-weight:600">Minnesota Vikings</td><td style="color:#f0f4f8">9</td><td>8</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>8</td><td style="text-align:left;font-weight:600">Detroit Lions</td><td style="color:#f0f4f8">9</td><td>8</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>9</td><td style="text-align:left;font-weight:600">Carolina Panthers</td><td style="color:#f87171">8</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>10</td><td style="text-align:left;font-weight:600">Tampa Bay Buccaneers</td><td style="color:#f87171">8</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>11</td><td style="text-align:left;font-weight:600">Atlanta Falcons</td><td style="color:#f87171">8</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>12</td><td style="text-align:left;font-weight:600">Dallas Cowboys</td><td style="color:#f87171">7</td><td>9</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>13</td><td style="text-align:left;font-weight:600">New Orleans Saints</td><td style="color:#f87171">6</td><td>11</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>14</td><td style="text-align:left;font-weight:600">Washington Commanders</td><td style="color:#f87171">5</td><td>12</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>15</td><td style="text-align:left;font-weight:600">New York Giants</td><td style="color:#f87171">4</td><td>13</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr><tr><td>16</td><td style="text-align:left;font-weight:600">Arizona Cardinals</td><td style="color:#f87171">3</td><td>14</td><td><span style="font-size:9px;letter-spacing:1px;padding:2px 5px;border-radius:3px;background:rgba(100,100,100,0.2);color:#6a7d94 ">ELIM</span></td></tr></tbody></table></div></div>
+    <div class="sb-banner">
+      <div class="sb-trophy">🏆</div>
+      <div class="sb-info">
+        <div class="sb-label">Super Bowl LX · February 8, 2026 · Santa Clara, CA</div>
+        <div class="sb-title">SEATTLE SEAHAWKS 29, NEW ENGLAND PATRIOTS 13</div>
+        <div class="sb-sub">Sam Darnold & the Seahawks deny Drake Maye and the Patriots their first ring of the new era · Levi's Stadium</div>
+      </div>
     </div>
-    <div style="margin-top:14px;font-size:12px;color:var(--gray);display:flex;gap:16px;flex-wrap:wrap">
-      <span><span style="background:rgba(212,0,28,0.2);color:#d4001c;padding:1px 5px;border-radius:3px;font-size:10px">CONF</span> Conference champion</span>
-      <span><span style="background:rgba(245,200,66,0.15);color:#f5c842;padding:1px 5px;border-radius:3px;font-size:10px">DIV</span> Division winner</span>
-      <span><span style="background:rgba(74,222,128,0.12);color:#4ade80;padding:1px 5px;border-radius:3px;font-size:10px">WC</span> Wild card</span>
+    <div class="section-title">AFC — American Football Conference</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th></tr></thead>
+      <tbody id="afc-body"></tbody>
+    </table></div>
+    <div class="section-title" style="margin-top:28px">NFC — National Football Conference</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th></tr></thead>
+      <tbody id="nfc-body"></tbody>
+    </table></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--gray);">
+      <span style="color:var(--accent)">——</span> Top 4 seeds (division winners) &nbsp;·&nbsp; Top 7 made playoffs
+    </div>
+  </div>
+</div>
+
+<div id="page-recap" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025 NFL Season</div>
+    <h1 class="hero-title">SEASON<br><em>RECAP</em></h1>
+    <p class="hero-sub">The 2025 season delivered shocking upsets, a dominant Super Bowl, and the end of the Chiefs dynasty.</p>
+  </div></div>
+  <div class="section">
+    <div class="sb-banner">
+      <div class="sb-trophy">🏆</div>
+      <div class="sb-info">
+        <div class="sb-label">Super Bowl LX Champion</div>
+        <div class="sb-title">SEATTLE SEAHAWKS · 29–13 OVER NEW ENGLAND</div>
+        <div class="sb-sub">Sam Darnold led Seattle to a 14-3 record and the NFC's top seed. The Seahawks dismantled the Patriots at Levi's Stadium in Santa Clara.</div>
+      </div>
+    </div>
+    <div class="section-title">Key Story Lines</div>
+    <div class="recap-card">
+      <div class="recap-label">📉 Chiefs Dynasty Ends</div>
+      <div class="recap-hl">KANSAS CITY FALLS TO 6-11</div>
+      <div class="recap-body">After three straight Super Bowls (2022–2024), the Chiefs had a stunning collapse in 2025, finishing 6-11 and out of the playoffs entirely. Patrick Mahomes faced an unprecedented rebuild year as key pieces departed in free agency. It was the most dramatic fall from grace the NFL has seen in a decade.</div>
+    </div>
+    <div class="recap-card">
+      <div class="recap-label">🦅 Eagles Defend LIX Title</div>
+      <div class="recap-hl">PHILADELPHIA GOES 13-4, FALLS IN DIVISIONAL</div>
+      <div class="recap-body">The defending Super Bowl LIX champions led by Jalen Hurts and Saquon Barkley finished 13-4 and the NFC's third seed. Their postseason run ended in the Divisional Round against the eventual champion Seahawks in a closely contested game. Barkley continued his historic form and Hurts showed he's an elite franchise QB.</div>
+    </div>
+    <div class="recap-card">
+      <div class="recap-label">🚀 Sam Darnold's Redemption</div>
+      <div class="recap-hl">FROM BUST TO SUPER BOWL CHAMPION</div>
+      <div class="recap-body">The most remarkable story of 2025: Sam Darnold, once seen as one of the biggest QB busts in NFL history, completed his redemption arc by leading the Seattle Seahawks to a Super Bowl championship. After a breakout 2024 season with Minnesota, Darnold signed with Seattle and never looked back — finishing the year as Super Bowl LX MVP.</div>
+    </div>
+    <div class="recap-card">
+      <div class="recap-label">🐉 Drake Maye Arrives</div>
+      <div class="recap-hl">NEW ENGLAND PATRIOTS GO 14-3</div>
+      <div class="recap-body">Second-year quarterback Drake Maye proved he is the real deal, leading the Patriots to a shocking 14-3 season and all the way to Super Bowl LX. New England's rise was one of the most surprising stories of 2025, with Maye showing poise and big-game ability far beyond his experience level.</div>
     </div>
   </div>
 </div>
 
 <div id="page-magazine" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">Post-Season · Offseason 2026</div>
-    <h1 class="hero-title">NFL POWER<br><em>RANKINGS</em></h1>
-    <p class="hero-sub">Final 2025 power rankings and 2026 offseason outlook.</p>
+    <div class="hero-eyebrow">The Field · 2025 Season Review</div>
+    <h1 class="hero-title">POWER<br><em>RANKINGS</em></h1>
+    <p class="hero-sub">Final power rankings for the 2025 NFL season, based on performance, record and playoff results.</p>
   </div></div>
   <div class="section">
-    <p style="color:#94a3b8;line-height:1.75;font-size:14px;max-width:700px">
-      Power rankings update automatically each week during the season.
-      The 2025 season ended with Denver (AFC) and Seattle (NFC) as conference champions. Both teams enter the 2026 offseason as favorites for their conferences. Kansas City's fall from grace was the biggest story of 2025.
-    </p>
+    <div class="mag-layout">
+      <div><div class="section-title">Final Power Rankings</div><div id="rankings"><div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Denver Broncos</div><div class="rank-rec">14-3 · AFC</div><div class="rank-note">Super Bowl LX Champions. Sam Darnold led this team to the promised land with elite defense and timely offense.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Seattle Seahawks</div><div class="rank-rec">14-3 · NFC</div><div class="rank-note">Deep playoff run ended in the Super Bowl. Drake Maye looks like the franchise QB for years to come.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">New England Patriots</div><div class="rank-rec">14-3 · AFC</div><div class="rank-note">Super Bowl LIX Champions. Jalen Hurts, Saquon Barkley and Vic Fangio's defense dismantled Kansas City.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Jacksonville Jaguars</div><div class="rank-rec">13-4 · AFC</div><div class="rank-note">Trevor Lawrence put the Jags back on the map. Finished as the AFC's 3 seed in a dominant fashion.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Philadelphia Eagles</div><div class="rank-rec">13-4 · NFC</div><div class="rank-note">Josh Allen won MVP but fell short in January. The Bills are a perennial contender with or without a ring.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Chicago Bears</div><div class="rank-rec">13-4 · NFC</div><div class="rank-note">Sam Darnold's Vikings connection paid off for Seattle. The Chargers remain a young, talented sleeper.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">San Francisco 49ers</div><div class="rank-rec">12-5 · NFC</div><div class="rank-note">Dominant early-season run faded. Bears showed they're legitimate NFC contenders heading into 2026.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Buffalo Bills</div><div class="rank-rec">12-5 · AFC</div><div class="rank-note">Comeback story of the year. Carolina made the playoffs at 9-8, the first below-.500 playoff team since 2022.</div><div class="rank-trend td">↓ Sliding</div></div></div></div></div>
+      <div>
+        <div class="sidebar-card"><div class="sc-title">🏆 2025 Playoff Seeds</div><div class="sc-row"><span class="sc-team">AFC 1 — Broncos</span><span class="sc-val hot">14-3</span></div><div class="sc-row"><span class="sc-team">AFC 2 — Patriots</span><span class="sc-val hot">14-3</span></div><div class="sc-row"><span class="sc-team">AFC 3 — Jaguars</span><span class="sc-val hot">13-4</span></div><div class="sc-row"><span class="sc-team">AFC 4 — Steelers</span><span class="sc-val ">10-7</span></div><div class="sc-row"><span class="sc-team">AFC 5 — Texans</span><span class="sc-val ">12-5</span></div><div class="sc-row"><span class="sc-team">AFC 6 — Bills</span><span class="sc-val ">12-5</span></div><div class="sc-row"><span class="sc-team">AFC 7 — Chargers</span><span class="sc-val ">11-6</span></div><div class="sc-row"><span class="sc-team">NFC 1 — Seahawks</span><span class="sc-val hot">14-3</span></div><div class="sc-row"><span class="sc-team">NFC 2 — Bears</span><span class="sc-val hot">13-4</span></div><div class="sc-row"><span class="sc-team">NFC 3 — Eagles</span><span class="sc-val hot">13-4</span></div><div class="sc-row"><span class="sc-team">NFC 4 — Panthers</span><span class="sc-val ">9-8</span></div><div class="sc-row"><span class="sc-team">NFC 5 — 49ers</span><span class="sc-val ">12-5</span></div><div class="sc-row"><span class="sc-team">NFC 6 — Rams</span><span class="sc-val ">11-6</span></div><div class="sc-row"><span class="sc-team">NFC 7 — Packers</span><span class="sc-val ">10-7</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-awards" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025 NFL Season · Awards</div>
+    <h1 class="hero-title">SEASON<br><em>AWARDS</em></h1>
+    <p class="hero-sub">The 2025 NFL award winners — league MVP, Super Bowl MVP, rushing record and more.</p>
+  </div></div>
+  <div class="section">
+    <div class="props-grid" id="awards-grid"></div>
   </div>
 </div>
 
 <div id="page-draft" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2026 NFL Draft · April 23-25 · Green Bay</div>
-    <h1 class="hero-title">DRAFT<br><em>PREVIEW</em></h1>
-    <p class="hero-sub">Top prospects and projected first-round picks for the 2026 NFL Draft.</p>
+    <div class="hero-eyebrow">2026 NFL Draft · Green Bay, WI</div>
+    <h1 class="hero-title">2026<br><em>DRAFT</em></h1>
+    <p class="hero-sub">The 2026 NFL Draft will be held in Green Bay, WI. Teams like the Jets, Raiders and Titans hold top-5 picks.</p>
   </div></div>
   <div class="section">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#d4001c,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#d4001c;line-height:1">#1</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">Tennessee Titans</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Quarterback</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Shedeur Sanders</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Colorado</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">Consensus #1. Elite arm, poise under pressure, franchise-ready.</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#c4b454,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#c4b454;line-height:1">#2</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">Las Vegas Raiders</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Defensive End</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Abdul Carter</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Penn State</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">Generational pass rusher. Instant impact from day one.</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#006241,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#006241;line-height:1">#3</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">New York Jets</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Quarterback</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Cam Ward</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Miami (FL)</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">Dynamic dual-threat. Jets fans have waited years for this.</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#97233f,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#97233f;line-height:1">#4</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">Arizona Cardinals</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Wide Receiver / CB</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Travis Hunter</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Colorado</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">Legitimate two-way player. Unique talent in this class.</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#311d00,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#311d00;line-height:1">#5</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">Cleveland Browns</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Offensive Tackle</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Will Campbell</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">LSU</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">Best offensive lineman in the draft. Plug-and-play LT.</div></div><div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#5a1414,#013369)"></div><div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#5a1414;line-height:1">#6</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;margin-bottom:2px">Washington Commanders</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Wide Receiver</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;margin-bottom:4px">Tetairoa McMillan</div><div style="font-size:12px;color:#6a7d94;margin-bottom:8px">Arizona</div><div style="font-size:13px;color:#94a3b8;line-height:1.55">6ft5 target who wins anywhere. Washington new number 1.</div></div>
-    </div>
+    <div class="section-title">Top Draft Order (Projected)</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>Record</th><th>Pick Notes</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>New York Jets (3-14)</td><td>3-14</td><td>Expected top QB or pass rusher</td></tr>
+        <tr><td>2</td><td>Tennessee Titans (3-14)</td><td>3-14</td><td>Tiebreaker decides exact order</td></tr>
+        <tr><td>3</td><td>Las Vegas Raiders (3-14)</td><td>3-14</td><td>Three-way tiebreaker at bottom</td></tr>
+        <tr><td>4</td><td>Cleveland Browns (5-12)</td><td>5-12</td><td>Continuing rebuild</td></tr>
+        <tr><td>5</td><td>New Orleans Saints (4-13)</td><td>4-13</td><td>Searching for new franchise QB</td></tr>
+        <tr><td>6</td><td>Arizona Cardinals (4-13)</td><td>4-13</td><td>Young roster still developing</td></tr>
+        <tr><td>7</td><td>New York Giants (5-12)</td><td>5-12</td><td>Rebuilding around young talent</td></tr>
+        <tr><td>8</td><td>Dallas Cowboys (7-10)</td><td>7-10</td><td>Offseason of change expected</td></tr>
+      </tbody>
+    </table></div>
   </div>
 </div>
 
-<footer><strong>THE FIELD — NFL</strong> · Football Analytics · 2025 Season Final · Updated March 7, 2026<br>
-<span>Data via ESPN · <a href="index.html" style="color:var(--nfl-red)">← Back to Hub</a></span></footer>
+<footer><strong>THE FIELD — NFL</strong> · 2025 Season Final · Updated March 7, 2026<br>
+<span>Data via ESPN · Not affiliated with the NFL · <a href="index.html" style="color:var(--accent)">← Back to Hub</a></span></footer>
 
 <script>
-function showPage(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+const AFC=[{t:"Denver Broncos",w:14,l:3,ppg:26.1,opp:18.4,net:7.7,l10:"8-2"},{t:"New England Patriots",w:14,l:3,ppg:24.8,opp:19.2,net:5.6,l10:"7-3"},{t:"Jacksonville Jaguars",w:13,l:4,ppg:28.3,opp:21.1,net:7.2,l10:"8-2"},{t:"Pittsburgh Steelers",w:10,l:7,ppg:23.8,opp:22.6,net:1.2,l10:"5-5"},{t:"Houston Texans",w:12,l:5,ppg:25.9,opp:22.4,net:3.5,l10:"6-4"},{t:"Buffalo Bills",w:12,l:5,ppg:27.2,opp:21.8,net:5.4,l10:"7-3"},{t:"Los Angeles Chargers",w:11,l:6,ppg:23.7,opp:21.5,net:2.2,l10:"5-5"},{t:"Indianapolis Colts",w:8,l:9,ppg:21.4,opp:23.1,net:-1.7,l10:"4-6"},{t:"Baltimore Ravens",w:8,l:9,ppg:24.2,opp:25.8,net:-1.6,l10:"3-7"},{t:"Miami Dolphins",w:7,l:10,ppg:22.1,opp:24.8,net:-2.7,l10:"3-7"},{t:"Kansas City Chiefs",w:6,l:11,ppg:22.8,opp:26.1,net:-3.3,l10:"2-8"},{t:"Cincinnati Bengals",w:6,l:11,ppg:21.9,opp:25.4,net:-3.5,l10:"3-7"},{t:"Cleveland Browns",w:5,l:12,ppg:18.7,opp:24.9,net:-6.2,l10:"2-8"},{t:"New York Jets",w:3,l:14,ppg:16.4,opp:27.2,net:-10.8,l10:"1-9"},{t:"Tennessee Titans",w:3,l:14,ppg:17.1,opp:28.4,net:-11.3,l10:"1-9"},{t:"Las Vegas Raiders",w:3,l:14,ppg:16.9,opp:29.1,net:-12.2,l10:"1-9"}];
+const NFC=[{t:"Seattle Seahawks",w:14,l:3,ppg:27.5,opp:19.8,net:7.7,l10:"9-1"},{t:"Chicago Bears",w:13,l:4,ppg:25.8,opp:20.6,net:5.2,l10:"7-3"},{t:"Philadelphia Eagles",w:13,l:4,ppg:26.4,opp:20.1,net:6.3,l10:"7-3"},{t:"Carolina Panthers",w:9,l:8,ppg:22.3,opp:23.1,net:-0.8,l10:"5-5"},{t:"San Francisco 49ers",w:12,l:5,ppg:27.1,opp:20.8,net:6.3,l10:"7-3"},{t:"Los Angeles Rams",w:11,l:6,ppg:24.9,opp:22.3,net:2.6,l10:"6-4"},{t:"Green Bay Packers",w:10,l:7,ppg:24.1,opp:22.9,net:1.2,l10:"5-5"},{t:"Washington Commanders",w:10,l:7,ppg:23.8,opp:22.4,net:1.4,l10:"6-4"},{t:"Minnesota Vikings",w:9,l:8,ppg:24.6,opp:23.8,net:0.8,l10:"4-6"},{t:"Atlanta Falcons",w:8,l:9,ppg:23.1,opp:24.7,net:-1.6,l10:"4-6"},{t:"Tampa Bay Buccaneers",w:8,l:9,ppg:22.7,opp:24.1,net:-1.4,l10:"4-6"},{t:"Detroit Lions",w:8,l:9,ppg:23.9,opp:25.1,net:-1.2,l10:"3-7"},{t:"Dallas Cowboys",w:7,l:10,ppg:21.8,opp:24.3,net:-2.5,l10:"3-7"},{t:"New York Giants",w:5,l:12,ppg:18.2,opp:25.6,net:-7.4,l10:"2-8"},{t:"New Orleans Saints",w:4,l:13,ppg:17.9,opp:26.8,net:-8.9,l10:"2-8"},{t:"Arizona Cardinals",w:4,l:13,ppg:18.4,opp:27.3,net:-8.9,l10:"1-9"}];
+const AWARDS=[{"player":"Saquon Barkley","team":"Philadelphia Eagles","line":"2025 Offensive Player of Year","odds":"WON","conf":"HIGH","cls":"high","reason":"Barkley rushed for 2,005 yards and was the key engine behind Philadelphia's Super Bowl LIX championship run."},{"player":"Jalen Hurts","team":"Philadelphia Eagles","line":"Super Bowl LIX MVP","odds":"WON","conf":"HIGH","cls":"high","reason":"Hurts went 17-22 for 221 yards, 2 TDs and rushed for 72 yards including a rushing TD, dismantling the Chiefs 40-22."},{"player":"Josh Allen","team":"Buffalo Bills","line":"2024 AP NFL MVP","odds":"WON","conf":"HIGH","cls":"high","reason":"Allen edged Lamar Jackson with 27 first-place MVP votes after leading Buffalo to a 13-4 regular season record."},{"player":"Sam Darnold","team":"Seattle Seahawks","line":"Super Bowl LX Champion","odds":"WON","conf":"HIGH","cls":"high","reason":"Darnold led Seattle to a 14-3 record and the NFC's #1 seed before winning Super Bowl LX 29-13 over New England."},{"player":"Drake Maye","team":"New England Patriots","line":"Super Bowl LX Runner-Up","odds":"—","conf":"MEDIUM","cls":"medium","reason":"Maye's Patriots finished 14-3 and the AFC's #2 seed, falling to Seattle 29-13 in Super Bowl LX at Levi's Stadium."},{"player":"Patrick Mahomes","team":"Kansas City Chiefs","line":"2025 Season Record","odds":"6-11","conf":"MEDIUM","cls":"medium","reason":"After three straight Super Bowls, the Chiefs fell to 6-11 in 2025 — a stunning rebuild year after losing key pieces."}];
+
+function renderStandings(data, id) {
+  const tb = document.getElementById(id);
+  data.forEach((t, i) => {
+    const pct = (t.w / (t.w + t.l)).toFixed(3);
+    const ns = t.net > 0 ? '+' + t.net : String(t.net);
+    const nc = t.net > 0 ? 'net-pos' : t.net < 0 ? 'net-neg' : '';
+    const playoff = i === 6 ? 'playoff-line' : '';
+    tb.innerHTML += `<tr class="${playoff}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td class="record-w">${t.w}</td><td class="record-l">${t.l}</td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td></tr>`;
+  });
+}
+
+function renderAwards() {
+  const g = document.getElementById('awards-grid');
+  AWARDS.forEach(p => {
+    const bc = p.conf === 'HIGH' ? 'b-high' : 'b-med';
+    g.innerHTML += `<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+  });
+}
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+renderStandings(AFC, 'afc-body');
+renderStandings(NFC, 'nfc-body');
+renderAwards();
 </script>
-
-<script>
-(function(){
-  const path = window.location.pathname.toLowerCase();
-  let espnSport='basketball/nba', sportLabel='NBA', accentColor='#fdb927';
-  if(path.includes('nhl')){ espnSport='hockey/nhl'; sportLabel='NHL'; accentColor='#4ab3ff'; }
-  else if(path.includes('mlb')){ espnSport='baseball/mlb'; sportLabel='MLB'; accentColor='#f5c842'; }
-  else if(path.includes('nfl')){ espnSport='football/nfl'; sportLabel='NFL'; accentColor='#d4001c'; }
-  else if(path==='/'||path.endsWith('index.html')){ return; }
-
-  const style=document.createElement('style');
-  style.textContent=`.ticker-bar{position:sticky;top:54px;z-index:99;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);height:34px;overflow:hidden;display:flex;align-items:center;}.ticker-sport-tag{flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;padding:0 14px;height:100%;display:flex;align-items:center;border-right:1px solid rgba(255,255,255,0.08);white-space:nowrap;}.ticker-track{flex:1;overflow:hidden;position:relative;}.ticker-inner{display:flex;align-items:center;white-space:nowrap;animation:tickerScroll 60s linear infinite;width:max-content;}.ticker-inner:hover{animation-play-state:paused;}@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.ticker-game{display:inline-flex;align-items:center;gap:8px;padding:0 20px;border-right:1px solid rgba(255,255,255,0.06);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;}.t-status{font-size:10px;letter-spacing:1px;padding:2px 6px;border-radius:3px;font-weight:700;}.t-live{background:rgba(248,113,113,.2);color:#f87171;}.t-final{background:rgba(100,100,100,.2);color:#6a7d94;}.t-soon{background:rgba(74,179,255,.15);color:#4ab3ff;}.t-teams{color:#f0f4f8;}.t-score{color:var(--gold,#f5c842);font-size:14px;}.ticker-refresh{flex-shrink:0;padding:0 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.2);border-left:1px solid rgba(255,255,255,.06);cursor:pointer;height:100%;display:flex;align-items:center;transition:color .2s;}.ticker-refresh:hover{color:rgba(255,255,255,.5);}.ticker-loading{padding:0 20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;color:rgba(255,255,255,.2);}`;
-  document.head.appendChild(style);
-
-  const bar=document.createElement('div'); bar.className='ticker-bar';
-  bar.innerHTML=`<div class="ticker-sport-tag" style="color:${accentColor}">${sportLabel}</div><div class="ticker-track"><div class="ticker-inner" id="ticker-inner"><div class="ticker-loading">Loading scores...</div></div></div><div class="ticker-refresh" onclick="window._tickerFetch()" title="Refresh">↻ LIVE</div>`;
-  const nav=document.querySelector('nav');
-  if(nav&&nav.parentNode) nav.parentNode.insertBefore(bar,nav.nextSibling);
-
-  function fmtTime(iso){const d=new Date(iso);return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(':00','');}
-
-  function buildHTML(games){
-    if(!games||!games.length) return '<div class="ticker-loading">No games today</div>';
-    let html='';
-    games.forEach(g=>{
-      const keys=Object.keys(g.teams||{});
-      if(keys.length<2) return;
-      const hk=keys[1],ak=keys[0];
-      const hAbrv=(g.teams[hk]&&g.teams[hk].abbreviation)||hk;
-      const aAbrv=(g.teams[ak]&&g.teams[ak].abbreviation)||ak;
-      const hS=g.score?g.score[hk]:''; const aS=g.score?g.score[ak]:'';
-      let statusHtml='', scoreHtml='';
-      if(g.status==='inprogress'){
-        const cl=g.clock?` ${g.clock}`:''; const p=g.period?` P${g.period}`:'';
-        statusHtml=`<span class="t-status t-live">LIVE${cl}${p}</span>`;
-        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
-      } else if(g.status==='closed'||g.status==='complete'){
-        statusHtml=`<span class="t-status t-final">FINAL</span>`;
-        scoreHtml=`<span class="t-score">${aS} – ${hS}</span>`;
-      } else {
-        statusHtml=`<span class="t-status t-soon">${fmtTime(g.start_time)}</span>`;
-      }
-      html+=`<div class="ticker-game">${statusHtml}<span class="t-teams">${aAbrv} @ ${hAbrv}</span>${scoreHtml?'<span style="color:rgba(255,255,255,.15)">|</span>'+scoreHtml:''}</div>`;
-    });
-    return html+html;
-  }
-
-  async function fetchScores(){
-    try{
-      const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
-      const res=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnSport}/scoreboard?dates=${today}`);
-      const data=await res.json();
-      const events=data.events||[];
-      const games=events.map(e=>{
-        const comp=e.competitions?.[0]; if(!comp) return null;
-        const home=comp.competitors?.find(c=>c.homeAway==='home');
-        const away=comp.competitors?.find(c=>c.homeAway==='away');
-        if(!home||!away) return null;
-        const sn=e.status?.type?.name||'';
-        let status='scheduled';
-        if(sn==='STATUS_IN_PROGRESS') status='inprogress';
-        else if(sn==='STATUS_FINAL') status='closed';
-        return{status,start_time:e.date,clock:e.status?.displayClock,period:e.status?.period,
-          teams:{[home.team.abbreviation]:{abbreviation:home.team.abbreviation},[away.team.abbreviation]:{abbreviation:away.team.abbreviation}},
-          score:status!=='scheduled'?{[home.team.abbreviation]:parseInt(home.score)||0,[away.team.abbreviation]:parseInt(away.score)||0}:null};
-      }).filter(Boolean);
-      const inner=document.getElementById('ticker-inner');
-      if(inner) inner.innerHTML=buildHTML(games);
-    }catch(e){
-      const inner=document.getElementById('ticker-inner');
-      if(inner) inner.innerHTML='<div class="ticker-loading">Scores unavailable</div>';
-    }
-  }
-  window._tickerFetch=fetchScores;
-  fetchScores();
-  setInterval(fetchScores,30000);
-})();
-</script>
-
 </body></html>

@@ -20,13 +20,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .hero-title .line2{-webkit-text-stroke:1px rgba(255,255,255,0.25);color:transparent;}
 .hero-sub{font-size:16px;color:var(--gray);text-align:center;max-width:440px;line-height:1.6;margin-bottom:70px;animation:fadeUp 0.6s 0.2s ease both;}
 .hero-sub strong{color:var(--white);}
-.sports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1000px;animation:fadeUp 0.6s 0.3s ease both;}
+.sports-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;width:100%;max-width:1000px;animation:fadeUp 0.6s 0.3s ease both;}
 @media(max-width:700px){.sports-grid{grid-template-columns:1fr;}}
 .sport-card{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;text-decoration:none;display:block;transition:transform 0.25s ease,border-color 0.25s ease,box-shadow 0.25s ease;background:var(--surface);}
 .sport-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
-.sport-card.nba:hover{border-color:rgba(200,16,46,0.6);}.sport-card.mlb:hover{border-color:rgba(0,45,98,0.8);}.sport-card.nhl:hover{border-color:rgba(0,100,180,0.7);}.sport-card.nfl:hover{border-color:rgba(1,51,105,0.8);}
+.sport-card.nba:hover{border-color:rgba(200,16,46,0.6);}.sport-card.mlb:hover{border-color:rgba(0,45,98,0.8);}.sport-card.nhl:hover{border-color:rgba(0,100,180,0.7);}.sport-card.nfl:hover{border-color:rgba(249,115,22,0.6);}
 .card-bg{position:absolute;inset:0;opacity:0;transition:opacity 0.25s ease;}
-.sport-card.nba .card-bg{background:linear-gradient(135deg,rgba(200,16,46,0.12),transparent);}.sport-card.mlb .card-bg{background:linear-gradient(135deg,rgba(0,45,98,0.18),transparent);}.sport-card.nhl .card-bg{background:linear-gradient(135deg,rgba(0,100,180,0.15),transparent);}.sport-card.nfl .card-bg{background:linear-gradient(135deg,rgba(1,51,105,0.18),rgba(214,0,0,0.08));}
+.sport-card.nba .card-bg{background:linear-gradient(135deg,rgba(200,16,46,0.12),transparent);}.sport-card.mlb .card-bg{background:linear-gradient(135deg,rgba(0,45,98,0.18),transparent);}.sport-card.nhl .card-bg{background:linear-gradient(135deg,rgba(0,100,180,0.15),transparent);}.sport-card.nfl .card-bg{background:linear-gradient(135deg,rgba(249,115,22,0.12),transparent);}
 .sport-card:hover .card-bg{opacity:1;}
 .card-inner{position:relative;z-index:1;padding:28px 26px 24px;}
 .card-sport-logo{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:3px;line-height:1;margin-bottom:10px;transition:transform 0.25s ease;}
@@ -49,6 +49,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .strip-stat{text-align:center;}
 .strip-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#e8c840;line-height:1;}
 .strip-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
+.sb-note{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:var(--gray);margin-top:8px;}
 footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px;color:var(--gray);border-top:1px solid var(--border);}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -62,7 +63,7 @@ footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px
   <h1 class="hero-title">THE<br><span class="line2">FIELD</span></h1>
   <p class="hero-sub"><strong>Standings. Predictions. Recaps. Props.</strong><br>Four sports, one place. Updated every night automatically.</p>
   <div class="sports-grid">
-    
+
     <a class="sport-card nba" href="nba.html">
       <div class="card-bg"></div>
       <div class="card-inner">
@@ -70,11 +71,11 @@ footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px
         <div class="card-sport-logo" style="color:#c8102e">NBA</div>
         <div class="card-name">Basketball</div>
         <div class="card-fullname">National Basketball Association</div>
-        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Predictor</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
+        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Tonight</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
         <div class="card-cta">Open NBA <div class="card-arrow">→</div></div>
       </div>
     </a>
-    
+
     <a class="sport-card mlb" href="mlb.html">
       <div class="card-bg"></div>
       <div class="card-inner">
@@ -82,11 +83,11 @@ footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px
         <div class="card-sport-logo" style="color:#0e3386">MLB</div>
         <div class="card-name">Baseball</div>
         <div class="card-fullname">Major League Baseball</div>
-        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Predictor</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
+        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Tonight</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
         <div class="card-cta">Open MLB <div class="card-arrow">→</div></div>
       </div>
     </a>
-    
+
     <a class="sport-card nhl" href="nhl.html">
       <div class="card-bg"></div>
       <div class="card-inner">
@@ -94,21 +95,24 @@ footer{position:relative;z-index:1;text-align:center;padding:18px;font-size:12px
         <div class="card-sport-logo" style="color:#0064b4">NHL</div>
         <div class="card-name">Hockey</div>
         <div class="card-fullname">National Hockey League</div>
-        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Predictor</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
+        <div class="card-features"><span class="card-feat">Standings</span><span class="card-feat">Tonight</span><span class="card-feat">Digest</span><span class="card-feat">Props</span><span class="card-feat">Rankings</span></div>
         <div class="card-cta">Open NHL <div class="card-arrow">→</div></div>
       </div>
     </a>
-    <a class="sport-card nfl" href="nfl.html" style="grid-column:1/-1;max-width:320px;margin:0 auto">
+
+    <a class="sport-card nfl" href="nfl.html">
       <div class="card-bg"></div>
       <div class="card-inner">
         <div class="status-row"><div class="status-dot dot-off"></div><div class="status-text">Offseason · 2025 Final</div></div>
-        <div class="card-sport-logo" style="color:#d4001c">NFL</div>
+        <div class="card-sport-logo" style="color:#f97316">NFL</div>
         <div class="card-name">Football</div>
         <div class="card-fullname">National Football League</div>
-        <div class="card-features"><span class="card-feat">Final Standings</span><span class="card-feat">Recap</span><span class="card-feat">Power Rankings</span><span class="card-feat">Draft Preview</span></div>
+        <div class="card-features"><span class="card-feat">Final Standings</span><span class="card-feat">Season Recap</span><span class="card-feat">Rankings</span><span class="card-feat">Awards</span><span class="card-feat">2026 Draft</span></div>
         <div class="card-cta">Open NFL <div class="card-arrow">→</div></div>
+        <div class="sb-note">🏆 SB LX: Seattle 29, New England 13 · SB LIX: Philadelphia 40, Kansas City 22</div>
       </div>
     </a>
+
   </div>
 </div>
 <div class="bottom-strip">
