@@ -512,7 +512,7 @@ footer strong{{color:var(--white);}}
   <span class="nav-sport">NBA</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
+    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
@@ -551,23 +551,13 @@ footer strong{{color:var(--white);}}
 
 <div id="page-predictor" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 Season Stats · Real Records</div>
-    <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
-    <p class="hero-sub">Tonight's schedule plus a custom matchup predictor for any two teams.</p>
+    <div class="hero-eyebrow">2025-26 Season · Tonight's Slate</div>
+    <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
     <div class="games-grid" id="tonight-grid"></div>
-    <div class="section-title">Custom Matchup Predictor</div>
-    <div class="pred-wrap">
-      <div class="team-row">
-        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
-        <div class="vs-mid"><div class="vs-big">VS</div></div>
-        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
-      </div>
-      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
-      <div id="pred-out"></div>
-    </div>
   </div>
 </div>
 
@@ -661,21 +651,7 @@ function renderTonightGrid(){{
   }});
 }}
 
-function buildSelects(){{
-  ['home-sel','away-sel'].forEach((id,i)=>{{
-    const s=document.getElementById(id);
-    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
-    s.selectedIndex=i;
-  }});
-  predict();
-}}
 
-function getT(n){{return ALL.find(t=>t.t===n);}}
-function predict(){{
-  const hn=document.getElementById('home-sel').value;
-  const an=document.getElementById('away-sel').value;
-  const out=document.getElementById('pred-out');
-  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
   const H=getT(hn),A=getT(an);if(!H||!A)return;
   const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+3).toFixed(1));
   const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(1));
@@ -710,7 +686,6 @@ function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.cla
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
 renderTonightGrid();
-buildSelects();
 renderProps();
 </script>
 </body></html>"""
@@ -908,7 +883,7 @@ footer strong{{color:var(--white);}}
   <span class="nav-sport">NHL</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
+    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
@@ -945,22 +920,12 @@ footer strong{{color:var(--white);}}
 <div id="page-predictor" class="page">
   <div class="hero"><div class="hero-inner">
     <div class="hero-eyebrow">2025-26 Season</div>
-    <h1 class="hero-title">GAME<br><em>PREDICTOR</em></h1>
-    <p class="hero-sub">Tonight's schedule plus a custom matchup predictor for any two teams.</p>
+    <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Games — {dow}, {today}</div>
     <div class="games-grid">{tonight_cards}</div>
-    <div class="section-title">Custom Matchup Predictor</div>
-    <div class="pred-wrap">
-      <div class="team-row">
-        <div class="team-box"><div class="tbadge tbadge-h">🏠 Home</div><div class="tlabel">Home Team</div><select class="tsel" id="home-sel" onchange="predict()"></select></div>
-        <div class="vs-mid"><div class="vs-big">VS</div></div>
-        <div class="team-box"><div class="tbadge tbadge-a">✈️ Away</div><div class="tlabel">Away Team</div><select class="tsel" id="away-sel" onchange="predict()"></select></div>
-      </div>
-      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
-      <div id="pred-out"></div>
-    </div>
   </div>
 </div>
 
@@ -1020,12 +985,6 @@ const WEST={west_js};
 const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
 function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
 function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
-function getT(n){{return ALL.find(t=>t.t===n);}}
-function predict(){{
-  const hn=document.getElementById('home-sel').value;
-  const an=document.getElementById('away-sel').value;
-  const out=document.getElementById('pred-out');
-  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
   const H=getT(hn),A=getT(an);if(!H||!A)return;
   const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+0.15).toFixed(1));
   const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(1));
@@ -1043,15 +1002,6 @@ function predict(){{
   <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
   <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
 }}
-function buildSelects(){{
-  ['home-sel','away-sel'].forEach((id,i)=>{{
-    const s=document.getElementById(id);if(!s)return;
-    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
-    s.selectedIndex=i;
-  }});
-  predict();
-}}
-buildSelects();
 </script>
 </body></html>"""
 
@@ -1361,7 +1311,7 @@ footer strong{{color:var(--white);}}
   <span class="nav-sport">NFL</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Predictor</button>
+    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
@@ -1646,7 +1596,7 @@ def main():
     log("\n[1/4] NBA")
     nba_east, nba_west = fetch_nba_standings()
     nba_yesterday = [parse_game(e, "nba") for e in espn_scores("basketball/nba")]
-    nba_yesterday = [g for g in nba_yesterday if g and g["is_final"]]
+    nba_yesterday = [g for g in nba_yesterday if g]
     nba_today     = [parse_game(e, "nba") for e in espn_scores_today("basketball/nba")]
     nba_today     = [g for g in nba_today if g]
     generate_nba_html(nba_east, nba_west, nba_yesterday, nba_today)
@@ -1655,7 +1605,7 @@ def main():
     log("\n[2/4] NHL")
     nhl_east, nhl_west = fetch_nhl_standings()
     nhl_yesterday = [parse_game(e, "nhl") for e in espn_scores("hockey/nhl")]
-    nhl_yesterday = [g for g in nhl_yesterday if g and g["is_final"]]
+    nhl_yesterday = [g for g in nhl_yesterday if g]
     nhl_today     = [parse_game(e, "nhl") for e in espn_scores_today("hockey/nhl")]
     nhl_today     = [g for g in nhl_today if g]
     generate_nhl_html(nhl_east, nhl_west, nhl_yesterday, nhl_today)
@@ -1664,7 +1614,7 @@ def main():
     log("\n[3/4] MLB")
     mlb_standings = fetch_mlb_standings()
     mlb_yesterday = [parse_game(e, "mlb") for e in espn_scores("baseball/mlb")]
-    mlb_yesterday = [g for g in mlb_yesterday if g and g["is_final"]]
+    mlb_yesterday = [g for g in mlb_yesterday if g]
     mlb_today     = [parse_game(e, "mlb") for e in espn_scores_today("baseball/mlb")]
     mlb_today     = [g for g in mlb_today if g]
     generate_mlb_html(mlb_standings, mlb_yesterday, mlb_today)
