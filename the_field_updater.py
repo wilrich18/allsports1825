@@ -377,20 +377,23 @@ def fetch_nba_standings():
         log(f"  ⚠️  NBA standings failed: {e}")
         return [], []
 
+
+
 def generate_nba_html(east, west, games_yesterday, today_games):
-    log("🌐 Generating nba.html...")
+    log("\U0001f310 Generating nba.html...")
+    from datetime import datetime, timedelta
     today     = fmt_date()
     yesterday = fmt_date(datetime.now() - timedelta(days=1))
     dow       = fmt_dow()
 
     def team_js(t):
         ns = ('+' if t['net'] >= 0 else '') + str(t['net'])
-        return f'{{t:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}"}}'
+        return ('{' + f't:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},'
+                f'opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}",str:"{t.get("str","")}"' + '}')
 
     east_js = "[" + ",".join(team_js(t) for t in east) + "]"
     west_js = "[" + ",".join(team_js(t) for t in west) + "]"
 
-    # Tonight's games as JS
     tonight_js_items = []
     for g in today_games:
         if not g: continue
@@ -400,187 +403,225 @@ def generate_nba_html(east, west, games_yesterday, today_games):
             t_str = dt.astimezone().strftime("%-I:%M %p ET")
         except:
             t_str = "Tonight"
-        item = (f'{{time:"{t_str}",home:"{g["home"]}",away:"{g["away"]}",'
+        item = ('{' + f'time:"{t_str}",home:"{g["home"]}",away:"{g["away"]}",'
                 f'h_score:{g["h_score"]},a_score:{g["a_score"]},'
-                f'is_final:{str(g["is_final"]).lower()},is_live:{str(g["is_live"]).lower()}}}')
+                f'is_final:{str(g["is_final"]).lower()},is_live:{str(g["is_live"]).lower()}' + '}')
         tonight_js_items.append(item)
     tonight_js = "[" + ",".join(tonight_js_items) + "]"
 
     recaps = recap_articles(games_yesterday, yesterday, "nba")
 
-    # Power rankings — top 8 from combined sorted
     all_teams = sorted(east + west, key=lambda x: -x["pct"])
-    rankings_html = ""
+    best = all_teams[0] if all_teams else {"t":"—","w":0,"l":0}
+
+    east_sorted = sorted(east, key=lambda x: -x["pct"])
+    west_sorted = sorted(west, key=lambda x: -x["pct"])
+    seeds_rows = ""
+    for lbl, teams, idx in [("E1",east_sorted,0),("E2",east_sorted,1),("E3",east_sorted,2),
+                             ("W1",west_sorted,0),("W2",west_sorted,1),("W3",west_sorted,2)]:
+        if len(teams) > idx:
+            t = teams[idx]
+            seeds_rows += f'<div class="sc-row"><span class="sc-team">{lbl} {t["t"].split()[-1]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>'
+
     trend_map = ["up","up","up","hold","hold","hold","down","down"]
     notes = [
-        "The best team in the East. Locked in, deep, and fully healthy.",
-        "The Thunder continue to dominate the West with MVP-caliber play from Shai.",
-        "Rolling. Their defense is suffocating and Wemby is proving the hype.",
-        "Consistent and dangerous. Never count them out of any game.",
-        "The West's most complete team top to bottom.",
-        "Playing inspired ball. Their young core has fully arrived.",
-        "Survived some injuries and still in the mix.",
-        "Talented but inconsistent — need a run before the playoffs.",
+        "Best record in the league. Built to win in April and beyond.",
+        "Elite on both ends. MVP candidate is locked in all month.",
+        "Rolling. Defense suffocates and offense is clicking.",
+        "Consistent and dangerous. Never count them out.",
+        "The most complete team in their conference.",
+        "Young stars arriving. Exciting basketball every night.",
+        "Dealing with injuries but too talented to count out.",
+        "Need wins now. Playoff window is closing.",
     ]
+    rankings_html = ""
     for i, t in enumerate(all_teams[:8]):
         trend = trend_map[i]
-        ti = "↑ Moving Up" if trend == "up" else ("↓ Sliding" if trend == "down" else "→ Holding")
-        tc = "tu" if trend == "up" else ("td" if trend == "down" else "tf")
-        note = notes[i] if i < len(notes) else "Watching closely as the season winds down."
-        n3 = "t3" if i < 3 else ""
-        rankings_html += f'<div class="rank-item"><div class="rank-n {n3}">{i+1}</div><div><div class="rank-team">{t["t"]}</div><div class="rank-rec">{t["w"]}-{t["l"]} · {"East" if t in east else "West"}</div><div class="rank-note">{note}</div><div class="rank-trend {tc}">{ti}</div></div></div>'
+        icon  = "↑" if trend=="up" else ("↓" if trend=="down" else "→")
+        cls   = "tu" if trend=="up" else ("td" if trend=="down" else "tf")
+        label = "Moving Up" if trend=="up" else ("Sliding" if trend=="down" else "Holding")
+        note  = notes[i]
+        t3cls = "t3" if i < 3 else ""
+        rankings_html += (f'<div class="rank-item"><div class="rank-n {t3cls}">{i+1}</div>'
+                          f'<div><div class="rank-team">{t["t"]}</div>'
+                          f'<div class="rank-rec">{t["w"]}-{t["l"]}</div>'
+                          f'<div class="rank-note">{note}</div>'
+                          f'<div class="rank-trend {cls}">{icon} {label}</div></div></div>')
 
-    # Playoff seeds sidebar
-    seeds_html = ""
-    for i, t in enumerate(east[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">E{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-    for i, t in enumerate(west[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">W{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
+    html = build_nba_html(east_js, west_js, tonight_js, recaps, rankings_html,
+                          seeds_rows, best, today, yesterday, dow)
 
-    # Rich player props with real players and varied bet types
-    NBA_PROPS = [
-        {"player":"Shai Gilgeous-Alexander","team":"Oklahoma City Thunder","line":"Over 31.5 Pts","odds":"-118","conf":"HIGH","cls":"high","reason":"SGA has topped 31 in 7 of his last 10. OKC leans on him in close games and he elevates in marquee matchups."},
-        {"player":"Nikola Jokic","team":"Denver Nuggets","line":"Over 12.5 Reb","odds":"-112","conf":"HIGH","cls":"high","reason":"Jokic is averaging 14.1 rebounds over his last 8 games. Denver plays at a slow pace that creates more rebounding opportunities."},
-        {"player":"Jayson Tatum","team":"Boston Celtics","line":"Over 27.5 Pts","odds":"-115","conf":"HIGH","cls":"high","reason":"Tatum has gone over 27 in 6 straight home games. Boston needs his scoring to stay atop the East."},
-        {"player":"Anthony Davis","team":"Los Angeles Lakers","line":"Over 2.5 Blocks","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"AD is swatting 2.8 per game over his last 5. Look for him to be active protecting the rim tonight."},
-        {"player":"Victor Wembanyama","team":"San Antonio Spurs","line":"Over 24.5 Pts+Reb","odds":"-114","conf":"HIGH","cls":"high","reason":"Wemby combines for 27+ points and rebounds in 70% of recent games. The Spurs run everything through him."},
-        {"player":"Tyrese Haliburton","team":"Indiana Pacers","line":"Over 9.5 Ast","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Haliburton is dishing 10.2 assists per game this month. Indiana's uptempo system creates constant opportunities."},
-        {"player":"Karl-Anthony Towns","team":"New York Knicks","line":"Over 23.5 Pts","odds":"-113","conf":"MEDIUM","cls":"medium","reason":"KAT has scored 23+ in 5 of his last 7. The Knicks run plenty of post actions for him."},
-        {"player":"LeBron James","team":"Los Angeles Lakers","line":"Over 7.5 Ast","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"LeBron is averaging 8.4 assists over his last 10. He elevates his playmaking on the road."},
-        {"player":"Giannis Antetokounmpo","team":"Milwaukee Bucks","line":"Over 29.5 Pts","odds":"-116","conf":"HIGH","cls":"high","reason":"Giannis has cleared 29 in 8 of his last 10. He dominates in the paint and gets to the line at will."},
-        {"player":"Stephen Curry","team":"Golden State Warriors","line":"Over 4.5 Threes","odds":"-109","conf":"MEDIUM","cls":"medium","reason":"Curry is shooting 47% from three this month and averaging 5.1 made threes per game."},
-        {"player":"Donovan Mitchell","team":"Cleveland Cavaliers","line":"Over 26.5 Pts","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Mitchell scores 27+ in over 60% of Cleveland home games. He is their primary offensive weapon."},
-        {"player":"Paolo Banchero","team":"Orlando Magic","line":"Over 24.5 Pts","odds":"-111","conf":"MEDIUM","cls":"medium","reason":"Banchero has been on a tear lately, hitting 25+ in 5 straight. Orlando runs their offense through him late."},
-    ]
-    props_js = '[' + ','.join('{' + ','.join(f'"{k}":"{v}"' for k,v in p.items()) + '}' for p in NBA_PROPS) + ']'
+    out_path = os.path.join(OUTPUT_DIR, "nba.html")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    log(f"  ✅ nba.html saved ({len(html):,} chars)")
 
-    html = f"""<!DOCTYPE html>
+
+
+def build_nba_html(east_js, west_js, tonight_js, recaps, rankings_html,
+                   seeds_rows, best, today, yesterday, dow):
+    PROPS_JS = """[
+  {player:"Victor Wembanyama",team:"San Antonio Spurs",line:"Over 24.5 pts + rebs",odds:"-115",conf:"HIGH",cls:"high",reason:"Wemby is the MVP frontrunner. This line is set conservatively below his recent average."},
+  {player:"Shai Gilgeous-Alexander",team:"OKC Thunder",line:"Over 29.5 points",odds:"-112",conf:"HIGH",cls:"high",reason:"SGA is averaging 31+ over his last 10 and creates volume scoring every night."},
+  {player:"Nikola Jokic",team:"Denver Nuggets",line:"Over 10.5 assists",odds:"-108",conf:"HIGH",cls:"high",reason:"Jokic averages 9.8 APG. Any Denver blowout means extra distribution."},
+  {player:"Anthony Edwards",team:"Minnesota Timberwolves",line:"Over 28.5 points",odds:"-115",conf:"HIGH",cls:"high",reason:"Edwards has scored 28+ in 6 of his last 8. Minnesota plays fast and Ant is the primary option."},
+  {player:"Cade Cunningham",team:"Detroit Pistons",line:"Over 24.5 points",odds:"-110",conf:"HIGH",cls:"high",reason:"Detroit primary option averaging 27+ over his last 10."},
+  {player:"LeBron James",team:"Los Angeles Lakers",line:"Over 8.5 assists",odds:"-105",conf:"MEDIUM",cls:"medium",reason:"LeBron is in full playmaker mode. Plus money on a player averaging 9+ assists."}
+]"""
+
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>THE FIELD — NBA Basketball</title>
+<title>THE FIELD — NBA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-{SHARED_FONTS}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{{--navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}}
-*{{margin:0;padding:0;box-sizing:border-box;}}html{{scroll-behavior:smooth;}}
-body{{background:#020c1a;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
-nav{{position:sticky;top:0;z-index:100;background:rgba(2,12,26,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}}
-.nav-home{{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}}
-.nav-home:hover{{color:var(--white);}}
-.nav-sep{{color:var(--border);font-size:18px;margin-right:12px;}}
-.nav-sport{{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-right:20px;}}
+:root{{
+  --navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;
+  --white:#f0f4f8;--gray:#7a8fa6;
+  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
+}}
+*{{margin:0;padding:0;box-sizing:border-box;}}
+html{{scroll-behavior:smooth;}}
+body{{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
+nav{{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}}
+.nav-logo{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}}
+.nav-logo span{{color:var(--gold);}}
 .nav-links{{display:flex;gap:2px;flex:1;}}
 .nav-link{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}}
 .nav-link:hover,.nav-link.active{{color:var(--white);background:var(--card2);}}
 .live-pill{{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
-.page{{display:none;}}.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(14px)}}to{{opacity:1;transform:translateY(0)}}}}
-.hero{{position:relative;background:linear-gradient(135deg,#020c1a 0%,#0a1f3a 50%,#020c1a 100%);padding:48px 24px 40px;overflow:hidden;}}
-.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.1),transparent);pointer-events:none;}}
+.page{{display:none;}}
+.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(16px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero{{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}}
+.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.11),transparent);pointer-events:none;}}
 .hero-inner{{max-width:1100px;margin:0 auto;position:relative;}}
 .hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}}
-.hero-title{{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:14px;}}
+.hero-title{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}}
 .hero-title em{{color:var(--red);font-style:normal;}}
 .hero-sub{{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}}
 .hero-stats{{display:flex;gap:28px;flex-wrap:wrap;}}
-.hero-stat-val{{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--gold);line-height:1;}}
+.hero-stat-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}}
 .hero-stat-lbl{{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}}
 .section{{max-width:1100px;margin:0 auto;padding:36px 24px;}}
-.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}}
+.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}}
 .section-title::after{{content:'';flex:1;height:1px;background:var(--border);}}
 .standings-wrap{{overflow-x:auto;}}
 .standings-table{{width:100%;border-collapse:collapse;font-size:14px;}}
 .standings-table th{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}}
 .standings-table th:nth-child(2){{text-align:left;}}
-.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);}}
+.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}}
 .standings-table td:nth-child(2){{text-align:left;}}
 .standings-table tr:hover td{{background:var(--card2);}}
 .team-name{{font-weight:600;}}.team-rank{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}}
 .net-pos{{color:#4ade80;font-weight:600;}}.net-neg{{color:#f87171;font-weight:600;}}
 .record-w{{color:var(--white);font-weight:600;}}.record-l{{color:var(--gray);}}
+.streak-w{{color:#4ade80;font-weight:600;}}.streak-l{{color:#f87171;font-weight:600;}}
 tr.playoff-line td{{border-top:2px solid var(--gold)!important;}}
 tr.playin-line td{{border-top:2px dashed rgba(253,185,39,0.4)!important;}}
 .games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}}
 .game-card{{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}}
-.game-card.live{{border-color:rgba(74,222,128,0.3);}}
 .game-card-top{{padding:16px 18px 12px;border-bottom:1px solid var(--border);}}
 .game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
-.game-time.live-time{{color:#4ade80;}}
 .game-matchup{{display:flex;align-items:center;justify-content:space-between;}}
-.game-side{{flex:1;}}.game-side.right{{text-align:right;}}
-.side-label{{font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}}
-.home-lbl{{color:#4ade80;}}.away-lbl{{color:var(--gray);}}
-.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;}}
-.game-score{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);padding:0 8px;line-height:1;}}
-.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gray);padding:0 8px;}}
+.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;flex:1;}}
+.game-team.fav{{color:var(--white);}}.game-team.dog{{color:var(--gray);}}
+.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);padding:0 8px;}}
+.game-score{{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}}
+.gscore{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;}}
+.gscore.w{{color:var(--white);}}.gscore.l{{color:var(--gray);}}
+.gfinal{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--gold);}}
 .pred-wrap{{max-width:680px;margin:0 auto;}}
 .team-row{{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}}
 .team-box{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}}
 .tbadge{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}}
-.tbadge-h{{background:rgba(74,222,128,0.12);color:#4ade80;}}.tbadge-a{{background:rgba(248,113,113,0.12);color:#f87171;}}
+.tbadge-h{{background:rgba(74,222,128,0.12);color:#4ade80;}}
+.tbadge-a{{background:rgba(248,113,113,0.12);color:#f87171;}}
 .tlabel{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}}
-select.tsel{{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}}
-select.tsel:focus{{outline:none;border-color:var(--gold);}}select.tsel option{{background:#0f2040;}}
+select.tsel{{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;}}
+select.tsel:focus{{outline:none;border-color:var(--gold);}}
+select.tsel option{{background:#0f2040;}}
 .vs-mid{{display:flex;align-items:center;justify-content:center;padding-top:28px;}}
-.vs-big{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}}
+.vs-big{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--gray);}}
 .pred-btn{{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,var(--red),var(--red2));border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(200,16,46,0.28);}}
-.pred-btn:hover{{transform:translateY(-2px);}}
+.pred-btn:hover{{transform:translateY(-2px);box-shadow:0 6px 26px rgba(200,16,46,0.42);}}
 .result-grid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}}
 .result-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}}
 .result-card.w{{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.05);}}
 .r-label{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}}
-.r-val{{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}}
-.r-val.gold{{color:var(--gold);}}.r-sub{{font-size:12px;color:var(--gray);margin-top:3px;}}
-.bar-wrap{{margin:16px 0;}}.bar-labels{{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}}
+.r-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:38px;line-height:1;color:var(--white);}}
+.r-val.gold{{color:var(--gold);}}
+.r-sub{{font-size:12px;color:var(--gray);margin-top:3px;}}
+.bar-wrap{{margin:16px 0;}}
+.bar-labels{{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}}
 .bar-track{{height:10px;border-radius:5px;background:rgba(248,113,113,0.25);overflow:hidden;}}
 .bar-fill{{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}}
-.winner-banner{{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}}
+.winner-banner{{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:1px;}}
 .winner-sub{{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}}
 .digest-lead{{background:linear-gradient(135deg,#0f1e34,#1a0a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
+.digest-lead::before{{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,0.09),transparent 70%);}}
 .dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
-.dhl{{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}}
+.dhl{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}}
 .ddeck{{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}}
 .article{{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}}
-.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;user-select:none;}}
+.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}}
 .art-score{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}}
 .sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--red);margin:0 7px;}}
 .art-sub{{font-size:11px;color:var(--gray);margin-top:2px;}}
-.chev{{transition:transform 0.2s;color:var(--gray);}}.chev.open{{transform:rotate(180deg);}}
-.art-body{{display:none;padding:18px 20px;}}.art-body.open{{display:block;}}
-.art-body p{{color:#cbd5e1;line-height:1.75;font-size:14px;}}
+.atag{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:4px;}}
+.tag-u{{background:rgba(253,185,39,0.13);color:var(--gold);}}
+.tag-c{{background:rgba(200,16,46,0.13);color:#ff6b6b;}}
+.tag-h{{background:rgba(139,92,246,0.13);color:#a78bfa;}}
+.chev{{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}}
+.chev.open{{transform:rotate(180deg);}}
+.art-body{{display:none;padding:18px 20px;}}
+.art-body.open{{display:block;}}
+.art-body p{{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}}
+.art-body p:last-child{{margin-bottom:0;}}
+.stat-bar{{display:flex;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin:12px 0;}}
+.sp{{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}}
+.sp span{{color:var(--gold);}}
 .mag-layout{{display:grid;grid-template-columns:2fr 1fr;gap:20px;}}
-.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}.rank-item:last-child{{border-bottom:none;}}
-.rank-n{{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}.rank-n.t3{{color:var(--gold);}}
-.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
-.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
+.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}
+.rank-item:last-child{{border-bottom:none;}}
+.rank-n{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}
+.rank-n.t3{{color:var(--gold);}}
+.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}
+.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
+.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}
+.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
 .tu{{color:#4ade80;}}.td{{color:#f87171;}}.tf{{color:var(--gray);}}
 .sidebar-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}}
 .sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}}
-.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}.sc-row:last-child{{border-bottom:none;}}
-.sc-team{{font-weight:600;}}.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
-.sc-val.hot{{color:#4ade80;}}
+.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}
+.sc-row:last-child{{border-bottom:none;}}
+.sc-team{{font-weight:600;}}
+.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
 .props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
 .prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
 .prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
-.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
+.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}
+.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
 .prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
 .prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
-.prop-line{{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}}
+.prop-line{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;margin-bottom:3px;}}
 .prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
 .prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
-.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.13);color:var(--gold);}}
+.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}
+.b-med{{background:rgba(253,185,39,0.13);color:var(--gold);}}
 .prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
 .disclaimer{{background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}}
-footer{{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
+footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
-@media(max-width:768px){{.team-row{{grid-template-columns:1fr;}}.vs-mid{{padding-top:0;}}.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
-</style></head><body>
+@media(max-width:768px){{.team-row{{grid-template-columns:1fr;}}.vs-mid{{padding-top:0;}}.result-grid{{grid-template-columns:1fr 1fr;}}.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
+</style>
+</head>
+<body>
 <nav>
-  <a class="nav-home" href="index.html">THE FIELD</a>
-  <span class="nav-sep">/</span>
-  <span class="nav-sport">NBA</span>
+  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NBA</a>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
     <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
@@ -588,56 +629,76 @@ footer strong{{color:var(--white);}}
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
     <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="live-pill">LIVE TONIGHT</div>
+  <div class="live-pill">🔴 LIVE TONIGHT</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 NBA Season · Updated {today}</div>
-    <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
-    <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
-    <div class="hero-stats">
-      <div><div class="hero-stat-val">{east[0]["w"] if east else "—"}</div><div class="hero-stat-lbl">East Leader Wins</div></div>
-      <div><div class="hero-stat-val">{west[0]["w"] if west else "—"}</div><div class="hero-stat-lbl">West Leader Wins</div></div>
-      <div><div class="hero-stat-val">{len(games_yesterday)}</div><div class="hero-stat-lbl">Games Yesterday</div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2025-26 NBA Season · Updated {today}</div>
+      <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
+      <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">{best["w"]}-{best["l"]}</div><div class="hero-stat-lbl">{best["t"].split()[-1]} — Best Record</div></div>
+      </div>
     </div>
-  </div></div>
+  </div>
   <div class="section">
     <div class="section-title">Eastern Conference</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>Net</th><th>L10</th><th>Streak</th></tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
-    <div class="section-title" style="margin-top:28px">Western Conference</div>
+    <div class="section-title" style="margin-top:30px">Western Conference</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>Net</th><th>L10</th><th>Streak</th></tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
     <div style="margin-top:10px;font-size:12px;color:var(--gray);display:flex;gap:22px;flex-wrap:wrap;">
-      <span><span style="color:var(--gold)">——</span> Top 6 (direct playoff)</span>
-      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In (7-10)</span>
+      <span><span style="color:var(--gold)">——</span> Playoff cutoff (6th seed)</span>
+      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In cutoff (10th seed)</span>
     </div>
   </div>
 </div>
 
-<div id="page-recap" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 Season · Tonight's Slate</div>
-    <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
-    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
-  </div></div>
+<div id="page-predictor" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2025-26 Season · Real Records</div>
+      <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+      <p class="hero-sub">Tonight's scores and matchups, plus build any custom matchup for an instant prediction.</p>
+    </div>
+  </div>
   <div class="section">
-    <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
+    <div class="section-title">Tonight's Games — {dow}, {today}</div>
+    <div class="games-grid" id="lines-grid"></div>
+    <div class="section-title">Custom Matchup Predictor</div>
+    <div class="pred-wrap">
+      <div class="team-row">
+        <div class="team-box">
+          <div class="tbadge tbadge-h">🏠 Home</div>
+          <div class="tlabel">Home Team</div>
+          <select class="tsel" id="home-sel" onchange="predict()"></select>
+        </div>
+        <div class="vs-mid"><div class="vs-big">VS</div></div>
+        <div class="team-box">
+          <div class="tbadge tbadge-a">✈️ Away</div>
+          <div class="tlabel">Away Team</div>
+          <select class="tsel" id="away-sel" onchange="predict()"></select>
+        </div>
+      </div>
+      <button class="pred-btn" onclick="predict()">GET PREDICTION</button>
+      <div id="pred-out"></div>
+    </div>
   </div>
 </div>
 
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">{dow}, {today} · Recapping {yesterday}</div>
-      <div class="dhl">LAST NIGHT IN THE NBA</div>
-      <div class="ddeck">{len(games_yesterday)} game{"s" if len(games_yesterday)!=1 else ""} played {yesterday}. Full recaps below.</div>
+      <div class="dlabel">{dow} {today} · Recapping {yesterday}</div>
+      <div class="dhl">NBA DAILY DIGEST</div>
+      <div class="ddeck">Last night's scores, standout performances, and everything that happened around the league.</div>
     </div>
     <div class="section-title">Game Recaps — {yesterday}</div>
     {recaps}
@@ -645,137 +706,155 @@ footer strong{{color:var(--white);}}
 </div>
 
 <div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, playoff picture, and the full story of the 2025-26 season.</p>
-  </div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">The Field · {today}</div>
+      <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
+      <p class="hero-sub">Power rankings, playoff picture and the full story of the season.</p>
+    </div>
+  </div>
   <div class="section">
     <div class="mag-layout">
-      <div><div class="section-title">Power Rankings</div><div id="rankings">{rankings_html}</div></div>
       <div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Current Seeds</div>{seeds_html}</div>
+        <div class="section-title">Power Rankings — {today}</div>
+        {rankings_html}
+      </div>
+      <div>
+        <div class="sidebar-card">
+          <div class="sc-title">🏆 Current Seeds</div>
+          {seeds_rows}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <div id="page-props" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">{today} · Tonight's Slate</div>
-    <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
-    <p class="hero-sub">Top prop picks with confidence ratings for tonight's games.</p>
-  </div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">{today} · Tonight's Slate</div>
+      <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+      <p class="hero-sub">Top player prop picks with confidence ratings and reasoning for tonight's games.</p>
+    </div>
+  </div>
   <div class="section">
-    <div class="section-title">Tonight's Props — {today}</div>
+    <div class="section-title">Tonight's Best Props — {today}</div>
     <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
+    <div class="disclaimer">⚠️ All lines and picks are for entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
   </div>
 </div>
 
-<footer><strong>THE FIELD — NBA</strong> · Basketball Analytics · 2025-26 Season · Updated {today}<br>
-<span>Data via ESPN · Not affiliated with the NBA · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span></footer>
+<footer>
+  <strong>THE FIELD — NBA</strong> · 2025-26 Season · Updated {today}<br>
+  <span>Data via ESPN · Not affiliated with the NBA · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
+</footer>
 
 <script>
 const EAST={east_js};
 const WEST={west_js};
 const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
-const TONIGHT_GAMES={tonight_js};
-const PROPS={props_js};
+const TONIGHT={tonight_js};
+const PROPS={PROPS_JS};
 
 function renderStandings(data,id){{
   const tb=document.getElementById(id);
   data.forEach((t,i)=>{{
     const pct=(t.w/(t.w+t.l)).toFixed(3);
-    const ns=t.net>0?'+'+t.net:String(t.net);
+    const ns=t.net>=0?'+'+t.net:String(t.net);
     const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+    const sc=(t.str||'').startsWith('W')?'streak-w':'streak-l';
     let rc='';if(i===5)rc='playoff-line';if(i===9)rc='playin-line';
-    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td class="record-w">${{t.w}}</td><td class="record-l">${{t.l}}</td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
+    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td><span class="record-w">${{t.w}}</span></td><td><span class="record-l">${{t.l}}</span></td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td><td class="${{sc}}">${{t.str||'—'}}</td></tr>`;
   }});
 }}
 
-function renderTonightGrid(){{
-  const g=document.getElementById('tonight-grid');
-  if(!TONIGHT_GAMES.length){{g.innerHTML='<p style="color:var(--gray);padding:10px 0">Schedule loading — check back soon.</p>';return;}}
-  TONIGHT_GAMES.forEach(gm=>{{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const timeLabel=isLive?'🔴 LIVE':isFinal?'FINAL':gm.time;
-    const score=isFinal||isLive?`<div class="game-score">${{gm.a_score}} – ${{gm.h_score}}</div>`:'';
-    const H=ALL.find(t=>t.t===gm.home)||{{}};
-    const A=ALL.find(t=>t.t===gm.away)||{{}};
-    const hp=H.pct||0.5, ap=A.pct||0.5, tot=hp+ap||1;
-    const hWin=Math.round((hp/tot)*100+3);
-    const aWin=100-hWin;
-    const fav=hWin>=50?gm.home:gm.away;
-    const favPct=Math.max(hWin,aWin);
-    const ou=((H.ppg||112)+(A.ppg||112))*0.97;
-    const linesHtml=!isFinal?`<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px">
-      <span style="color:#f0f4f8">FAV: ${{fav.split(' ').pop().toUpperCase()}} ${{favPct}}%</span>
-      <span style="color:var(--gray)">·</span>
-      <span style="color:var(--gold)">O/U ${{ou.toFixed(1)}}</span>
-    </div>`:'';
-    g.innerHTML+=`<div class="game-card ${{isLive?'live':''}}">
-      <div class="game-card-top">
-        <div class="game-time ${{isLive?'live-time':""}}">${{timeLabel}}</div>
-        <div class="game-matchup">
-          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${{gm.home}}</div></div>
-          ${{score||'<div class="game-vs">vs</div>'}}
-          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${{gm.away}}</div></div>
-        </div>
-        ${{linesHtml}}
-      </div>
-    </div>`;
+function renderLines(){{
+  const g=document.getElementById('lines-grid');
+  if(!TONIGHT.length){{g.innerHTML='<p style="color:var(--gray);padding:10px 0">No games tonight. Check back tomorrow.</p>';return;}}
+  TONIGHT.forEach(gm=>{{
+    const isLive=gm.is_live, isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score, aw=isFinal&&gm.a_score>gm.h_score;
+    const statusLabel=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    const scoreRow=(isFinal||isLive)?`<div class="game-score"><span class="gscore ${{hw?'w':'l'}}">${{gm.h_score}}</span><span class="gfinal">${{isFinal?'FINAL':'LIVE'}}</span><span class="gscore ${{aw?'w':'l'}}">${{gm.a_score}}</span></div>`:'';
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${{statusLabel}}</div>
+      <div class="game-matchup">
+        <div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${{gm.home}}</div></div>
+        <div class="game-vs">vs</div>
+        <div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${{gm.away}}</div></div>
+      </div></div>${{scoreRow}}</div>`;
   }});
 }}
 
+function buildSelects(){{
+  ['home-sel','away-sel'].forEach((id,i)=>{{
+    const s=document.getElementById(id);
+    ALL.forEach(t=>{{const o=document.createElement('option');o.value=t.t;o.textContent=t.t;s.appendChild(o);}});
+    s.selectedIndex=i;
+  }});
+  predict();
+}}
 
+function getT(n){{return ALL.find(t=>t.t===n);}}
+
+function predict(){{
+  const hn=document.getElementById('home-sel').value;
+  const an=document.getElementById('away-sel').value;
+  const out=document.getElementById('pred-out');
+  if(hn===an){{out.innerHTML='<p style="color:var(--gray);text-align:center;padding:20px">Select two different teams.</p>';return;}}
   const H=getT(hn),A=getT(an);if(!H||!A)return;
-  const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+3).toFixed(1));
-  const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(1));
+  const hs=Math.round((H.ppg*0.4+A.opp*0.4+H.net*0.15+5)+3);
+  const as_=Math.round(A.ppg*0.4+H.opp*0.4+A.net*0.15+5);
   const sp=hs-as_;
-  const hp=Math.min(0.93,Math.max(0.07,1/(1+Math.exp(-0.15*sp))));
-  const ap=1-hp; const hw=hp>0.5;
+  const spStr=sp>0?hn.split(' ').slice(-1)[0]+' -'+Math.abs(sp).toFixed(1):an.split(' ').slice(-1)[0]+' -'+Math.abs(sp).toFixed(1);
+  const hp=1/(1+Math.exp(-0.15*sp)); const ap=1-hp;
   const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*1.5)).toFixed(0);
-  const spStr=sp>0?`${{hn.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`:`${{an.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`;
+  const hw=hp>0.5;
   out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{Math.round(hs)}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{Math.round(as_)}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
+    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{hs}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
+    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{as_}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
     <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${{spStr}}</div></div>
     <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${{cf}}<span style="font-size:18px">/100</span></div></div>
   </div>
-  <div class="bar-wrap"><div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
-  <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
-  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
+  <div class="bar-wrap">
+    <div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div>
+  </div>
+  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}
+    <span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span>
+  </div>`;
 }}
 
 function renderProps(){{
   const g=document.getElementById('props-grid');
-  if(!PROPS.length){{g.innerHTML='<p style="color:var(--gray)">Props update nightly.</p>';return;}}
   PROPS.forEach(p=>{{
     const bc=p.conf==='HIGH'?'b-high':'b-med';
     g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
   }});
 }}
 
-function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
-function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
+function tog(hdr){{
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}}
+
+function showPage(name,btn){{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({{top:0,behavior:'smooth'}});
+}}
 
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
-renderTonightGrid();
+renderLines();
+buildSelects();
 renderProps();
 </script>
-</body></html>"""
-
-    html = html[:html.rfind("</body></html>")] + TICKER_JS + "\n</body></html>"
-    out = os.path.join(OUTPUT_DIR, "nba.html")
-    with open(out, "w") as f: f.write(html)
-    log(f"  ✅ nba.html saved ({len(html):,} chars)")
-
-
-# ════════════════════════════════════════════════════════════════════════════
-#  NHL — fetch + generate
-# ════════════════════════════════════════════════════════════════════════════
+</body>
+</html>"""
 
 def fetch_nhl_standings():
     log("🏒 Fetching NHL standings...")
@@ -811,6 +890,7 @@ def fetch_nhl_standings():
     except Exception as e:
         log(f"  ⚠️  NHL standings failed: {e}")
         return [], []
+
 
 
 def generate_nhl_html(east, west, games_yesterday, today_games):
@@ -1186,6 +1266,7 @@ def fetch_nhl_standings():
     except Exception as e:
         log(f"  ⚠️  NHL standings failed: {e}")
         return [], []
+
 
 
 
@@ -1586,6 +1667,7 @@ def fetch_nfl_standings():
     except Exception as e:
         log(f"  ⚠️  NFL standings failed: {e}")
         return [], []
+
 
 
 
