@@ -796,7 +796,11 @@ def fetch_nhl_standings():
                     gp  = w + l or 1
                     pct = round(w / gp, 3)
                     div = entry.get("team", {}).get("division", {}).get("name", "")
-                    t   = dict(t=name, w=w, l=l, pct=pct, div=div)
+                    ppg = round(float(vals.get("goalsFor", vals.get("pointsFor", 0)) or 0) / max(gp, 1), 1)
+                    opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst", 0)) or 0) / max(gp, 1), 1)
+                    net = round(ppg - opp, 1)
+                    l10 = "—"
+                    t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
                     if is_west: west.append(t)
                     else:       east.append(t)
                 except: continue
