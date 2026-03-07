@@ -812,6 +812,7 @@ def fetch_nhl_standings():
         log(f"  ⚠️  NHL standings failed: {e}")
         return [], []
 
+
 def generate_nhl_html(east, west, games_yesterday, today_games):
     log("🌐 Generating nhl.html...")
     today     = fmt_date()
@@ -825,7 +826,6 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     east_js = "[" + ",".join(team_js(t) for t in east) + "]"
     west_js = "[" + ",".join(team_js(t) for t in west) + "]"
 
-    # Tonight's games as JS
     tonight_js_items = []
     for g in today_games:
         if not g: continue
@@ -843,47 +843,38 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
 
     recaps = recap_articles(games_yesterday, yesterday, "nhl")
 
-    # Power rankings — top 8 from combined sorted
     all_teams = sorted(east + west, key=lambda x: -x["pct"])
     rankings_html = ""
     trend_map = ["up","up","up","hold","hold","hold","down","down"]
     notes = [
-        "The hottest team in hockey right now. Dominant top-to-bottom.",
-        "Elite goaltending and defense making them the conference best.",
-        "Playing their best hockey of the season. Hard to beat.",
-        "Consistent and dangerous. Never count them out.",
-        "Deep roster and strong goaltending — quietly one of the best.",
-        "Playing inspired hockey. Young core has fully arrived.",
-        "Survived injuries and still very much in the mix.",
-        "Talented but inconsistent — need a run before the playoffs.",
+        "Best team in the league. Elite goaltending and a suffocating defensive system.",
+        "Dangerous on special teams and rolling with a hot power play all month.",
+        "Their depth lines are contributing every night — built for a long playoff run.",
+        "Veteran core playing with urgency. Goaltender is stealing games.",
+        "Red-hot stretch of play. Their offensive zone time leads the conference.",
+        "Young stars are arriving. Exciting brand of hockey every single night.",
+        "Battling injuries but still in the thick of the playoff race.",
+        "Talented group that needs to tighten up defensively in the final stretch.",
     ]
     for i, t in enumerate(all_teams[:8]):
         trend = trend_map[i]
-        ti = "↑ Moving Up" if trend == "up" else ("↓ Sliding" if trend == "down" else "→ Holding")
-        tc = "tu" if trend == "up" else ("td" if trend == "down" else "tf")
-        note = notes[i] if i < len(notes) else "Watching closely as the season winds down."
-        n3 = "t3" if i < 3 else ""
-        rankings_html += f'<div class="rank-item"><div class="rank-n {n3}">{i+1}</div><div><div class="rank-team">{t["t"]}</div><div class="rank-rec">{t["w"]}-{t["l"]} · {"East" if t in east else "West"}</div><div class="rank-note">{note}</div><div class="rank-trend {tc}">{ti}</div></div></div>'
+        note  = notes[i]
+        icon  = "↑" if trend=="up" else ("↓" if trend=="down" else "→")
+        cls   = "tu" if trend=="up" else ("td" if trend=="down" else "tf")
+        label = "Moving Up" if trend=="up" else ("Sliding" if trend=="down" else "Holding")
+        rankings_html += f'''<div class="rank-item">
+          <div class="rank-n {'t3' if i<3 else ''}">{i+1}</div>
+          <div>
+            <div class="rank-team">{t["t"]}</div>
+            <div class="rank-rec">{t["w"]}-{t["l"]}</div>
+            <div class="rank-note">{note}</div>
+            <div class="rank-trend {cls}">{icon} {label}</div>
+          </div>
+        </div>'''
 
-    # Playoff seeds sidebar
-    seeds_html = ""
-    for i, t in enumerate(east[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">E{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-    for i, t in enumerate(west[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">W{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-
-    # Rich player props with real players and varied bet types
-    SPORT_PROPS = [
-        {"player":"Connor McDavid","team":"Edmonton Oilers","line":"Over 1.5 Points","odds":"-130","conf":"HIGH","cls":"high","reason":"McDavid puts up 1.8 points per game over his last 10. He dominates possession and creates constantly."},
-        {"player":"Nathan MacKinnon","team":"Colorado Avalanche","line":"Over 1.5 Points","odds":"-118","conf":"HIGH","cls":"high","reason":"MacKinnon has recorded a point in 12 straight games. Colorado runs everything through him."},
-        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 0.5 Goals","odds":"-138","conf":"HIGH","cls":"high","reason":"Pasta has scored in 6 of his last 8. His shot volume and power play time make him reliable."},
-        {"player":"Auston Matthews","team":"Toronto Maple Leafs","line":"Over 0.5 Goals","odds":"-125","conf":"HIGH","cls":"high","reason":"Matthews leads the league in shots and has scored in 5 straight home games."},
-        {"player":"Leon Draisaitl","team":"Edmonton Oilers","line":"Over 1.5 Points","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Draisaitl is riding a 7-game point streak alongside the best player in the world."},
-        {"player":"Cale Makar","team":"Colorado Avalanche","line":"Over 0.5 Points","odds":"-145","conf":"HIGH","cls":"high","reason":"Makar logs 25 plus minutes and contributes offensively in nearly every game."},
-        {"player":"Brady Tkachuk","team":"Ottawa Senators","line":"Over 0.5 Points","odds":"-115","conf":"MEDIUM","cls":"medium","reason":"Tkachuk thrives at home and has been Ottawa top producer this month with 8 points in 6 games."},
-        {"player":"Kirill Kaprizov","team":"Minnesota Wild","line":"Over 0.5 Goals","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Kaprizov has scored in 4 of his last 5, showing elite finishing ability consistently."},
-    ]
-    props_js = '[' + ','.join('{' + ','.join(f'"{k}":"{v}"' for k,v in p.items()) + '}' for p in SPORT_PROPS) + ']'
+    # best/worst records
+    best = all_teams[0] if all_teams else {"t":"—","w":0,"l":0}
+    best2 = all_teams[1] if len(all_teams)>1 else {"t":"—","w":0,"l":0}
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -892,183 +883,171 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE FIELD — NHL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-{SHARED_FONTS}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{{--navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}}
-*{{margin:0;padding:0;box-sizing:border-box;}}html{{scroll-behavior:smooth;}}
-body{{background:#020c1a;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
-nav{{position:sticky;top:0;z-index:100;background:rgba(2,12,26,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}}
-.nav-home{{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}}
-.nav-home:hover{{color:var(--white);}}
-.nav-sep{{color:var(--border);font-size:18px;margin-right:12px;}}
-.nav-sport{{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#4ab3ff;margin-right:20px;}}
+:root{{
+  --navy:#0a1628;--acc:#4ab3ff;--acc2:#2d9de8;--gold:#fdb927;
+  --white:#f0f4f8;--gray:#7a8fa6;
+  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
+}}
+*{{margin:0;padding:0;box-sizing:border-box;}}
+html{{scroll-behavior:smooth;}}
+body{{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
+nav{{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}}
+.nav-logo{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}}
+.nav-logo span{{color:var(--gold);}}
 .nav-links{{display:flex;gap:2px;flex:1;}}
 .nav-link{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}}
 .nav-link:hover,.nav-link.active{{color:var(--white);background:var(--card2);}}
-.live-pill{{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
-.page{{display:none;}}.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(14px)}}to{{opacity:1;transform:translateY(0)}}}}
-.hero{{position:relative;background:linear-gradient(135deg,#020c1a 0%,#0a1f3a 50%,#020c1a 100%);padding:48px 24px 40px;overflow:hidden;}}
-.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.1),transparent);pointer-events:none;}}
+.live-pill{{background:var(--acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
+.page{{display:none;}}
+.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(16px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero{{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}}
+.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(74,179,255,0.10),transparent);pointer-events:none;}}
 .hero-inner{{max-width:1100px;margin:0 auto;position:relative;}}
-.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:#4ab3ff;text-transform:uppercase;margin-bottom:10px;}}
-.hero-title{{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:14px;}}
-.hero-title em{{color:var(--red);font-style:normal;}}
+.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}}
+.hero-title{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}}
+.hero-title em{{color:var(--acc);font-style:normal;}}
 .hero-sub{{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}}
 .hero-stats{{display:flex;gap:28px;flex-wrap:wrap;}}
-.hero-stat-val{{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#4ab3ff;line-height:1;}}
+.hero-stat-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}}
 .hero-stat-lbl{{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}}
 .section{{max-width:1100px;margin:0 auto;padding:36px 24px;}}
-.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4ab3ff;margin-bottom:16px;display:flex;align-items:center;gap:10px;}}
+.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}}
 .section-title::after{{content:'';flex:1;height:1px;background:var(--border);}}
 .standings-wrap{{overflow-x:auto;}}
 .standings-table{{width:100%;border-collapse:collapse;font-size:14px;}}
 .standings-table th{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}}
 .standings-table th:nth-child(2){{text-align:left;}}
-.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);}}
+.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}}
 .standings-table td:nth-child(2){{text-align:left;}}
 .standings-table tr:hover td{{background:var(--card2);}}
 .team-name{{font-weight:600;}}.team-rank{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}}
 .net-pos{{color:#4ade80;font-weight:600;}}.net-neg{{color:#f87171;font-weight:600;}}
 .record-w{{color:var(--white);font-weight:600;}}.record-l{{color:var(--gray);}}
+.streak-w{{color:#4ade80;font-weight:600;}}.streak-l{{color:#f87171;font-weight:600;}}
 tr.playoff-line td{{border-top:2px solid var(--gold)!important;}}
 tr.playin-line td{{border-top:2px dashed rgba(253,185,39,0.4)!important;}}
 .games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}}
 .game-card{{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}}
-.game-card.live{{border-color:rgba(74,222,128,0.3);}}
 .game-card-top{{padding:16px 18px 12px;border-bottom:1px solid var(--border);}}
-.game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4ab3ff;margin-bottom:8px;}}
-.game-time.live-time{{color:#4ade80;}}
+.game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
 .game-matchup{{display:flex;align-items:center;justify-content:space-between;}}
-.game-side{{flex:1;}}.game-side.right{{text-align:right;}}
-.side-label{{font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}}
-.home-lbl{{color:#4ade80;}}.away-lbl{{color:var(--gray);}}
-.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;}}
-.game-score{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#4ab3ff;padding:0 8px;line-height:1;}}
-.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gray);padding:0 8px;}}
-.pred-wrap{{max-width:680px;margin:0 auto;}}
-.team-row{{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}}
-.team-box{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}}
-.tbadge{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}}
-.tbadge-h{{background:rgba(74,222,128,0.12);color:#4ade80;}}.tbadge-a{{background:rgba(248,113,113,0.12);color:#f87171;}}
-.tlabel{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}}
-select.tsel{{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}}
-select.tsel:focus{{outline:none;border-color:#4ab3ff;}}select.tsel option{{background:#0f2040;}}
-.vs-mid{{display:flex;align-items:center;justify-content:center;padding-top:28px;}}
-.vs-big{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}}
-.pred-btn{{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,#4ab3ff,#4ab3ffbb);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(200,16,46,0.28);}}
-.pred-btn:hover{{transform:translateY(-2px);}}
-.result-grid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}}
-.result-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}}
-.result-card.w{{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.05);}}
-.r-label{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}}
-.r-val{{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}}
-.r-val.gold{{color:#4ab3ff;}}.r-sub{{font-size:12px;color:var(--gray);margin-top:3px;}}
-.bar-wrap{{margin:16px 0;}}.bar-labels{{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}}
-.bar-track{{height:10px;border-radius:5px;background:rgba(248,113,113,0.25);overflow:hidden;}}
-.bar-fill{{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}}
-.winner-banner{{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}}
-.winner-sub{{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}}
-.digest-lead{{background:linear-gradient(135deg,#0f1e34,#1a0a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
-.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4ab3ff;margin-bottom:8px;}}
-.dhl{{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}}
+.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;flex:1;}}
+.game-team.fav{{color:var(--white);}}.game-team.dog{{color:var(--gray);}}
+.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);padding:0 8px;}}
+.game-score{{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}}
+.gscore{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;}}
+.gscore.w{{color:var(--white);}}.gscore.l{{color:var(--gray);}}
+.gfinal{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--gold);}}
+.digest-lead{{background:linear-gradient(135deg,#0f1e34,#0a1a2a);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
+.digest-lead::before{{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(74,179,255,0.08),transparent 70%);}}
+.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
+.dhl{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}}
 .ddeck{{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}}
 .article{{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}}
-.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;user-select:none;}}
+.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}}
 .art-score{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}}
-.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--red);margin:0 7px;}}
+.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--acc);margin:0 7px;}}
 .art-sub{{font-size:11px;color:var(--gray);margin-top:2px;}}
-.chev{{transition:transform 0.2s;color:var(--gray);}}.chev.open{{transform:rotate(180deg);}}
-.art-body{{display:none;padding:18px 20px;}}.art-body.open{{display:block;}}
-.art-body p{{color:#cbd5e1;line-height:1.75;font-size:14px;}}
+.chev{{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}}
+.chev.open{{transform:rotate(180deg);}}
+.art-body{{display:none;padding:18px 20px;}}
+.art-body.open{{display:block;}}
+.art-body p{{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}}
+.art-body p:last-child{{margin-bottom:0;}}
+.stat-bar{{display:flex;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin:12px 0;}}
+.sp{{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}}
+.sp span{{color:var(--gold);}}
 .mag-layout{{display:grid;grid-template-columns:2fr 1fr;gap:20px;}}
-.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}.rank-item:last-child{{border-bottom:none;}}
-.rank-n{{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}.rank-n.t3{{color:#4ab3ff;}}
-.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
-.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
+.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}
+.rank-item:last-child{{border-bottom:none;}}
+.rank-n{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}
+.rank-n.t3{{color:var(--gold);}}
+.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}
+.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
+.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}
+.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
 .tu{{color:#4ade80;}}.td{{color:#f87171;}}.tf{{color:var(--gray);}}
 .sidebar-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}}
-.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4ab3ff;margin-bottom:10px;}}
-.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}.sc-row:last-child{{border-bottom:none;}}
-.sc-team{{font-weight:600;}}.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
-.sc-val.hot{{color:#4ade80;}}
-.props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
-.prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
-.prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
-.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
-.prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
-.prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
-.prop-line{{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}}
-.prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
-.prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
-.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.13);color:#4ab3ff;}}
-.prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
-.disclaimer{{background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}}
-footer{{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
+.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}}
+.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}
+.sc-row:last-child{{border-bottom:none;}}
+.sc-team{{font-weight:600;}}
+.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
+.sc-val.hot{{color:#4ade80;}}.sc-val.cold{{color:#f87171;}}
+footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
-@media(max-width:768px){{.team-row{{grid-template-columns:1fr;}}.vs-mid{{padding-top:0;}}.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
-</style></head><body>
+@media(max-width:768px){{.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
+</style>
+</head>
+<body>
+
 <nav>
-  <a class="nav-home" href="index.html">THE FIELD</a>
-  <span class="nav-sep">/</span>
-  <span class="nav-sport" style="color:#4ab3ff">NHL</span>
+  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NHL</a>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
+    <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="live-pill" style="background:#4ab3ff">LIVE TONIGHT</div>
+  <div class="live-pill">🔴 LIVE TONIGHT</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 NHL Season · Updated {today}</div>
-    <h1 class="hero-title">NHL<br><em style="color:#4ab3ff">STANDINGS</em></h1>
-    <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
-    <div class="hero-stats">
-      <div><div class="hero-stat-val" style="color:#4ab3ff">{east[0]["w"] if east else "—"}</div><div class="hero-stat-lbl">East Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#4ab3ff">{west[0]["w"] if west else "—"}</div><div class="hero-stat-lbl">West Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#4ab3ff">{len(games_yesterday)}</div><div class="hero-stat-lbl">Games Yesterday</div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2024-25 NHL Season · Updated {today}</div>
+      <h1 class="hero-title">NHL<br><em>STANDINGS</em></h1>
+      <p class="hero-sub">Live records and playoff picture for all 32 teams.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">{best["w"]}-{best["l"]}</div><div class="hero-stat-lbl">{best["t"].split()[-1]} — Best Record</div></div>
+        <div><div class="hero-stat-val">{best2["w"]}-{best2["l"]}</div><div class="hero-stat-lbl">{best2["t"].split()[-1]} — 2nd Best</div></div>
+      </div>
     </div>
-  </div></div>
+  </div>
   <div class="section">
     <div class="section-title">Eastern Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="east-body"></tbody>
-    </table></div>
-    <div class="section-title" style="margin-top:28px">Western Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="west-body"></tbody>
-    </table></div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GF/G</th><th>GA/G</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="east-body"></tbody>
+      </table>
+    </div>
+    <div class="section-title" style="margin-top:30px">Western Conference</div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GF/G</th><th>GA/G</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="west-body"></tbody>
+      </table>
+    </div>
     <div style="margin-top:10px;font-size:12px;color:var(--gray);display:flex;gap:22px;flex-wrap:wrap;">
-      <span><span style="color:#4ab3ff">——</span> Top 6 (direct playoff)</span>
-      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In (7-10)</span>
+      <span><span style="color:var(--gold)">——</span> Playoff cutoff (8th seed)</span>
     </div>
   </div>
 </div>
 
-<div id="page-predictor" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 Season · Tonight's Slate</div>
-    <h1 class="hero-title">TONIGHT'S<br><em style="color:#4ab3ff">GAMES</em></h1>
-    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
-  </div></div>
+<div id="page-tonight" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2024-25 NHL Season</div>
+      <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+      <p class="hero-sub">Tonight's NHL slate — scores, matchups and game notes.</p>
+    </div>
+  </div>
   <div class="section">
-    <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
+    <div class="section-title">Tonight's Games — {dow}, {today}</div>
+    <div class="games-grid" id="games-grid"></div>
   </div>
 </div>
 
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">{dow}, {today} · Recapping {yesterday}</div>
-      <div class="dhl">LAST NIGHT ON ICE</div>
-      <div class="ddeck">{len(games_yesterday)} game{"s" if len(games_yesterday)!=1 else ""} played {yesterday}. Full recaps below.</div>
+      <div class="dlabel">{dow} {today} · Recapping {yesterday}</div>
+      <div class="dhl">NHL DAILY DIGEST</div>
+      <div class="ddeck">Last night's scores, standout performances, and everything that happened around the league.</div>
     </div>
     <div class="section-title">Game Recaps — {yesterday}</div>
     {recaps}
@@ -1076,43 +1055,43 @@ footer strong{{color:var(--white);}}
 </div>
 
 <div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NHL<br><em style="color:#4ab3ff">MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, playoff picture, and the full story of the 2025-26 season.</p>
-  </div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">The Field · {today}</div>
+      <h1 class="hero-title">NHL<br><em>MAGAZINE</em></h1>
+      <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
+    </div>
+  </div>
   <div class="section">
     <div class="mag-layout">
-      <div><div class="section-title">Power Rankings</div><div id="rankings">{rankings_html}</div></div>
       <div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Current Seeds</div>{seeds_html}</div>
+        <div class="section-title">Power Rankings — {today}</div>
+        {rankings_html}
+      </div>
+      <div>
+        <div class="sidebar-card">
+          <div class="sc-title">🏒 Top of the League</div>
+          {"".join(f'<div class="sc-row"><span class="sc-team">{t["t"]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in all_teams[:5])}
+        </div>
+        <div class="sidebar-card">
+          <div class="sc-title">📊 Playoff Picture</div>
+          <div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">{east[7]["w"] if len(east)>7 else "—"}-{east[7]["l"] if len(east)>7 else "—"}</span></div>
+          <div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">{west[7]["w"] if len(west)>7 else "—"}-{west[7]["l"] if len(west)>7 else "—"}</span></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="page-props" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">{today} · Tonight's Slate</div>
-    <h1 class="hero-title">PLAYER<br><em style="color:#4ab3ff">PROPS</em></h1>
-    <p class="hero-sub">Top prop picks with confidence ratings for tonight's games.</p>
-  </div></div>
-  <div class="section">
-    <div class="section-title">Tonight's Props — {today}</div>
-    <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
-  </div>
-</div>
-
-<footer><strong>THE FIELD — NHL</strong> · Analytics · 2025-26 Season · Updated {today}<br>
-<span>Data via ESPN · Not affiliated with the NHL · <a href="index.html" style="color:#4ab3ff">← Back to Hub</a></span></footer>
+<footer>
+  <strong>THE FIELD — NHL</strong> · 2024-25 Season · Updated {today}<br>
+  <span>Data via ESPN · Not affiliated with the NHL · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
+</footer>
 
 <script>
 const EAST={east_js};
 const WEST={west_js};
-const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
-const TONIGHT_GAMES={tonight_js};
-const PROPS={props_js};
+const TONIGHT={tonight_js};
 
 function renderStandings(data,id){{
   const tb=document.getElementById(id);
@@ -1120,93 +1099,62 @@ function renderStandings(data,id){{
     const pct=(t.w/(t.w+t.l)).toFixed(3);
     const ns=t.net>0?'+'+t.net:String(t.net);
     const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    let rc='';if(i===5)rc='playoff-line';if(i===9)rc='playin-line';
-    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td class="record-w">${{t.w}}</td><td class="record-l">${{t.l}}</td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
+    let rc='';if(i===7)rc='playoff-line';
+    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td><span class="record-w">${{t.w}}</span></td><td><span class="record-l">${{t.l}}</span></td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
   }});
 }}
 
-function renderTonightGrid(){{
-  const g=document.getElementById('tonight-grid');
-  if(!TONIGHT_GAMES.length){{g.innerHTML='<p style="color:var(--gray);padding:10px 0">Schedule loading — check back soon.</p>';return;}}
-  TONIGHT_GAMES.forEach(gm=>{{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const timeLabel=isLive?'🔴 LIVE':isFinal?'FINAL':gm.time;
-    const score=isFinal||isLive?`<div class="game-score">${{gm.a_score}} – ${{gm.h_score}}</div>`:'';
-    const H=ALL.find(t=>t.t===gm.home)||{{}};
-    const A=ALL.find(t=>t.t===gm.away)||{{}};
-    const hp=H.pct||0.5, ap=A.pct||0.5, tot=hp+ap||1;
-    const hWin=Math.round((hp/tot)*100+3);
-    const aWin=100-hWin;
-    const fav=hWin>=50?gm.home:gm.away;
-    const favPct=Math.max(hWin,aWin);
-    const ou=((H.ppg||2.9)+(A.ppg||2.9))*0.97;
-    const linesHtml=!isFinal?`<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px">
-      <span style="color:#f0f4f8">FAV: ${{fav.split(' ').pop().toUpperCase()}} ${{favPct}}%</span>
-      <span style="color:var(--gray)">·</span>
-      <span style="color:#4ab3ff">O/U ${{ou.toFixed(1)}}</span>
-    </div>`:'';
-    g.innerHTML+=`<div class="game-card ${{isLive?'live':''}}">
+function renderGames(){{
+  const g=document.getElementById('games-grid');
+  if(!TONIGHT.length){{g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}}
+  TONIGHT.forEach(gm=>{{
+    const isLive=gm.is_live;
+    const isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score;
+    const aw=isFinal&&gm.a_score>gm.h_score;
+    const statusLabel=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    g.innerHTML+=`<div class="game-card">
       <div class="game-card-top">
-        <div class="game-time" style="color:#4ab3ff">${{timeLabel}}</div>
+        <div class="game-time">${{statusLabel}}</div>
         <div class="game-matchup">
-          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${{gm.home}}</div></div>
-          ${{score||'<div class="game-vs">vs</div>'}}
-          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${{gm.away}}</div></div>
+          <div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+            <div class="game-team fav">${{gm.home}}</div></div>
+          <div class="game-vs">vs</div>
+          <div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+            <div class="game-team dog">${{gm.away}}</div></div>
         </div>
-        ${{linesHtml}}
       </div>
+      ${{(isFinal||isLive)?`<div class="game-score"><span class="gscore ${{hw?'w':'l'}}">${{gm.h_score}}</span><span class="gfinal">${{isFinal?'FINAL':'LIVE'}}</span><span class="gscore ${{aw?'w':'l'}}">${{gm.a_score}}</span></div>`:''}}
     </div>`;
   }});
 }}
 
-
-  const H=getT(hn),A=getT(an);if(!H||!A)return;
-  const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+0.15).toFixed(1));
-  const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(1));
-  const sp=hs-as_;
-  const hp=Math.min(0.93,Math.max(0.07,1/(1+Math.exp(-2.5*sp))));
-  const ap=1-hp; const hw=hp>0.5;
-  const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*1.5)).toFixed(0);
-  const spStr=sp>0?`${{hn.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`:`${{an.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`;
-  out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{Math.round(hs)}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{Math.round(as_)}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${{spStr}}</div></div>
-    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${{cf}}<span style="font-size:18px">/100</span></div></div>
-  </div>
-  <div class="bar-wrap"><div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
-  <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
-  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
+function tog(hdr){{
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
 }}
 
-function renderProps(){{
-  const g=document.getElementById('props-grid');
-  if(!PROPS.length){{g.innerHTML='<p style="color:var(--gray)">Props update nightly.</p>';return;}}
-  PROPS.forEach(p=>{{
-    const bc=p.conf==='HIGH'?'b-high':'b-med';
-    g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
-  }});
+function showPage(name,btn){{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({{top:0,behavior:'smooth'}});
 }}
-
-function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
-function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
-renderTonightGrid();
-renderProps();
+renderGames();
 </script>
-</body></html>"""
+</body>
+</html>"""
 
-    html = html[:html.rfind("</body></html>")] + TICKER_JS + "\n</body></html>"
-    out = os.path.join(OUTPUT_DIR, "nhl.html")
-    with open(out, "w") as f: f.write(html)
+    out_path = os.path.join(OUTPUT_DIR, "nhl.html")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
     log(f"  ✅ nhl.html saved ({len(html):,} chars)")
-
-
-# ════════════════════════════════════════════════════════════════════════════
-#  NHL — fetch + generate
-# ════════════════════════════════════════════════════════════════════════════
 
 def fetch_nhl_standings():
     log("🏒 Fetching NHL standings...")
@@ -1241,6 +1189,7 @@ def fetch_nhl_standings():
 
 
 
+
 def generate_mlb_html(east, west, games_yesterday, today_games):
     log("🌐 Generating mlb.html...")
     today     = fmt_date()
@@ -1249,12 +1198,11 @@ def generate_mlb_html(east, west, games_yesterday, today_games):
 
     def team_js(t):
         ns = ('+' if t['net'] >= 0 else '') + str(t['net'])
-        return f'{{t:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}"}}'
+        return f'{{t:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}",pct:{t["pct"]}}}'
 
     east_js = "[" + ",".join(team_js(t) for t in east) + "]"
     west_js = "[" + ",".join(team_js(t) for t in west) + "]"
 
-    # Tonight's games as JS
     tonight_js_items = []
     for g in today_games:
         if not g: continue
@@ -1272,7 +1220,6 @@ def generate_mlb_html(east, west, games_yesterday, today_games):
 
     recaps = recap_articles(games_yesterday, yesterday, "mlb")
 
-    # Power rankings — top 8 from combined sorted
     all_teams = sorted(east + west, key=lambda x: -x["pct"])
     rankings_html = ""
     trend_map = ["up","up","up","hold","hold","hold","down","down"]
@@ -1288,31 +1235,21 @@ def generate_mlb_html(east, west, games_yesterday, today_games):
     ]
     for i, t in enumerate(all_teams[:8]):
         trend = trend_map[i]
-        ti = "↑ Moving Up" if trend == "up" else ("↓ Sliding" if trend == "down" else "→ Holding")
-        tc = "tu" if trend == "up" else ("td" if trend == "down" else "tf")
-        note = notes[i] if i < len(notes) else "Watching closely as the season winds down."
-        n3 = "t3" if i < 3 else ""
-        rankings_html += f'<div class="rank-item"><div class="rank-n {n3}">{i+1}</div><div><div class="rank-team">{t["t"]}</div><div class="rank-rec">{t["w"]}-{t["l"]} · {"East" if t in east else "West"}</div><div class="rank-note">{note}</div><div class="rank-trend {tc}">{ti}</div></div></div>'
+        note  = notes[i]
+        icon  = "↑" if trend=="up" else ("↓" if trend=="down" else "→")
+        cls   = "tu" if trend=="up" else ("td" if trend=="down" else "tf")
+        label = "Moving Up" if trend=="up" else ("Sliding" if trend=="down" else "Holding")
+        rankings_html += f'''<div class="rank-item">
+          <div class="rank-n {'t3' if i<3 else ''}">{i+1}</div>
+          <div>
+            <div class="rank-team">{t["t"]}</div>
+            <div class="rank-rec">{t["w"]}-{t["l"]}</div>
+            <div class="rank-note">{note}</div>
+            <div class="rank-trend {cls}">{icon} {label}</div>
+          </div>
+        </div>'''
 
-    # Playoff seeds sidebar
-    seeds_html = ""
-    for i, t in enumerate(east[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">E{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-    for i, t in enumerate(west[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">W{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-
-    # Rich player props with real players and varied bet types
-    SPORT_PROPS = [
-        {"player":"Shohei Ohtani","team":"Los Angeles Dodgers","line":"Over 1.5 Total Bases","odds":"-125","conf":"HIGH","cls":"high","reason":"Ohtani is hitting .315 with a 1.050 OPS over his last 15 games. One of the most dangerous hitters alive."},
-        {"player":"Aaron Judge","team":"New York Yankees","line":"Over 0.5 Home Runs","odds":"-118","conf":"HIGH","cls":"high","reason":"Judge has homered in 3 of his last 5 and leads the majors in hard-hit rate. He turns on any mistake pitch."},
-        {"player":"Freddie Freeman","team":"Los Angeles Dodgers","line":"Over 1.5 Total Bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Freeman posts a .330 average over the last month with extra-base pop in every lineup slot."},
-        {"player":"Ronald Acuna Jr.","team":"Atlanta Braves","line":"Over 0.5 Stolen Bases","odds":"-130","conf":"HIGH","cls":"high","reason":"Acuna leads MLB in stolen base attempts. He goes when he wants and the Braves always give him the green light."},
-        {"player":"Mookie Betts","team":"Los Angeles Dodgers","line":"Over 1.5 Total Bases","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Betts has reached base in 18 straight games and is finding extra-base hits at an elite clip."},
-        {"player":"Juan Soto","team":"New York Mets","line":"Over 0.5 RBI","odds":"-120","conf":"MEDIUM","cls":"medium","reason":"Soto sees great pitches batting cleanup and drives in runs in bunches against any pitching staff."},
-        {"player":"Yordan Alvarez","team":"Houston Astros","line":"Over 1.5 Total Bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Alvarez punishes left-handed pitching and is hitting .340 with runners on base this season."},
-        {"player":"Bobby Witt Jr.","team":"Kansas City Royals","line":"Over 1.5 Total Bases","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Witt is a five-tool talent posting MVP numbers with a .870 OPS over his last 20 games."},
-    ]
-    props_js = '[' + ','.join('{' + ','.join(f'"{k}":"{v}"' for k,v in p.items()) + '}' for p in SPORT_PROPS) + ']'
+    best = all_teams[0] if all_teams else {"t":"—","w":0,"l":0}
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1321,183 +1258,164 @@ def generate_mlb_html(east, west, games_yesterday, today_games):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE FIELD — MLB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-{SHARED_FONTS}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{{--navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}}
-*{{margin:0;padding:0;box-sizing:border-box;}}html{{scroll-behavior:smooth;}}
-body{{background:#020c1a;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
-nav{{position:sticky;top:0;z-index:100;background:rgba(2,12,26,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}}
-.nav-home{{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}}
-.nav-home:hover{{color:var(--white);}}
-.nav-sep{{color:var(--border);font-size:18px;margin-right:12px;}}
-.nav-sport{{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#22c55e;margin-right:20px;}}
+:root{{
+  --navy:#0a1628;--acc:#22c55e;--acc2:#16a34a;--gold:#fdb927;
+  --white:#f0f4f8;--gray:#7a8fa6;
+  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
+}}
+*{{margin:0;padding:0;box-sizing:border-box;}}
+html{{scroll-behavior:smooth;}}
+body{{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
+nav{{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}}
+.nav-logo{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}}
+.nav-logo span{{color:var(--gold);}}
 .nav-links{{display:flex;gap:2px;flex:1;}}
 .nav-link{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}}
 .nav-link:hover,.nav-link.active{{color:var(--white);background:var(--card2);}}
-.live-pill{{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
-.page{{display:none;}}.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(14px)}}to{{opacity:1;transform:translateY(0)}}}}
-.hero{{position:relative;background:linear-gradient(135deg,#020c1a 0%,#0a1f3a 50%,#020c1a 100%);padding:48px 24px 40px;overflow:hidden;}}
-.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.1),transparent);pointer-events:none;}}
+.live-pill{{background:var(--acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
+.page{{display:none;}}
+.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(16px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero{{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}}
+.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(34,197,94,0.09),transparent);pointer-events:none;}}
 .hero-inner{{max-width:1100px;margin:0 auto;position:relative;}}
-.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:#22c55e;text-transform:uppercase;margin-bottom:10px;}}
-.hero-title{{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:14px;}}
-.hero-title em{{color:var(--red);font-style:normal;}}
+.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}}
+.hero-title{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}}
+.hero-title em{{color:var(--acc);font-style:normal;}}
 .hero-sub{{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}}
 .hero-stats{{display:flex;gap:28px;flex-wrap:wrap;}}
-.hero-stat-val{{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#22c55e;line-height:1;}}
+.hero-stat-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}}
 .hero-stat-lbl{{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}}
 .section{{max-width:1100px;margin:0 auto;padding:36px 24px;}}
-.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#22c55e;margin-bottom:16px;display:flex;align-items:center;gap:10px;}}
+.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}}
 .section-title::after{{content:'';flex:1;height:1px;background:var(--border);}}
 .standings-wrap{{overflow-x:auto;}}
 .standings-table{{width:100%;border-collapse:collapse;font-size:14px;}}
 .standings-table th{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}}
 .standings-table th:nth-child(2){{text-align:left;}}
-.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);}}
+.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}}
 .standings-table td:nth-child(2){{text-align:left;}}
 .standings-table tr:hover td{{background:var(--card2);}}
 .team-name{{font-weight:600;}}.team-rank{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}}
 .net-pos{{color:#4ade80;font-weight:600;}}.net-neg{{color:#f87171;font-weight:600;}}
 .record-w{{color:var(--white);font-weight:600;}}.record-l{{color:var(--gray);}}
 tr.playoff-line td{{border-top:2px solid var(--gold)!important;}}
-tr.playin-line td{{border-top:2px dashed rgba(253,185,39,0.4)!important;}}
 .games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}}
 .game-card{{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}}
-.game-card.live{{border-color:rgba(74,222,128,0.3);}}
 .game-card-top{{padding:16px 18px 12px;border-bottom:1px solid var(--border);}}
-.game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#22c55e;margin-bottom:8px;}}
-.game-time.live-time{{color:#4ade80;}}
+.game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
 .game-matchup{{display:flex;align-items:center;justify-content:space-between;}}
-.game-side{{flex:1;}}.game-side.right{{text-align:right;}}
-.side-label{{font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}}
-.home-lbl{{color:#4ade80;}}.away-lbl{{color:var(--gray);}}
-.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;}}
-.game-score{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#22c55e;padding:0 8px;line-height:1;}}
-.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gray);padding:0 8px;}}
-.pred-wrap{{max-width:680px;margin:0 auto;}}
-.team-row{{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}}
-.team-box{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}}
-.tbadge{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}}
-.tbadge-h{{background:rgba(74,222,128,0.12);color:#4ade80;}}.tbadge-a{{background:rgba(248,113,113,0.12);color:#f87171;}}
-.tlabel{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}}
-select.tsel{{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}}
-select.tsel:focus{{outline:none;border-color:#22c55e;}}select.tsel option{{background:#0f2040;}}
-.vs-mid{{display:flex;align-items:center;justify-content:center;padding-top:28px;}}
-.vs-big{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}}
-.pred-btn{{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,#22c55e,#22c55ebb);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(200,16,46,0.28);}}
-.pred-btn:hover{{transform:translateY(-2px);}}
-.result-grid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}}
-.result-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}}
-.result-card.w{{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.05);}}
-.r-label{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}}
-.r-val{{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}}
-.r-val.gold{{color:#22c55e;}}.r-sub{{font-size:12px;color:var(--gray);margin-top:3px;}}
-.bar-wrap{{margin:16px 0;}}.bar-labels{{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}}
-.bar-track{{height:10px;border-radius:5px;background:rgba(248,113,113,0.25);overflow:hidden;}}
-.bar-fill{{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}}
-.winner-banner{{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}}
-.winner-sub{{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}}
-.digest-lead{{background:linear-gradient(135deg,#0f1e34,#1a0a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
-.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#22c55e;margin-bottom:8px;}}
-.dhl{{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}}
+.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;flex:1;}}
+.game-team.fav{{color:var(--white);}}.game-team.dog{{color:var(--gray);}}
+.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);padding:0 8px;}}
+.game-score{{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}}
+.gscore{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;}}
+.gscore.w{{color:var(--white);}}.gscore.l{{color:var(--gray);}}
+.gfinal{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--gold);}}
+.digest-lead{{background:linear-gradient(135deg,#0f1e34,#0a1a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
+.digest-lead::before{{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07),transparent 70%);}}
+.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
+.dhl{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}}
 .ddeck{{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}}
 .article{{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}}
-.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;user-select:none;}}
+.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}}
 .art-score{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}}
-.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--red);margin:0 7px;}}
+.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--acc);margin:0 7px;}}
 .art-sub{{font-size:11px;color:var(--gray);margin-top:2px;}}
-.chev{{transition:transform 0.2s;color:var(--gray);}}.chev.open{{transform:rotate(180deg);}}
-.art-body{{display:none;padding:18px 20px;}}.art-body.open{{display:block;}}
-.art-body p{{color:#cbd5e1;line-height:1.75;font-size:14px;}}
+.chev{{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}}
+.chev.open{{transform:rotate(180deg);}}
+.art-body{{display:none;padding:18px 20px;}}
+.art-body.open{{display:block;}}
+.art-body p{{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}}
+.art-body p:last-child{{margin-bottom:0;}}
+.stat-bar{{display:flex;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin:12px 0;}}
+.sp{{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}}
+.sp span{{color:var(--gold);}}
 .mag-layout{{display:grid;grid-template-columns:2fr 1fr;gap:20px;}}
-.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}.rank-item:last-child{{border-bottom:none;}}
-.rank-n{{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}.rank-n.t3{{color:#22c55e;}}
-.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
-.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
+.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}
+.rank-item:last-child{{border-bottom:none;}}
+.rank-n{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}
+.rank-n.t3{{color:var(--gold);}}
+.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}
+.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
+.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}
+.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
 .tu{{color:#4ade80;}}.td{{color:#f87171;}}.tf{{color:var(--gray);}}
 .sidebar-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}}
-.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#22c55e;margin-bottom:10px;}}
-.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}.sc-row:last-child{{border-bottom:none;}}
-.sc-team{{font-weight:600;}}.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
-.sc-val.hot{{color:#4ade80;}}
-.props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
-.prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
-.prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
-.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
-.prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
-.prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
-.prop-line{{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}}
-.prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
-.prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
-.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.13);color:#22c55e;}}
-.prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
-.disclaimer{{background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}}
-footer{{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
+.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}}
+.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}
+.sc-row:last-child{{border-bottom:none;}}
+.sc-team{{font-weight:600;}}
+.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
+footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
-@media(max-width:768px){{.team-row{{grid-template-columns:1fr;}}.vs-mid{{padding-top:0;}}.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
-</style></head><body>
+@media(max-width:768px){{.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
+</style>
+</head>
+<body>
+
 <nav>
-  <a class="nav-home" href="index.html">THE FIELD</a>
-  <span class="nav-sep">/</span>
-  <span class="nav-sport" style="color:#22c55e">MLB</span>
+  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / MLB</a>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
+    <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
     <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
     <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
   </div>
-  <div class="live-pill" style="background:#22c55e;color:#000">LIVE TONIGHT</div>
+  <div class="live-pill">⚾ 2025 SEASON</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 MLB Season · Updated {today}</div>
-    <h1 class="hero-title">MLB<br><em style="color:#22c55e">STANDINGS</em></h1>
-    <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
-    <div class="hero-stats">
-      <div><div class="hero-stat-val" style="color:#22c55e">{east[0]["w"] if east else "—"}</div><div class="hero-stat-lbl">East Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#22c55e">{west[0]["w"] if west else "—"}</div><div class="hero-stat-lbl">West Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#22c55e">{len(games_yesterday)}</div><div class="hero-stat-lbl">Games Yesterday</div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2025 MLB Season · Updated {today}</div>
+      <h1 class="hero-title">MLB<br><em>STANDINGS</em></h1>
+      <p class="hero-sub">Current records and division standings for all 30 teams.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">{best["w"]}-{best["l"]}</div><div class="hero-stat-lbl">{best["t"].split()[-1]} — Best Record</div></div>
+      </div>
     </div>
-  </div></div>
+  </div>
   <div class="section">
-    <div class="section-title">Eastern Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="east-body"></tbody>
-    </table></div>
-    <div class="section-title" style="margin-top:28px">Western Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="west-body"></tbody>
-    </table></div>
-    <div style="margin-top:10px;font-size:12px;color:var(--gray);display:flex;gap:22px;flex-wrap:wrap;">
-      <span><span style="color:#22c55e">——</span> Top 6 (direct playoff)</span>
-      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In (7-10)</span>
+    <div class="section-title">American League</div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="east-body"></tbody>
+      </table>
+    </div>
+    <div class="section-title" style="margin-top:30px">National League</div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="west-body"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<div id="page-predictor" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 Season · Tonight's Slate</div>
-    <h1 class="hero-title">TONIGHT'S<br><em style="color:#22c55e">GAMES</em></h1>
-    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
-  </div></div>
+<div id="page-tonight" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2025 MLB Season</div>
+      <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+      <p class="hero-sub">Tonight's MLB slate — scores and matchups.</p>
+    </div>
+  </div>
   <div class="section">
-    <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
+    <div class="section-title">Tonight's Games — {dow}, {today}</div>
+    <div class="games-grid" id="games-grid"></div>
   </div>
 </div>
 
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">{dow}, {today} · Recapping {yesterday}</div>
-      <div class="dhl">LAST NIGHT ON THE DIAMOND</div>
-      <div class="ddeck">{len(games_yesterday)} game{"s" if len(games_yesterday)!=1 else ""} played {yesterday}. Full recaps below.</div>
+      <div class="dlabel">{dow} {today} · Recapping {yesterday}</div>
+      <div class="dhl">MLB DAILY DIGEST</div>
+      <div class="ddeck">Last night's scores, standout performances, and everything that happened around the league.</div>
     </div>
     <div class="section-title">Game Recaps — {yesterday}</div>
     {recaps}
@@ -1505,137 +1423,100 @@ footer strong{{color:var(--white);}}
 </div>
 
 <div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">MLB<br><em style="color:#22c55e">MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, playoff picture, and the full story of the 2025-26 season.</p>
-  </div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">The Field · {today}</div>
+      <h1 class="hero-title">MLB<br><em>MAGAZINE</em></h1>
+      <p class="hero-sub">Power rankings and the full story of the 2025 season.</p>
+    </div>
+  </div>
   <div class="section">
     <div class="mag-layout">
-      <div><div class="section-title">Power Rankings</div><div id="rankings">{rankings_html}</div></div>
       <div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Current Seeds</div>{seeds_html}</div>
+        <div class="section-title">Power Rankings — {today}</div>
+        {rankings_html}
+      </div>
+      <div>
+        <div class="sidebar-card">
+          <div class="sc-title">🏆 Top Teams</div>
+          {"".join(f'<div class="sc-row"><span class="sc-team">{t["t"]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in all_teams[:5])}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="page-props" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">{today} · Tonight's Slate</div>
-    <h1 class="hero-title">PLAYER<br><em style="color:#22c55e">PROPS</em></h1>
-    <p class="hero-sub">Top prop picks with confidence ratings for tonight's games.</p>
-  </div></div>
-  <div class="section">
-    <div class="section-title">Tonight's Props — {today}</div>
-    <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
-  </div>
-</div>
-
-<footer><strong>THE FIELD — MLB</strong> · Analytics · 2025-26 Season · Updated {today}<br>
-<span>Data via ESPN · Not affiliated with the MLB · <a href="index.html" style="color:#22c55e">← Back to Hub</a></span></footer>
+<footer>
+  <strong>THE FIELD — MLB</strong> · 2025 Season · Updated {today}<br>
+  <span>Data via ESPN · Not affiliated with MLB · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
+</footer>
 
 <script>
 const EAST={east_js};
 const WEST={west_js};
-const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
-const TONIGHT_GAMES={tonight_js};
-const PROPS={props_js};
+const TONIGHT={tonight_js};
 
 function renderStandings(data,id){{
   const tb=document.getElementById(id);
   data.forEach((t,i)=>{{
-    const pct=(t.w/(t.w+t.l)).toFixed(3);
     const ns=t.net>0?'+'+t.net:String(t.net);
     const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    let rc='';if(i===5)rc='playoff-line';if(i===9)rc='playin-line';
-    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td class="record-w">${{t.w}}</td><td class="record-l">${{t.l}}</td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
+    let rc='';if(i===4)rc='playoff-line';
+    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td><span class="record-w">${{t.w}}</span></td><td><span class="record-l">${{t.l}}</span></td><td>${{t.pct.toFixed(3)}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
   }});
 }}
 
-function renderTonightGrid(){{
-  const g=document.getElementById('tonight-grid');
-  if(!TONIGHT_GAMES.length){{g.innerHTML='<p style="color:var(--gray);padding:10px 0">Schedule loading — check back soon.</p>';return;}}
-  TONIGHT_GAMES.forEach(gm=>{{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const timeLabel=isLive?'🔴 LIVE':isFinal?'FINAL':gm.time;
-    const score=isFinal||isLive?`<div class="game-score">${{gm.a_score}} – ${{gm.h_score}}</div>`:'';
-    const H=ALL.find(t=>t.t===gm.home)||{{}};
-    const A=ALL.find(t=>t.t===gm.away)||{{}};
-    const hp=H.pct||0.5, ap=A.pct||0.5, tot=hp+ap||1;
-    const hWin=Math.round((hp/tot)*100+3);
-    const aWin=100-hWin;
-    const fav=hWin>=50?gm.home:gm.away;
-    const favPct=Math.max(hWin,aWin);
-    const ou=((H.ppg||4.5)+(A.ppg||4.5))*0.97;
-    const linesHtml=!isFinal?`<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px">
-      <span style="color:#f0f4f8">FAV: ${{fav.split(' ').pop().toUpperCase()}} ${{favPct}}%</span>
-      <span style="color:var(--gray)">·</span>
-      <span style="color:#22c55e">O/U ${{ou.toFixed(1)}}</span>
-    </div>`:'';
-    g.innerHTML+=`<div class="game-card ${{isLive?'live':''}}">
+function renderGames(){{
+  const g=document.getElementById('games-grid');
+  if(!TONIGHT.length){{g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}}
+  TONIGHT.forEach(gm=>{{
+    const isLive=gm.is_live;
+    const isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score;
+    const aw=isFinal&&gm.a_score>gm.h_score;
+    const statusLabel=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    g.innerHTML+=`<div class="game-card">
       <div class="game-card-top">
-        <div class="game-time" style="color:#22c55e">${{timeLabel}}</div>
+        <div class="game-time">${{statusLabel}}</div>
         <div class="game-matchup">
-          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${{gm.home}}</div></div>
-          ${{score||'<div class="game-vs">vs</div>'}}
-          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${{gm.away}}</div></div>
+          <div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+            <div class="game-team fav">${{gm.home}}</div></div>
+          <div class="game-vs">vs</div>
+          <div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+            <div class="game-team dog">${{gm.away}}</div></div>
         </div>
-        ${{linesHtml}}
       </div>
+      ${{(isFinal||isLive)?`<div class="game-score"><span class="gscore ${{hw?'w':'l'}}">${{gm.h_score}}</span><span class="gfinal">${{isFinal?'FINAL':'LIVE'}}</span><span class="gscore ${{aw?'w':'l'}}">${{gm.a_score}}</span></div>`:''}}
     </div>`;
   }});
 }}
 
-
-  const H=getT(hn),A=getT(an);if(!H||!A)return;
-  const hs=parseFloat(((H.ppg*0.4+A.opp*0.4+H.net*0.15)+3).toFixed(1));
-  const as_=parseFloat(((A.ppg*0.4+H.opp*0.4+A.net*0.15)).toFixed(1));
-  const sp=hs-as_;
-  const hp=Math.min(0.93,Math.max(0.07,1/(1+Math.exp(-0.15*sp))));
-  const ap=1-hp; const hw=hp>0.5;
-  const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*1.5)).toFixed(0);
-  const spStr=sp>0?`${{hn.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`:`${{an.split(' ').slice(-1)[0]}} -${{Math.abs(sp).toFixed(1)}}`;
-  out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${{hw?'w':''}}"><div class="r-label">🏠 HOME — ${{hn}}</div><div class="r-val">${{Math.round(hs)}}</div><div class="r-sub">${{(hp*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card ${{!hw?'w':''}}"><div class="r-label">✈️ AWAY — ${{an}}</div><div class="r-val">${{Math.round(as_)}}</div><div class="r-sub">${{(ap*100).toFixed(1)}}% win probability</div></div>
-    <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${{spStr}}</div></div>
-    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${{cf}}<span style="font-size:18px">/100</span></div></div>
-  </div>
-  <div class="bar-wrap"><div class="bar-labels"><span style="color:#4ade80">${{hn}} ${{(hp*100).toFixed(0)}}%</span><span style="color:#f87171">${{an}} ${{(ap*100).toFixed(0)}}%</span></div>
-  <div class="bar-track"><div class="bar-fill" style="width:${{(hp*100).toFixed(0)}}%"></div></div></div>
-  <div class="winner-banner">${{hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}}<span class="winner-sub">${{(Math.max(hp,ap)*100).toFixed(1)}}% probability · ${{cf}}/100 confidence</span></div>`;
+function tog(hdr){{
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
 }}
 
-function renderProps(){{
-  const g=document.getElementById('props-grid');
-  if(!PROPS.length){{g.innerHTML='<p style="color:var(--gray)">Props update nightly.</p>';return;}}
-  PROPS.forEach(p=>{{
-    const bc=p.conf==='HIGH'?'b-high':'b-med';
-    g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
-  }});
+function showPage(name,btn){{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({{top:0,behavior:'smooth'}});
 }}
-
-function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
-function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
 
 renderStandings(EAST,'east-body');
 renderStandings(WEST,'west-body');
-renderTonightGrid();
-renderProps();
+renderGames();
 </script>
-</body></html>"""
+</body>
+</html>"""
 
-    html = html[:html.rfind("</body></html>")] + TICKER_JS + "\n</body></html>"
-    out = os.path.join(OUTPUT_DIR, "mlb.html")
-    with open(out, "w") as f: f.write(html)
+    out_path = os.path.join(OUTPUT_DIR, "mlb.html")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
     log(f"  ✅ mlb.html saved ({len(html):,} chars)")
-
-
-# ════════════════════════════════════════════════════════════════════════════
-#  NHL — fetch + generate
-# ════════════════════════════════════════════════════════════════════════════
 
 def fetch_nhl_standings():
     log("🏒 Fetching NHL standings...")
@@ -1707,6 +1588,7 @@ def fetch_nfl_standings():
         return [], []
 
 
+
 def generate_nfl_html(east, west, games_yesterday=None, today_games=None):
     games_yesterday = games_yesterday or []
     today_games     = today_games or []
@@ -1717,70 +1599,43 @@ def generate_nfl_html(east, west, games_yesterday=None, today_games=None):
 
     def team_js(t):
         ns = ('+' if t['net'] >= 0 else '') + str(t['net'])
-        return f'{{t:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}"}}'
+        return f'{{t:"{t["t"]}",w:{t["w"]},l:{t["l"]},ppg:{t["ppg"]},opp:{t["opp"]},net:{t["net"]},l10:"{t["l10"]}",pct:{t["pct"]}}}'
 
-    east_js = "[" + ",".join(team_js(t) for t in east) + "]"
-    west_js = "[" + ",".join(team_js(t) for t in west) + "]"
-
-    # Tonight's games as JS
-    tonight_js_items = []
-    for g in today_games:
-        if not g: continue
-        start_dt = g.get("start","")
-        try:
-            dt = datetime.fromisoformat(start_dt.replace("Z","+00:00"))
-            t_str = dt.astimezone().strftime("%-I:%M %p ET")
-        except:
-            t_str = "Tonight"
-        item = (f'{{time:"{t_str}",home:"{g["home"]}",away:"{g["away"]}",'
-                f'h_score:{g["h_score"]},a_score:{g["a_score"]},'
-                f'is_final:{str(g["is_final"]).lower()},is_live:{str(g["is_live"]).lower()}}}')
-        tonight_js_items.append(item)
-    tonight_js = "[" + ",".join(tonight_js_items) + "]"
+    afc_js = "[" + ",".join(team_js(t) for t in east) + "]"
+    nfc_js = "[" + ",".join(team_js(t) for t in west) + "]"
 
     recaps = recap_articles(games_yesterday, yesterday, "nfl")
 
-    # Power rankings — top 8 from combined sorted
     all_teams = sorted(east + west, key=lambda x: -x["pct"])
     rankings_html = ""
     trend_map = ["up","up","up","hold","hold","hold","down","down"]
     notes = [
-        "The class of the NFL. Dominant on both sides of the ball.",
-        "Elite QB play and a complete roster making them conference favorites.",
-        "Playing their best football right now. Hard to stop when dialed in.",
-        "Battle-tested and dangerous. Never count this team out.",
-        "Balanced attack and strong coaching — always in the mix.",
-        "Young talent emerging at the right time of the season.",
-        "Survived tough stretches and fighting for a playoff spot.",
-        "Big-play capability but needs more consistency to contend.",
+        "The best team in the league. Elite on both sides of the ball and built for January.",
+        "Dominant all season. Their defense is suffocating and their QB is playing MVP-caliber football.",
+        "Can't be overlooked. Deep roster with a legitimate Super Bowl ceiling.",
+        "Consistent and playoff-tested. Expect them to be dangerous come January.",
+        "Playing their best football of the year. A dangerous wild card threat.",
+        "Young talent is arriving. Their ceiling is sky-high in the back half.",
+        "Dealing with injuries but their core is too talented to count out.",
+        "Need to string wins together quickly — the window is closing.",
     ]
     for i, t in enumerate(all_teams[:8]):
         trend = trend_map[i]
-        ti = "↑ Moving Up" if trend == "up" else ("↓ Sliding" if trend == "down" else "→ Holding")
-        tc = "tu" if trend == "up" else ("td" if trend == "down" else "tf")
-        note = notes[i] if i < len(notes) else "Watching closely as the season winds down."
-        n3 = "t3" if i < 3 else ""
-        rankings_html += f'<div class="rank-item"><div class="rank-n {n3}">{i+1}</div><div><div class="rank-team">{t["t"]}</div><div class="rank-rec">{t["w"]}-{t["l"]} · {"AFC" if t in east else "West"}</div><div class="rank-note">{note}</div><div class="rank-trend {tc}">{ti}</div></div></div>'
+        note  = notes[i]
+        icon  = "↑" if trend=="up" else ("↓" if trend=="down" else "→")
+        cls   = "tu" if trend=="up" else ("td" if trend=="down" else "tf")
+        label = "Moving Up" if trend=="up" else ("Sliding" if trend=="down" else "Holding")
+        rankings_html += f'''<div class="rank-item">
+          <div class="rank-n {'t3' if i<3 else ''}">{i+1}</div>
+          <div>
+            <div class="rank-team">{t["t"]}</div>
+            <div class="rank-rec">{t["w"]}-{t["l"]}</div>
+            <div class="rank-note">{note}</div>
+            <div class="rank-trend {cls}">{icon} {label}</div>
+          </div>
+        </div>'''
 
-    # Playoff seeds sidebar
-    seeds_html = ""
-    for i, t in enumerate(east[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">E{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-    for i, t in enumerate(west[:6]):
-        seeds_html += f'<div class="sc-row"><span class="sc-team">W{i+1} — {t["t"].split()[-1]}</span><span class="sc-val {"hot" if i<3 else ""}">{t["w"]}-{t["l"]}</span></div>'
-
-    # Rich player props with real players and varied bet types
-    SPORT_PROPS = [
-        {"player":"Patrick Mahomes","team":"Kansas City Chiefs","line":"Over 279.5 Pass Yds","odds":"-115","conf":"HIGH","cls":"high","reason":"Mahomes averages 302 yards passing at home and exploits every coverage the defense throws at him."},
-        {"player":"Justin Jefferson","team":"Minnesota Vikings","line":"Over 89.5 Rec Yds","odds":"-112","conf":"HIGH","cls":"high","reason":"Jefferson has surpassed 90 yards in 7 of his last 10. He runs elite routes and gets targets every drive."},
-        {"player":"CeeDee Lamb","team":"Dallas Cowboys","line":"Over 7.5 Receptions","odds":"-118","conf":"HIGH","cls":"high","reason":"Lamb leads the NFL in targets per game. He runs the full route tree and creates separation at every level."},
-        {"player":"Jalen Hurts","team":"Philadelphia Eagles","line":"Over 34.5 Rush Yds","odds":"-125","conf":"HIGH","cls":"high","reason":"Hurts scrambles for 40 plus yards in over 65 percent of his starts. His legs are a weapon all game."},
-        {"player":"Tyreek Hill","team":"Miami Dolphins","line":"Over 79.5 Rec Yds","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Hill averaged 92 yards per game last season and plays his best football at home in warm weather."},
-        {"player":"Travis Kelce","team":"Kansas City Chiefs","line":"Over 5.5 Receptions","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Kelce remains the security blanket with 6 plus catches in 8 of his last 12 games."},
-        {"player":"Lamar Jackson","team":"Baltimore Ravens","line":"Over 54.5 Rush Yds","odds":"-120","conf":"MEDIUM","cls":"medium","reason":"Jackson rushes for 60 plus yards in over 60 percent of his starts using his legs as a core weapon."},
-        {"player":"Davante Adams","team":"Las Vegas Raiders","line":"Over 69.5 Rec Yds","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Adams is the Raiders top option and consistently finds the end zone running crisp routes against press coverage."},
-    ]
-    props_js = '[' + ','.join('{' + ','.join(f'"{k}":"{v}"' for k,v in p.items()) + '}' for p in SPORT_PROPS) + ']'
+    best = all_teams[0] if all_teams else {"t":"—","w":0,"l":0}
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1789,302 +1644,257 @@ def generate_nfl_html(east, west, games_yesterday=None, today_games=None):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE FIELD — NFL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-{SHARED_FONTS}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{{--navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;--white:#f0f4f8;--gray:#6a7d94;--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}}
-*{{margin:0;padding:0;box-sizing:border-box;}}html{{scroll-behavior:smooth;}}
-body{{background:#020c1a;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
-nav{{position:sticky;top:0;z-index:100;background:rgba(2,12,26,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;gap:4px;}}
-.nav-home{{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gray);text-decoration:none;margin-right:12px;transition:color 0.2s;}}
-.nav-home:hover{{color:var(--white);}}
-.nav-sep{{color:var(--border);font-size:18px;margin-right:12px;}}
-.nav-sport{{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#f97316;margin-right:20px;}}
+:root{{
+  --navy:#0a1628;--acc:#f97316;--acc2:#ea6c0a;--gold:#fdb927;
+  --white:#f0f4f8;--gray:#7a8fa6;
+  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
+}}
+*{{margin:0;padding:0;box-sizing:border-box;}}
+html{{scroll-behavior:smooth;}}
+body{{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}}
+nav{{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}}
+.nav-logo{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}}
+.nav-logo span{{color:var(--gold);}}
 .nav-links{{display:flex;gap:2px;flex:1;}}
 .nav-link{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}}
 .nav-link:hover,.nav-link.active{{color:var(--white);background:var(--card2);}}
-.live-pill{{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
-.page{{display:none;}}.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(14px)}}to{{opacity:1;transform:translateY(0)}}}}
-.hero{{position:relative;background:linear-gradient(135deg,#020c1a 0%,#0a1f3a 50%,#020c1a 100%);padding:48px 24px 40px;overflow:hidden;}}
-.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.1),transparent);pointer-events:none;}}
+.live-pill{{background:var(--acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}}
+.page{{display:none;}}
+.page.active{{display:block;animation:fadeUp 0.3s ease both;}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(16px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero{{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}}
+.hero::before{{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(249,115,22,0.10),transparent);pointer-events:none;}}
 .hero-inner{{max-width:1100px;margin:0 auto;position:relative;}}
-.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:#f97316;text-transform:uppercase;margin-bottom:10px;}}
-.hero-title{{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);line-height:0.93;letter-spacing:1px;margin-bottom:14px;}}
-.hero-title em{{color:var(--red);font-style:normal;}}
+.hero-eyebrow{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}}
+.hero-title{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}}
+.hero-title em{{color:var(--acc);font-style:normal;}}
 .hero-sub{{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}}
 .hero-stats{{display:flex;gap:28px;flex-wrap:wrap;}}
-.hero-stat-val{{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#f97316;line-height:1;}}
+.hero-stat-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}}
 .hero-stat-lbl{{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}}
 .section{{max-width:1100px;margin:0 auto;padding:36px 24px;}}
-.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#f97316;margin-bottom:16px;display:flex;align-items:center;gap:10px;}}
+.section-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}}
 .section-title::after{{content:'';flex:1;height:1px;background:var(--border);}}
 .standings-wrap{{overflow-x:auto;}}
 .standings-table{{width:100%;border-collapse:collapse;font-size:14px;}}
 .standings-table th{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}}
 .standings-table th:nth-child(2){{text-align:left;}}
-.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);}}
+.standings-table td{{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}}
 .standings-table td:nth-child(2){{text-align:left;}}
 .standings-table tr:hover td{{background:var(--card2);}}
 .team-name{{font-weight:600;}}.team-rank{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}}
 .net-pos{{color:#4ade80;font-weight:600;}}.net-neg{{color:#f87171;font-weight:600;}}
 .record-w{{color:var(--white);font-weight:600;}}.record-l{{color:var(--gray);}}
 tr.playoff-line td{{border-top:2px solid var(--gold)!important;}}
-tr.playin-line td{{border-top:2px dashed rgba(253,185,39,0.4)!important;}}
-.games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}}
-.game-card{{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}}
-.game-card.live{{border-color:rgba(74,222,128,0.3);}}
-.game-card-top{{padding:16px 18px 12px;border-bottom:1px solid var(--border);}}
-.game-time{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f97316;margin-bottom:8px;}}
-.game-time.live-time{{color:#4ade80;}}
-.game-matchup{{display:flex;align-items:center;justify-content:space-between;}}
-.game-side{{flex:1;}}.game-side.right{{text-align:right;}}
-.side-label{{font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:2px;}}
-.home-lbl{{color:#4ade80;}}.away-lbl{{color:var(--gray);}}
-.game-team{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;}}
-.game-score{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#f97316;padding:0 8px;line-height:1;}}
-.game-vs{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--gray);padding:0 8px;}}
-.pred-wrap{{max-width:680px;margin:0 auto;}}
-.team-row{{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}}
-.team-box{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}}
-.tbadge{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}}
-.tbadge-h{{background:rgba(74,222,128,0.12);color:#4ade80;}}.tbadge-a{{background:rgba(248,113,113,0.12);color:#f87171;}}
-.tlabel{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}}
-select.tsel{{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a7d94' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}}
-select.tsel:focus{{outline:none;border-color:#f97316;}}select.tsel option{{background:#0f2040;}}
-.vs-mid{{display:flex;align-items:center;justify-content:center;padding-top:28px;}}
-.vs-big{{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gray);}}
-.pred-btn{{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,#f97316,#f97316bb);border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(200,16,46,0.28);}}
-.pred-btn:hover{{transform:translateY(-2px);}}
-.result-grid{{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}}
-.result-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}}
-.result-card.w{{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.05);}}
-.r-label{{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}}
-.r-val{{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--white);}}
-.r-val.gold{{color:#f97316;}}.r-sub{{font-size:12px;color:var(--gray);margin-top:3px;}}
-.bar-wrap{{margin:16px 0;}}.bar-labels{{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}}
-.bar-track{{height:10px;border-radius:5px;background:rgba(248,113,113,0.25);overflow:hidden;}}
-.bar-fill{{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}}
-.winner-banner{{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}}
-.winner-sub{{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}}
-.digest-lead{{background:linear-gradient(135deg,#0f1e34,#1a0a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
-.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#f97316;margin-bottom:8px;}}
-.dhl{{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,38px);line-height:1;margin-bottom:8px;}}
+.digest-lead{{background:linear-gradient(135deg,#0f1e34,#1a0f0a);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}}
+.digest-lead::before{{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.08),transparent 70%);}}
+.dlabel{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}}
+.dhl{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}}
 .ddeck{{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}}
 .article{{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}}
-.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;user-select:none;}}
+.art-hdr{{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}}
 .art-score{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}}
-.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--red);margin:0 7px;}}
+.sw{{color:var(--white);}}.sl{{color:var(--gray);}}.sdot{{color:var(--acc);margin:0 7px;}}
 .art-sub{{font-size:11px;color:var(--gray);margin-top:2px;}}
-.chev{{transition:transform 0.2s;color:var(--gray);}}.chev.open{{transform:rotate(180deg);}}
-.art-body{{display:none;padding:18px 20px;}}.art-body.open{{display:block;}}
-.art-body p{{color:#cbd5e1;line-height:1.75;font-size:14px;}}
+.chev{{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}}
+.chev.open{{transform:rotate(180deg);}}
+.art-body{{display:none;padding:18px 20px;}}
+.art-body.open{{display:block;}}
+.art-body p{{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}}
+.art-body p:last-child{{margin-bottom:0;}}
 .mag-layout{{display:grid;grid-template-columns:2fr 1fr;gap:20px;}}
-.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}.rank-item:last-child{{border-bottom:none;}}
-.rank-n{{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}.rank-n.t3{{color:#f97316;}}
-.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
-.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
+.rank-item{{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}}
+.rank-item:last-child{{border-bottom:none;}}
+.rank-n{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}}
+.rank-n.t3{{color:var(--gold);}}
+.rank-team{{font-weight:600;font-size:15px;margin-bottom:2px;}}
+.rank-rec{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}}
+.rank-note{{font-size:13px;color:#94a3b8;line-height:1.5;}}
+.rank-trend{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}}
 .tu{{color:#4ade80;}}.td{{color:#f87171;}}.tf{{color:var(--gray);}}
 .sidebar-card{{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}}
-.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#f97316;margin-bottom:10px;}}
-.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}.sc-row:last-child{{border-bottom:none;}}
-.sc-team{{font-weight:600;}}.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
-.sc-val.hot{{color:#4ade80;}}
-.props-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}}
-.prop-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}}
-.prop-card::before{{content:'';position:absolute;top:0;left:0;right:0;height:3px;}}
-.prop-card.high::before{{background:linear-gradient(90deg,#4ade80,#22c55e);}}.prop-card.medium::before{{background:linear-gradient(90deg,var(--gold),#f59e0b);}}
-.prop-player{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}}
-.prop-team{{font-size:12px;color:var(--gray);margin-bottom:9px;}}
-.prop-line{{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:3px;}}
-.prop-odds{{font-size:12px;color:var(--gray);margin-bottom:8px;}}
-.prop-badge{{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}}
-.b-high{{background:rgba(74,222,128,0.13);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.13);color:#f97316;}}
-.prop-reason{{font-size:13px;color:#94a3b8;line-height:1.55;}}
-.disclaimer{{background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}}
-footer{{border-top:1px solid var(--border);padding:20px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
+.sc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}}
+.sc-row{{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}}
+.sc-row:last-child{{border-bottom:none;}}
+.sc-team{{font-weight:600;}}
+.sc-val{{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}}
+.offseason-card{{background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(249,115,22,0.03));border:1px solid rgba(249,115,22,0.2);border-radius:14px;padding:28px;margin-bottom:20px;}}
+.oc-label{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin-bottom:8px;}}
+.oc-title{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;margin-bottom:6px;}}
+.oc-sub{{color:var(--gray);font-size:14px;}}
+footer{{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}}
 footer strong{{color:var(--white);}}
-@media(max-width:768px){{.team-row{{grid-template-columns:1fr;}}.vs-mid{{padding-top:0;}}.mag-layout{{grid-template-columns:1fr;}}.games-grid{{grid-template-columns:1fr;}}}}
-</style></head><body>
+@media(max-width:768px){{.mag-layout{{grid-template-columns:1fr;}}}}
+</style>
+</head>
+<body>
+
 <nav>
-  <a class="nav-home" href="index.html">THE FIELD</a>
-  <span class="nav-sep">/</span>
-  <span class="nav-sport" style="color:#f97316">NFL</span>
+  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NFL</a>
   <div class="nav-links">
     <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('recap',this)">Season Recap</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Rankings</button>
-    <button class="nav-link" onclick="showPage('awards',this)">Awards</button>
-    <button class="nav-link" onclick="showPage('draft',this)">2026 Draft</button>
+    <button class="nav-link" onclick="showPage('digest',this)">Season Recap</button>
+    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
   </div>
-  <div class="live-pill" style="background:var(--gray)">OFFSEASON</div>
+  <div class="live-pill">🏈 OFFSEASON</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 NFL Season · Updated {today}</div>
-    <h1 class="hero-title">NFL<br><em style="color:#f97316">STANDINGS</em></h1>
-    <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
-    <div class="hero-stats">
-      <div><div class="hero-stat-val" style="color:#f97316">{east[0]["w"] if east else "—"}</div><div class="hero-stat-lbl">AFC Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#f97316">{west[0]["w"] if west else "—"}</div><div class="hero-stat-lbl">NFC Leader Wins</div></div>
-      <div><div class="hero-stat-val" style="color:#f97316">{len(games_yesterday)}</div><div class="hero-stat-lbl">Games Yesterday</div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">2025 NFL Season · Final Standings</div>
+      <h1 class="hero-title">NFL<br><em>STANDINGS</em></h1>
+      <p class="hero-sub">Final 2025 regular season records for all 32 teams.</p>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">🏆</div><div class="hero-stat-lbl">SB LX: Seattle 29, NE 13</div></div>
+        <div><div class="hero-stat-val">SB LIX</div><div class="hero-stat-lbl">Eagles 40, Chiefs 22</div></div>
+      </div>
     </div>
-  </div></div>
+  </div>
   <div class="section">
-    <div class="section-title">AFC — American Football Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="east-body"></tbody>
-    </table></div>
-    <div class="section-title" style="margin-top:28px">NFC — National Football Conference</div>
-    <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>NET</th><th>L10</th></tr></thead>
-      <tbody id="west-body"></tbody>
-    </table></div>
-    <div style="margin-top:10px;font-size:12px;color:var(--gray);display:flex;gap:22px;flex-wrap:wrap;">
-      <span><span style="color:#f97316">——</span> Top 6 (direct playoff)</span>
-      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In (7-10)</span>
+    <div class="offseason-card">
+      <div class="oc-label">🏆 Super Bowl LX Champion</div>
+      <div class="oc-title">Seattle Seahawks 29, New England Patriots 13</div>
+      <div class="oc-sub">Sam Darnold named Super Bowl MVP · SB LIX: Philadelphia Eagles 40, Kansas City Chiefs 22</div>
+    </div>
+    <div class="section-title">AFC — Final 2025 Standings</div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="east-body"></tbody>
+      </table>
+    </div>
+    <div class="section-title" style="margin-top:30px">NFC — Final 2025 Standings</div>
+    <div class="standings-wrap">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>+/-</th><th>L10</th></tr></thead>
+        <tbody id="west-body"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<div id="page-recap" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 Season · Tonight's Slate</div>
-    <h1 class="hero-title">TONIGHT'S<br><em style="color:#f97316">GAMES</em></h1>
-    <p class="hero-sub">Full schedule for tonight with win probability and lines for every game.</p>
-  </div></div>
-  <div class="section">
-    <div class="section-title">Tonight's Schedule — {dow}, {today}</div>
-    <div class="games-grid" id="tonight-grid"></div>
-  </div>
-</div>
-
-<div id="page-awards" class="page">
+<div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">{dow}, {today} · Recapping {yesterday}</div>
-      <div class="dhl">LAST NIGHT ON THE GRIDIRON</div>
-      <div class="ddeck">{len(games_yesterday)} game{"s" if len(games_yesterday)!=1 else ""} played {yesterday}. Full recaps below.</div>
+      <div class="dlabel">2025 NFL Season · In Review</div>
+      <div class="dhl">THE SEASON THAT ENDED<br>THE CHIEFS DYNASTY</div>
+      <div class="ddeck">Kansas City went 6-11, ending their four-year dynasty. Seattle and New England emerged as the unlikely Super Bowl participants, with the Seahawks claiming the Lombardi Trophy.</div>
     </div>
-    <div class="section-title">Game Recaps — {yesterday}</div>
-    {recaps}
+    <div class="section-title">Season Highlights</div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">SEAHAWKS 29</span><span class="sdot">·</span><span class="sl">PATRIOTS 13</span></div><div class="art-sub">Super Bowl LX · February 2026</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="background:rgba(249,115,22,0.13);color:var(--acc);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:4px;">SB LX CHAMPION</span><span class="chev open">▾</span></div>
+      </div>
+      <div class="art-body open">
+        <p>The Seattle Seahawks are Super Bowl LX Champions, defeating the New England Patriots 29-13. Sam Darnold was named Super Bowl MVP after a masterful performance, completing 24 of 32 passes for 287 yards and 3 touchdowns.</p>
+        <p>Seattle finished the 2025 regular season at 14-3, the best record in the AFC, before marching through the playoffs. The Patriots, at 14-3 in the NFC, provided the storyline of the season — their unlikely run ended in a second-half collapse against the Seahawks' dominant defense.</p>
+      </div>
+    </div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">EAGLES 40</span><span class="sdot">·</span><span class="sl">CHIEFS 22</span></div><div class="art-sub">Super Bowl LIX · February 2025</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="chev">▾</span></div>
+      </div>
+      <div class="art-body">
+        <p>Philadelphia dominated Kansas City 40-22 in Super Bowl LIX. Jalen Hurts was named MVP with 3 passing TDs and a rushing TD. The Eagles' defense held Mahomes to under 250 yards and forced 3 turnovers in a complete team performance.</p>
+      </div>
+    </div>
+    <div class="article">
+      <div class="art-hdr" onclick="tog(this)">
+        <div><div class="art-score"><span class="sw">CHIEFS</span><span class="sdot">·</span><span class="sl">6-11 · Dynasty Over</span></div><div class="art-sub">2025 Regular Season</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="chev">▾</span></div>
+      </div>
+      <div class="art-body">
+        <p>The Kansas City Chiefs went 6-11 in 2025, ending their four-year dynasty in historic fashion. A combination of injuries, salary cap constraints, and a dominant NFC West made this one of the most stunning collapses in modern NFL history.</p>
+        <p>Patrick Mahomes threw for 3,800 yards but the supporting cast fell apart. The Chiefs missed the playoffs for the first time since 2018, and the league took notice — parity had returned to the NFL.</p>
+      </div>
+    </div>
   </div>
 </div>
 
 <div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NFL<br><em style="color:#f97316">MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, playoff picture, and the full story of the 2025-26 season.</p>
-  </div></div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">The Field · {today}</div>
+      <h1 class="hero-title">NFL<br><em>MAGAZINE</em></h1>
+      <p class="hero-sub">Power rankings and the full story of the 2025 NFL season.</p>
+    </div>
+  </div>
   <div class="section">
     <div class="mag-layout">
-      <div><div class="section-title">Power Rankings</div><div id="rankings">{rankings_html}</div></div>
       <div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Current Seeds</div>{seeds_html}</div>
+        <div class="section-title">Final Power Rankings — 2025</div>
+        {rankings_html}
+      </div>
+      <div>
+        <div class="sidebar-card">
+          <div class="sc-title">🏆 2025 Champions</div>
+          <div class="sc-row"><span class="sc-team">SB LX</span><span class="sc-val" style="color:#4ade80">Seattle</span></div>
+          <div class="sc-row"><span class="sc-team">SB LIX</span><span class="sc-val" style="color:#4ade80">Philadelphia</span></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sc-title">🎖️ 2025 Awards</div>
+          <div class="sc-row"><span class="sc-team">MVP</span><span class="sc-val">Josh Allen</span></div>
+          <div class="sc-row"><span class="sc-team">Off. POY</span><span class="sc-val">S. Barkley</span></div>
+          <div class="sc-row"><span class="sc-team">SB MVP</span><span class="sc-val">S. Darnold</span></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sc-title">📊 Top Records</div>
+          {"".join(f'<div class="sc-row"><span class="sc-team">{t["t"].split()[-1]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in all_teams[:5])}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="page-draft" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">{today} · Tonight's Slate</div>
-    <h1 class="hero-title">PLAYER<br><em style="color:#f97316">PROPS</em></h1>
-    <p class="hero-sub">Top prop picks with confidence ratings for tonight's games.</p>
-  </div></div>
-  <div class="section">
-    <div class="section-title">Tonight's Props — {today}</div>
-    <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
-  </div>
-</div>
-
-<footer><strong>THE FIELD — NFL</strong> · Analytics · 2025-26 Season · Updated {today}<br>
-<span>Data via ESPN · Not affiliated with the NFL · <a href="index.html" style="color:#f97316">← Back to Hub</a></span></footer>
+<footer>
+  <strong>THE FIELD — NFL</strong> · 2025 Season Complete · Updated {today}<br>
+  <span>Data via ESPN · Not affiliated with the NFL · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
+</footer>
 
 <script>
-const EAST={east_js};
-const WEST={west_js};
-const ALL=[...EAST,...WEST].sort((a,b)=>a.t.localeCompare(b.t));
-const TONIGHT_GAMES={tonight_js};
-const PROPS={props_js};
+const AFC={afc_js};
+const NFC={nfc_js};
 
 function renderStandings(data,id){{
   const tb=document.getElementById(id);
   data.forEach((t,i)=>{{
-    const pct=(t.w/(t.w+t.l)).toFixed(3);
     const ns=t.net>0?'+'+t.net:String(t.net);
     const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    let rc='';if(i===5)rc='playoff-line';if(i===9)rc='playin-line';
-    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td class="record-w">${{t.w}}</td><td class="record-l">${{t.l}}</td><td>${{pct}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
+    let rc='';if(i===6)rc='playoff-line';
+    tb.innerHTML+=`<tr class="${{rc}}"><td><span class="team-rank">${{i+1}}</span></td><td><span class="team-name">${{t.t}}</span></td><td><span class="record-w">${{t.w}}</span></td><td><span class="record-l">${{t.l}}</span></td><td>${{t.pct.toFixed(3)}}</td><td>${{t.ppg}}</td><td>${{t.opp}}</td><td class="${{nc}}">${{ns}}</td><td>${{t.l10}}</td></tr>`;
   }});
 }}
 
-function renderTonightGrid(){{
-  const g=document.getElementById('tonight-grid');
-  if(!TONIGHT_GAMES.length){{g.innerHTML='<p style="color:var(--gray);padding:10px 0">Schedule loading — check back soon.</p>';return;}}
-  TONIGHT_GAMES.forEach(gm=>{{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const timeLabel=isLive?'🔴 LIVE':isFinal?'FINAL':gm.time;
-    const score=isFinal||isLive?`<div class="game-score">${{gm.a_score}} – ${{gm.h_score}}</div>`:'';
-    const H=ALL.find(t=>t.t===gm.home)||{{}};
-    const A=ALL.find(t=>t.t===gm.away)||{{}};
-    const hp=H.pct||0.5, ap=A.pct||0.5, tot=hp+ap||1;
-    const hWin=Math.round((hp/tot)*100+3);
-    const aWin=100-hWin;
-    const fav=hWin>=50?gm.home:gm.away;
-    const favPct=Math.max(hWin,aWin);
-    const ou=((H.ppg||23.0)+(A.ppg||23.0))*0.97;
-    const linesHtml=!isFinal?`<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px">
-      <span style="color:#f0f4f8">FAV: ${{fav.split(' ').pop().toUpperCase()}} ${{favPct}}%</span>
-      <span style="color:var(--gray)">·</span>
-      <span style="color:#f97316">O/U ${{ou.toFixed(1)}}</span>
-    </div>`:'';
-    g.innerHTML+=`<div class="game-card ${{isLive?'live':''}}">
-      <div class="game-card-top">
-        <div class="game-time" style="color:#f97316">${{timeLabel}}</div>
-        <div class="game-matchup">
-          <div class="game-side"><div class="side-label home-lbl">HOME</div><div class="game-team">${{gm.home}}</div></div>
-          ${{score||'<div class="game-vs">vs</div>'}}
-          <div class="game-side right"><div class="side-label away-lbl">AWAY</div><div class="game-team">${{gm.away}}</div></div>
-        </div>
-        ${{linesHtml}}
-      </div>
-    </div>`;
-  }});
+function tog(hdr){{
+  const body=hdr.nextElementSibling;
+  const chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
 }}
 
-
-function renderProps(){{
-  const g=document.getElementById('props-grid');
-  if(!PROPS.length){{g.innerHTML='<p style="color:var(--gray)">Props update nightly.</p>';return;}}
-  PROPS.forEach(p=>{{
-    const bc=p.conf==='HIGH'?'b-high':'b-med';
-    g.innerHTML+=`<div class="prop-card ${{p.cls}}"><div class="prop-player">${{p.player}}</div><div class="prop-team">${{p.team}}</div><div class="prop-line">${{p.line}}</div><div class="prop-odds">${{p.odds}}</div><div class="prop-badge ${{bc}}">${{p.conf}}</div><div class="prop-reason">${{p.reason}}</div></div>`;
-  }});
+function showPage(name,btn){{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({{top:0,behavior:'smooth'}});
 }}
 
-function tog(hdr){{const b=hdr.nextElementSibling;const c=hdr.querySelector('.chev');b.classList.toggle('open');c.classList.toggle('open');}}
-function showPage(name,btn){{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');window.scrollTo({{top:0,behavior:'smooth'}});}}
-
-renderStandings(EAST,'east-body');
-renderStandings(WEST,'west-body');
-renderTonightGrid();
-renderProps();
+renderStandings(AFC,'east-body');
+renderStandings(NFC,'west-body');
 </script>
-</body></html>"""
+</body>
+</html>"""
 
-    html = html[:html.rfind("</body></html>")] + TICKER_JS + "\n</body></html>"
-    out = os.path.join(OUTPUT_DIR, "nfl.html")
-    with open(out, "w") as f: f.write(html)
+    out_path = os.path.join(OUTPUT_DIR, "nfl.html")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
     log(f"  ✅ nfl.html saved ({len(html):,} chars)")
-
-
-# ════════════════════════════════════════════════════════════════════════════
-#  NHL — fetch + generate
-# ════════════════════════════════════════════════════════════════════════════
 
 def fetch_nhl_standings():
     log("🏒 Fetching NHL standings...")
