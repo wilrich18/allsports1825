@@ -2305,6 +2305,47 @@ def netlify_deploy():
 #  MAIN
 # ════════════════════════════════════════════════════════════════════════════
 
+
+def fetch_mlb_standings():
+    log("⚾ Fetching MLB standings...")
+    try:
+        r = safe_get("https://site.api.espn.com/apis/v2/sports/baseball/mlb/standings",
+                     {"season": datetime.now().year})
+        east, west = [], []
+        for conf_data in r.json().get("children", []):
+            conf_name = conf_data.get("name", "").upper()
+            is_west = "NATIONAL" not in conf_name  # AL=west bucket, NL=east bucket
+            # Handle both flat and nested structures
+            entries = conf_data.get("standings", {}).get("entries", [])
+            if not entries:
+                for div in conf_data.get("children", []):
+                    entries += div.get("standings", {}).get("entries", [])
+            for entry in entries:
+                try:
+                    name = entry["team"]["displayName"]
+                    vals = {s["name"]: s.get("value", 0) for s in entry.get("stats", [])}
+                    w   = int(vals.get("wins", 0) or 0)
+                    l   = int(vals.get("losses", 0) or 0)
+                    gp  = w + l or 1
+                    pct = round(w / gp, 3)
+                    ppg = round(float(vals.get("runs", vals.get("pointsFor", 0)) or 0) / max(gp, 1), 1)
+                    opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst", 0)) or 0) / max(gp, 1), 1)
+                    net = round(ppg - opp, 1)
+                    l10 = "—"
+                    div = entry.get("team", {}).get("division", {}).get("name", "")
+                    t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
+                    if is_west: west.append(t)
+                    else:       east.append(t)
+                except: continue
+        east.sort(key=lambda x: -x["pct"])
+        west.sort(key=lambda x: -x["pct"])
+        log(f"  ✅ MLB: {len(east)} AL + {len(west)} NL")
+        return east, west
+    except Exception as e:
+        log(f"  ⚠️  MLB standings failed: {e}")
+        return [], []
+
+
 def main():
     log("=" * 55)
     log("🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER")
@@ -2339,7 +2380,8 @@ def main():
     mlb_yesterday = [g for g in mlb_yesterday if g and g["is_final"]]
     mlb_today     = [parse_game(e, "mlb") for e in espn_scores_today("baseball/mlb")]
     mlb_today     = [g for g in mlb_today if g]
-    generate_mlb_html(mlb_standings, mlb_yesterday, mlb_today)
+    mlb_east, mlb_west = mlb_standings
+    generate_mlb_html(mlb_east, mlb_west, mlb_yesterday, mlb_today)
 
     # ── NFL ──────────────────────────────────────────────────
     log("\n[4/4] NFL")
