@@ -846,8 +846,8 @@ def fetch_nhl_standings():
                     net = round(ppg - opp, 1)
                     l10 = "—"
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_al:   east.append(t)
-                    else:       west.append(t)
+                    if is_al: east.append(t)
+                    else: west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -921,6 +921,8 @@ def generate_nhl_html(east, west, games_yesterday, today_games):
     # best/worst records
     best = all_teams[0] if all_teams else {"t":"—","w":0,"l":0}
     best2 = all_teams[1] if len(all_teams)>1 else {"t":"—","w":0,"l":0}
+
+    sidebar_top5 = "".join(f'<div class="sc-row"><span class="sc-team">{t["t"]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in all_teams[:5])
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1132,7 +1134,7 @@ footer strong{{color:var(--white);}}
       <div>
         <div class="sidebar-card">
           <div class="sc-title">🏒 Top of the League</div>
-          {"".join(f'<div class="sc-row"><span class="sc-team">{t["t"]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in all_teams[:5])}
+          {sidebar_top5}
         </div>
         <div class="sidebar-card">
           <div class="sc-title">📊 Playoff Picture</div>
@@ -1270,8 +1272,8 @@ def fetch_nhl_standings():
                     pct = round(w / gp, 3)
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, div=div)
-                    if is_al:   east.append(t)
-                    else:       west.append(t)
+                    if is_al: east.append(t)
+                    else: west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -1681,8 +1683,8 @@ def fetch_nhl_standings():
                     pct = round(w / gp, 3)
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, div=div)
-                    if is_al:   east.append(t)
-                    else:       west.append(t)
+                    if is_al: east.append(t)
+                    else: west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -2064,8 +2066,8 @@ def fetch_nhl_standings():
                     net = round(ppg - opp, 1)
                     l10 = "—"
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_al:   east.append(t)
-                    else:       west.append(t)
+                    if is_al: east.append(t)
+                    else: west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -2268,7 +2270,7 @@ def fetch_mlb_standings():
         east, west = [], []
         for conf_data in r.json().get("children", []):
             conf_name = conf_data.get("name", "").upper()
-            is_al   = "AMERICAN" in conf_name
+            is_al = conf_name.startswith("AL") or "AMERICAN" in conf_name
             # Handle both flat and nested structures
             entries = conf_data.get("standings", {}).get("entries", [])
             if not entries:
@@ -2288,8 +2290,8 @@ def fetch_mlb_standings():
                     l10 = "—"
                     div = entry.get("team", {}).get("division", {}).get("name", "")
                     t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_al:   east.append(t)
-                    else:       west.append(t)
+                    if is_al: east.append(t)
+                    else: west.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
