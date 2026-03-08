@@ -417,16 +417,16 @@ def fallback_recap(home, h_score, away, a_score):
 def fetch_bdl_recap(home, h_score, away, a_score):
     """Fetch NBA game recap with player stats via BallDontLie API."""
     try:
-        import urllib.request, json as _json, urllib.parse
         from datetime import timedelta
         ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         hdrs = {"Authorization": BALLDONTLIE_API_KEY}
 
         # Step 1 — find the game ID
-        params = urllib.parse.urlencode({"dates[]": ydate, "per_page": "30"})
-        req = urllib.request.Request(f"https://api.balldontlie.io/nba/v1/games?{params}", headers=hdrs)
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            games = _json.loads(resp.read()).get("data", [])
+        r = requests.get("https://api.balldontlie.io/nba/v1/games",
+                         params={"dates[]": ydate, "per_page": 30},
+                         headers=hdrs, timeout=10)
+        r.raise_for_status()
+        games = r.json().get("data", [])
 
         game_id = ht = at = hs = as_ = None
         for g in games:
@@ -442,10 +442,11 @@ def fetch_bdl_recap(home, h_score, away, a_score):
             return fallback_recap(home, h_score, away, a_score)
 
         # Step 2 — get player stats for the game
-        params2 = urllib.parse.urlencode({"game_ids[]": game_id, "per_page": "50"})
-        req2 = urllib.request.Request(f"https://api.balldontlie.io/nba/v1/stats?{params2}", headers=hdrs)
-        with urllib.request.urlopen(req2, timeout=10) as resp2:
-            stats = _json.loads(resp2.read()).get("data", [])
+        r2 = requests.get("https://api.balldontlie.io/nba/v1/stats",
+                          params={"game_ids[]": game_id, "per_page": 50},
+                          headers=hdrs, timeout=10)
+        r2.raise_for_status()
+        stats = r2.json().get("data", [])
 
         # Sort by points, get top performers from each team
         stats = [s for s in stats if s.get("pts") is not None]
