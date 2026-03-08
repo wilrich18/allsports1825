@@ -2079,7 +2079,6 @@ def fetch_nhl_standings():
         log(f"  ⚠️  NHL standings failed: {e}")
         return [], []
 
-
 def generate_hub_html():
     log("🌐 Generating index.html...")
     today = fmt_date()
@@ -2313,7 +2312,6 @@ def fetch_mlb_standings():
     except Exception as e:
         log(f"  ⚠️  MLB standings failed: {e}")
         return [], []
-
 
 def main():
     log("=" * 55)
