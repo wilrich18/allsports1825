@@ -268,7 +268,7 @@ def storyline_articles(items):
         html += f'''<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{h}</div></div><span class="chev">▼</span></div><div class="art-body">{b}</div></div>'''
     return html
 
-def digest_articles(games):
+def digest_articles(games, sport=""):
     if not games:
         return '<p style="color:var(--gray)">No games yesterday.</p>'
     html = ""
@@ -277,11 +277,9 @@ def digest_articles(games):
         aw = g['a_score'] > g['h_score']
         h_style = "font-weight:700;color:var(--white)" if hw else "color:var(--gray)"
         a_style = "font-weight:700;color:var(--white)" if aw else "color:var(--gray)"
-        winner = g['home'] if hw else g['away']
-        margin = abs(g['h_score'] - g['a_score'])
-        body = f"{winner} won by {margin}. Final: {g['home']} {g['h_score']}, {g['away']} {g['a_score']}."
         score_display = f'<span style="{h_style}">{g["home"]} {g["h_score"]}</span> &mdash; <span style="{a_style}">{g["away"]} {g["a_score"]}</span>'
-        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{score_display}</div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">{body}</div></div>"""
+        recap = generate_recap(sport, g["home"], g["h_score"], g["away"], g["a_score"])
+        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{score_display}</div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">{recap}</div></div>"""
     return html
 
 def magazine_page_html(sport, today, rnks, sidebar_html, storylines_html):
@@ -390,6 +388,45 @@ def fetch_games(sport, league):
         log(f"  ⚠️  Games fetch failed: {e}")
         return []
 
+
+def generate_recap(sport, home, h_score, away, a_score):
+    """Call Claude API to write a 3-sentence game recap."""
+    try:
+        import urllib.request, json as _json
+        winner = home if h_score > a_score else away
+        loser  = away if h_score > a_score else home
+        w_score = h_score if h_score > a_score else a_score
+        l_score = a_score if h_score > a_score else h_score
+        margin = abs(h_score - a_score)
+        prompt = (
+            f"Write a 3-sentence {sport} game recap. "
+            f"{winner} defeated {loser} {w_score}-{l_score} (margin of {margin}). "
+            f"Write it like a sports journalist — mention the final score, "
+            f"describe the nature of the win (close, dominant, overtime, blowout, etc.), "
+            f"and end with a line about what it means for each team. "
+            f"No made-up stats. Keep it to exactly 3 sentences."
+        )
+        payload = _json.dumps({
+            "model": "claude-haiku-4-5-20251001",
+            "max_tokens": 200,
+            "messages": [{"role": "user", "content": prompt}]
+        }).encode()
+        req = urllib.request.Request(
+            "https://api.anthropic.com/v1/messages",
+            data=payload,
+            headers={"Content-Type": "application/json", "anthropic-version": "2023-06-01"},
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = _json.loads(resp.read())
+            return data["content"][0]["text"].strip()
+    except Exception as e:
+        log(f"  ⚠️  Recap generation failed: {e}")
+        winner = home if h_score > a_score else away
+        loser  = away if h_score > a_score else home
+        margin = abs(h_score - a_score)
+        tone = "dominated" if margin > 15 else "edged" if margin <= 5 else "defeated"
+        return f"{winner} {tone} {loser} by {margin} in last night's contest, finishing with a final score of {home} {h_score}, {away} {a_score}. The result moves {winner} forward in the standings while {loser} looks to bounce back. More details will be available as the box score is processed."
 
 def fetch_yesterday(sport, league):
     """Fetch completed games from yesterday via ESPN scoreboard dates param."""
@@ -756,7 +793,7 @@ def generate_nba_html(east, west, yesterday, today_games):
       <div class="dhl">Last Night NBA Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    {digest_articles(yesterday)}
+    {digest_articles(yesterday,"NBA")}
   </div>
 </div>
 {nba_mag_html}
@@ -824,7 +861,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
       <div class="dhl">Last Night NHL Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    {digest_articles(yesterday)}
+    {digest_articles(yesterday,"NHL")}
   </div>
 </div>
 """ + magazine_page_html("NHL", today, rnks,
@@ -896,7 +933,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
     alwc = f"{al[5]['w']}-{al[5]['l']}" if len(al)>5 else "—"
     nlwc = f"{nl[5]['w']}-{nl[5]['l']}" if len(nl)>5 else "—"
     digest_note = yesterday if yesterday else []
-    digest_fallback = digest_articles(digest_note) if digest_note else '<p style="color:var(--gray)">Spring training underway — regular season starts April 1.</p>'
+    digest_fallback = digest_articles(digest_note,"MLB") if digest_note else '<p style="color:var(--gray)">Spring training underway — regular season starts April 1.</p>'
 
     tabs = """<button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
       <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
