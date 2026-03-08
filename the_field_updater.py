@@ -127,6 +127,10 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.
 .prop-badge{{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}}
 .b-high{{background:rgba(74,222,128,0.15);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.15);color:var(--gold);}}
 .prop-reason{{font-size:12px;color:var(--gray);line-height:1.5;}}
+.game-lines{{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:rgba(0,0,0,0.15);}}
+.gl-item{{flex:1;min-width:60px;text-align:center;}}
+.gl-lbl{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}}
+.gl-val{{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;color:var(--gold);}}
 footer{{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--gray);}}
 footer strong{{color:var(--white);}}"""
 
@@ -154,11 +158,10 @@ function renderStandings(data,id){
   Object.keys(divs).sort().forEach(dn=>{
     const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
     tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
-    teams.forEach(t=>{
+    teams.forEach((t,di)=>{
       const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-      const rank=rankMap[t.t]||'';
-      tb.innerHTML+=`<tr><td><span class="team-rank">${rank}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
     });
   });
 }
@@ -170,7 +173,16 @@ function renderGames(){
     const isLive=gm.is_live,isFinal=gm.is_final;
     const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
     const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
+    const hasLine=gm.spread||gm.total||gm.h_ml;
+    let linesHtml='';
+    if(hasLine&&!isFinal&&!isLive){
+      const spread=gm.spread?`<div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${gm.spread}</div></div>`:'';
+      const total=gm.total?`<div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${gm.total}</div></div>`:'';
+      const hml=gm.h_ml?`<div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${gm.h_ml}</div></div>`:'';
+      const aml=gm.a_ml?`<div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${gm.a_ml}</div></div>`:'';
+      linesHtml=`<div class="game-lines">${spread}${total}${hml}${aml}</div>`;
+    }
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${linesHtml}${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
   });
 }
 function tog(hdr){
@@ -250,13 +262,51 @@ def rankings_html(teams_all, picks):
 def sidebar_rows(teams):
     return "".join(f'<div class="sc-row"><span class="sc-team">{t["t"]}</span><span class="sc-val">{t["w"]}-{t["l"]}</span></div>' for t in teams[:5])
 
+def storyline_articles(items):
+    """items = list of (headline, body) tuples"""
+    html = ""
+    for h, b in items:
+        html += f'''<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{h}</div></div><span class="chev">▼</span></div><div class="art-body">{b}</div></div>'''
+    return html
+
 def digest_articles(games):
     if not games:
         return '<p style="color:var(--gray)">No games yesterday.</p>'
     html = ""
-    for g in games[:6]:
-        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{g['home']} {g['h_score']} — {g['away']} {g['a_score']}</div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Final score from last night's action.</div></div>"""
+    for g in games[:8]:
+        hw = g['h_score'] > g['a_score']
+        aw = g['a_score'] > g['h_score']
+        h_style = "font-weight:700;color:var(--white)" if hw else "color:var(--gray)"
+        a_style = "font-weight:700;color:var(--white)" if aw else "color:var(--gray)"
+        winner = g['home'] if hw else g['away']
+        margin = abs(g['h_score'] - g['a_score'])
+        body = f"{winner} won by {margin}. Final: {g['home']} {g['h_score']}, {g['away']} {g['a_score']}."
+        score_display = f'<span style="{h_style}">{g["home"]} {g["h_score"]}</span> &mdash; <span style="{a_style}">{g["away"]} {g["a_score"]}</span>'
+        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{score_display}</div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">{body}</div></div>"""
     return html
+
+def magazine_page_html(sport, today, rnks, sidebar_html, storylines_html):
+    """Full magazine page with power rankings + storylines + sidebar."""
+    return f"""<div id="page-magazine" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">The Field · {today}</div>
+    <h1 class="hero-title">{sport}<br><em>MAGAZINE</em></h1>
+    <p class="hero-sub">Power rankings, season storylines and what to watch.</p>
+  </div></div>
+  <div class="section">
+    <div class="mag-layout">
+      <div>
+        <div class="section-title">⚡ Power Rankings — {today}</div>
+        {rnks}
+        <div style="margin-top:36px">
+          <div class="section-title">📰 Season Storylines</div>
+          {storylines_html}
+        </div>
+      </div>
+      <div>{sidebar_html}</div>
+    </div>
+  </div>
+</div>"""
 
 def tonight_page_html(sport, today):
     return f"""<div id="page-tonight" class="page">
@@ -311,6 +361,22 @@ def fetch_games(sport, league):
                 t_str = f"{h}:00 {ampm} ET"
             except:
                 t_str = "TBD"
+            # Parse odds
+            spread = total = h_ml = a_ml = None
+            try:
+                odds_list = comp.get("odds", [])
+                if odds_list:
+                    o = odds_list[0]
+                    raw_spread = o.get("details","")        # e.g. "LAL -5.5"
+                    raw_ou     = o.get("overUnder","")       # e.g. 225.5
+                    raw_hml    = o.get("homeTeamOdds",{}).get("moneyLine","")
+                    raw_aml    = o.get("awayTeamOdds",{}).get("moneyLine","")
+                    if raw_spread: spread = str(raw_spread)
+                    if raw_ou:     total  = f"O/U {raw_ou}"
+                    if raw_hml:    h_ml   = f"{'+' if int(raw_hml)>0 else ''}{raw_hml}"
+                    if raw_aml:    a_ml   = f"{'+' if int(raw_aml)>0 else ''}{raw_aml}"
+            except:
+                pass
             out.append(dict(
                 time=t_str,
                 home=home.get("team",{}).get("displayName","TBD"),
@@ -318,6 +384,92 @@ def fetch_games(sport, league):
                 h_score=int(home.get("score",0) or 0),
                 a_score=int(away.get("score",0) or 0),
                 is_final=is_final, is_live=is_live,
+                spread=spread, total=total, h_ml=h_ml, a_ml=a_ml,
+            ))
+        return out
+    except Exception as e:
+        log(f"  ⚠️  Games fetch failed: {e}")
+        return []
+
+
+def fetch_yesterday(sport, league):
+    """Fetch completed games from yesterday via ESPN scoreboard dates param."""
+    try:
+        from datetime import timedelta
+        ydate = (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
+        r = safe_get(
+            f"https://site.api.espn.com/apis/site/v2/sports/{sport}/{league}/scoreboard",
+            {"dates": ydate}
+        )
+        out = []
+        for ev in r.json().get("events", []):
+            comp  = ev["competitions"][0]
+            teams = {t["homeAway"]: t for t in comp["competitors"]}
+            home, away = teams.get("home",{}), teams.get("away",{})
+            stype = comp.get("status",{}).get("type",{})
+            is_final = stype.get("completed", False)
+            if not is_final:
+                continue  # only include finished games for the digest
+            h_score = int(home.get("score", 0) or 0)
+            a_score = int(away.get("score", 0) or 0)
+            winner = home.get("team",{}).get("displayName","") if h_score > a_score else away.get("team",{}).get("displayName","")
+            out.append(dict(
+                home=home.get("team",{}).get("displayName","TBD"),
+                away=away.get("team",{}).get("displayName","TBD"),
+                h_score=h_score,
+                a_score=a_score,
+                winner=winner,
+                is_final=True, is_live=False,
+            ))
+        log(f"  📰 Yesterday ({ydate}): {len(out)} final games for {league}")
+        return out
+    except Exception as e:
+        log(f"  ⚠️  Yesterday fetch failed ({league}): {e}")
+        return []
+    try:
+        r = safe_get(f"https://site.api.espn.com/apis/site/v2/sports/{sport}/{league}/scoreboard")
+        out = []
+        for ev in r.json().get("events", []):
+            comp  = ev["competitions"][0]
+            teams = {t["homeAway"]: t for t in comp["competitors"]}
+            home, away = teams.get("home",{}), teams.get("away",{})
+            stype = comp.get("status",{}).get("type",{})
+            is_final = stype.get("completed", False)
+            is_live  = stype.get("name","") in ("STATUS_IN_PROGRESS","STATUS_HALFTIME")
+            # Parse time
+            try:
+                from datetime import timezone
+                dt = datetime.fromisoformat(comp.get("date","").replace("Z","+00:00"))
+                h = dt.hour - 5
+                ampm = "AM" if h < 12 else "PM"
+                h = h % 12 or 12
+                t_str = f"{h}:00 {ampm} ET"
+            except:
+                t_str = "TBD"
+            # Parse odds
+            spread = total = h_ml = a_ml = None
+            try:
+                odds_list = comp.get("odds", [])
+                if odds_list:
+                    o = odds_list[0]
+                    raw_spread = o.get("details","")        # e.g. "LAL -5.5"
+                    raw_ou     = o.get("overUnder","")       # e.g. 225.5
+                    raw_hml    = o.get("homeTeamOdds",{}).get("moneyLine","")
+                    raw_aml    = o.get("awayTeamOdds",{}).get("moneyLine","")
+                    if raw_spread: spread = str(raw_spread)
+                    if raw_ou:     total  = f"O/U {raw_ou}"
+                    if raw_hml:    h_ml   = f"{'+' if int(raw_hml)>0 else ''}{raw_hml}"
+                    if raw_aml:    a_ml   = f"{'+' if int(raw_aml)>0 else ''}{raw_aml}"
+            except:
+                pass
+            out.append(dict(
+                time=t_str,
+                home=home.get("team",{}).get("displayName","TBD"),
+                away=away.get("team",{}).get("displayName","TBD"),
+                h_score=int(home.get("score",0) or 0),
+                a_score=int(away.get("score",0) or 0),
+                is_final=is_final, is_live=is_live,
+                spread=spread, total=total, h_ml=h_ml, a_ml=a_ml,
             ))
         return out
     except Exception as e:
@@ -567,10 +719,31 @@ def generate_nba_html(east, west, yesterday, today_games):
       <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
       <button class="nav-link" onclick="showPage('props',this)">Player Props</button>"""
 
+    nba_sidebar = (
+        '<div class="sidebar-card"><div class="sc-title">&#127936; Best Records</div>' + sidebar_rows(all_t) + '</div>'
+        '<div class="sidebar-card"><div class="sc-title">&#128202; Playoff Picture</div>'
+        '<div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">' + e8 + '</span></div>'
+        '<div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">' + w8 + '</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">&#128293; Scoring Leaders</div>'
+        '<div class="sc-row"><span class="sc-team">SGA</span><span class="sc-val">32.5 PPG</span></div>'
+        '<div class="sc-row"><span class="sc-team">D. Mitchell</span><span class="sc-val">26.8 PPG</span></div>'
+        '<div class="sc-row"><span class="sc-team">G. Antetokounmpo</span><span class="sc-val">26.3 PPG</span></div>'
+        '<div class="sc-row"><span class="sc-team">A. Edwards</span><span class="sc-val">25.9 PPG</span></div>'
+        '<div class="sc-row"><span class="sc-team">J. Tatum</span><span class="sc-val">25.1 PPG</span></div>'
+        '</div>'
+    )
+    nba_stories = storyline_articles([
+        ("SGA MVP Season", "Shai Gilgeous-Alexander is putting together one of the most dominant scoring seasons in NBA history, averaging 32.5 PPG. He is the heavy favorite for MVP and leading OKC to the best record in the West."),
+        ("The Cavs Historic Run", "Cleveland is on track for one of the best records in franchise history. Donovan Mitchell has elevated his game to true superstar status, and the supporting cast is among the deepest in the league."),
+        ("Jokic Doing Jokic Things", "Nikola Jokic is quietly putting together another MVP-caliber season averaging a triple-double. The question for Denver is whether the supporting cast can stay healthy enough for a deep playoff run."),
+        ("Tatum Evolution", "Jayson Tatum has taken a leap as a playmaker this season, averaging career highs in assists. The Celtics look ready to defend their title with one of the deepest rosters in the East."),
+    ])
+    nba_mag_html = magazine_page_html("NBA", today, rnks, nba_sidebar, nba_stories)
     pages = f"""
 <div id="page-standings" class="page active">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 NBA Season · Updated {today}</div>
+    <div class="hero-eyebrow">2025-26 NBA Season Updated {today}</div>
     <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
     <p class="hero-sub">Full Eastern and Western Conference standings.</p>
   </div></div>
@@ -580,32 +753,14 @@ def generate_nba_html(east, west, yesterday, today_games):
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">Daily Digest · {today}</div>
-      <div class="dhl">Last Night's NBA Action</div>
+      <div class="dlabel">Daily Digest {today}</div>
+      <div class="dhl">Last Night NBA Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
     {digest_articles(yesterday)}
   </div>
 </div>
-<div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
-  </div></div>
-  <div class="section">
-    <div class="mag-layout">
-      <div><div class="section-title">Power Rankings — {today}</div>{rnks}</div>
-      <div>
-        <div class="sidebar-card"><div class="sc-title">🏀 Best Records</div>{sidebar_rows(all_t)}</div>
-        <div class="sidebar-card"><div class="sc-title">📊 Playoff Picture</div>
-          <div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">{e8}</span></div>
-          <div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">{w8}</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+{nba_mag_html}
 {props_page_html("NBA",today)}
 """
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
@@ -656,7 +811,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
     pages = f"""
 <div id="page-standings" class="page active">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2024-25 NHL Season · Updated {today}</div>
+    <div class="hero-eyebrow">2024-25 NHL Season Updated {today}</div>
     <h1 class="hero-title">NHL<br><em>STANDINGS</em></h1>
     <p class="hero-sub">Eastern and Western Conference standings.</p>
   </div></div>
@@ -666,34 +821,38 @@ def generate_nhl_html(east, west, yesterday, today_games):
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">Daily Digest · {today}</div>
-      <div class="dhl">Last Night's NHL Action</div>
+      <div class="dlabel">Daily Digest {today}</div>
+      <div class="dhl">Last Night NHL Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
     {digest_articles(yesterday)}
   </div>
 </div>
-<div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NHL<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
-  </div></div>
-  <div class="section">
-    <div class="mag-layout">
-      <div><div class="section-title">Power Rankings — {today}</div>{rnks}</div>
-      <div>
-        <div class="sidebar-card"><div class="sc-title">🏒 Top of the League</div>{sidebar_rows(all_t)}</div>
-        <div class="sidebar-card"><div class="sc-title">📊 Playoff Picture</div>
-          <div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">{e8}</span></div>
-          <div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">{w8}</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{props_page_html("NHL",today)}
-"""
+""" + magazine_page_html("NHL", today, rnks,
+        '<div class="sidebar-card"><div class="sc-title">Top of the League</div>' + sidebar_rows(all_t) + '</div>'
+        '<div class="sidebar-card"><div class="sc-title">Playoff Picture</div>'
+        '<div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">' + e8 + '</span></div>'
+        '<div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">' + w8 + '</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">Points Leaders</div>'
+        '<div class="sc-row"><span class="sc-team">N. MacKinnon</span><span class="sc-val">94 pts</span></div>'
+        '<div class="sc-row"><span class="sc-team">K. Kaprizov</span><span class="sc-val">35 G</span></div>'
+        '<div class="sc-row"><span class="sc-team">N. Kucherov</span><span class="sc-val">88 pts</span></div>'
+        '<div class="sc-row"><span class="sc-team">C. McDavid</span><span class="sc-val">85 pts</span></div>'
+        '<div class="sc-row"><span class="sc-team">C. Makar</span><span class="sc-val">72 pts</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">Goalie Leaders</div>'
+        '<div class="sc-row"><span class="sc-team">B. Bussi (CAR)</span><span class="sc-val">25-3-1</span></div>'
+        '<div class="sc-row"><span class="sc-team">A. Vasilevskiy</span><span class="sc-val">.922 SV%</span></div>'
+        '<div class="sc-row"><span class="sc-team">J. Shesterkin</span><span class="sc-val">.918 SV%</span></div>'
+        '</div>',
+        storyline_articles([
+            ("Colorado Title Run", "The Avalanche are the best team in hockey entering March. MacKinnon and Makar are putting up historic numbers and Colorado has the top overall seed locked in their sights."),
+            ("Ovechkin Record Chase", "Alex Ovechkin is closing in on Wayne Gretzky all-time goals record, one of the most anticipated milestones in sports history. Every Capitals game is must-watch."),
+            ("Kaprizov Franchise Record", "Kirill Kaprizov became the Wild all-time leading goal scorer this week with his 35th goal of the season. The Wild are a legitimate Cup contender."),
+            ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
+        ])
+    ) + props_page_html("NHL", today)
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
@@ -759,34 +918,37 @@ def generate_mlb_html(al, nl, yesterday, today_games):
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">Daily Digest · {today}</div>
-      <div class="dhl">Last Night's MLB Action</div>
+      <div class="dlabel">Daily Digest {today}</div>
+      <div class="dhl">Last Night MLB Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
     {digest_fallback}
   </div>
 </div>
-<div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">MLB<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
-  </div></div>
-  <div class="section">
-    <div class="mag-layout">
-      <div><div class="section-title">Power Rankings — {today}</div>{rnks}</div>
-      <div>
-        <div class="sidebar-card"><div class="sc-title">⚾ Best Records</div>{sidebar_rows(all_t) if all_t else '<div class="sc-row"><span class="sc-team">Season starts April 1</span></div>'}</div>
-        <div class="sidebar-card"><div class="sc-title">📊 Playoff Picture</div>
-          <div class="sc-row"><span class="sc-team">AL Wild Card</span><span class="sc-val">{alwc}</span></div>
-          <div class="sc-row"><span class="sc-team">NL Wild Card</span><span class="sc-val">{nlwc}</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{props_page_html("MLB",today)}
-"""
+""" + magazine_page_html("MLB", today, rnks,
+        '<div class="sidebar-card"><div class="sc-title">Best Records</div>'
+        + (sidebar_rows(all_t) if all_t else '<div class="sc-row"><span class="sc-team">Season starts April 1</span></div>')
+        + '</div>'
+        '<div class="sidebar-card"><div class="sc-title">Playoff Picture</div>'
+        '<div class="sc-row"><span class="sc-team">AL Wild Card</span><span class="sc-val">' + alwc + '</span></div>'
+        '<div class="sc-row"><span class="sc-team">NL Wild Card</span><span class="sc-val">' + nlwc + '</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">2025 World Series</div>'
+        '<div class="sc-row"><span class="sc-team">Dodgers</span><span class="sc-val">Champs</span></div>'
+        '<div class="sc-row"><span class="sc-team">WS MVP</span><span class="sc-val">F. Freeman</span></div>'
+        '<div class="sc-row"><span class="sc-team">Season MVP</span><span class="sc-val">S. Ohtani</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">Key Dates</div>'
+        '<div class="sc-row"><span class="sc-team">Opening Day</span><span class="sc-val">April 1</span></div>'
+        '<div class="sc-row"><span class="sc-team">All-Star Game</span><span class="sc-val">July 2026</span></div>'
+        '</div>',
+        storyline_articles([
+            ("Spring Training 2026", "Teams are putting the finishing touches on rosters before Opening Day on April 1. The Dodgers enter as defending World Series champions with Shohei Ohtani healthy and ready for a full season. The Yankees, Braves, and Phillies all look like legitimate threats."),
+            ("Ohtani Two-Way Return", "After focusing on hitting in 2024, Shohei Ohtani is returning to the mound in 2026. The combination of elite pitching and his 50-HR bat makes him the most valuable player in baseball history."),
+            ("Judge Power Throne", "Aaron Judge continues to be the most feared power hitter in baseball. He is coming off back-to-back HR crowns and the Yankees have built a rotation around him capable of a World Series run."),
+            ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
+        ])
+    ) + props_page_html("MLB", today)
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
@@ -836,31 +998,31 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
     <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">2025 Season Awards</div><div class="art-teams">AP NFL Awards</div></div><span class="chev">▼</span></div><div class="art-body">MVP: Josh Allen (Buffalo Bills). Super Bowl MVP: Kenneth Walker III (135 rush yds). Defensive POY: Myles Garrett. Coach of the Year: Mike Macdonald (Seattle).</div></div>
   </div>
 </div>
-<div id="page-magazine" class="page">
-  <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · {today}</div>
-    <h1 class="hero-title">NFL<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings and the 2025 season story.</p>
-  </div></div>
-  <div class="section">
-    <div class="mag-layout">
-      <div><div class="section-title">End-of-Season Power Rankings</div>{rnks}</div>
-      <div>
-        <div class="sidebar-card"><div class="sc-title">🏈 Final Records</div>{sidebar_rows(all_t)}</div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Super Bowl LIX</div>
-          <div class="sc-row"><span class="sc-team">Seahawks</span><span class="sc-val">29</span></div>
-          <div class="sc-row"><span class="sc-team">Patriots</span><span class="sc-val">13</span></div>
-          <div class="sc-row"><span class="sc-team">MVP</span><span class="sc-val">K. Walker III</span></div>
-        </div>
-        <div class="sidebar-card"><div class="sc-title">📅 2026 NFL Draft</div>
-          <div class="sc-row"><span class="sc-team">Date</span><span class="sc-val">April 23-25</span></div>
-          <div class="sc-row"><span class="sc-team">Location</span><span class="sc-val">Green Bay</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 """
+    nfl_sidebar = (
+        '<div class="sidebar-card"><div class="sc-title">🏈 Final Records</div>' + sidebar_rows(all_t) + '</div>'
+        '<div class="sidebar-card"><div class="sc-title">🏆 Super Bowl LX</div>'
+        '<div class="sc-row"><span class="sc-team">Seahawks</span><span class="sc-val">29</span></div>'
+        '<div class="sc-row"><span class="sc-team">Patriots</span><span class="sc-val">13</span></div>'
+        '<div class="sc-row"><span class="sc-team">SB MVP</span><span class="sc-val">K. Walker III</span></div>'
+        '<div class="sc-row"><span class="sc-team">AP MVP</span><span class="sc-val">M. Stafford</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">📅 2026 NFL Draft</div>'
+        '<div class="sc-row"><span class="sc-team">Date</span><span class="sc-val">April 23-25</span></div>'
+        '<div class="sc-row"><span class="sc-team">Location</span><span class="sc-val">Green Bay</span></div>'
+        '</div>'
+        '<div class="sidebar-card"><div class="sc-title">🗓️ 2026 Season</div>'
+        '<div class="sc-row"><span class="sc-team">Kickoff</span><span class="sc-val">September 2026</span></div>'
+        '<div class="sc-row"><span class="sc-team">Super Bowl LXI</span><span class="sc-val">Feb 2027</span></div>'
+        '</div>'
+    )
+    nfl_stories = storyline_articles([
+        ("Seattle's Championship Run", "Kenneth Walker III rushed for 135 yards and was named Super Bowl LX MVP as the Seattle Seahawks dominated the New England Patriots 29-13. Mike Macdonald's defense was suffocating all season — Drake Maye was sacked six times in the biggest game of his young career."),
+        ("Stafford Wins AP MVP", "Matthew Stafford won the 2025 AP NFL MVP award, throwing for 46 touchdowns in arguably the greatest season of his career. The Rams' offense under Stafford and Sean McVay was the most efficient in the NFL all year."),
+        ("Drake Maye's Rise", "Despite the Super Bowl loss, Drake Maye's emergence as New England's franchise QB was the feel-good story of the season. The Patriots got back to the Super Bowl faster than anyone expected — Maye's ceiling is sky-high heading into 2026."),
+        ("The Josh Allen Question", "Josh Allen won the AP MVP in 2025 before this season started — his regular season dominance is unquestioned. But Allen and the Bills still haven't broken through in the playoffs, and that narrative will define his legacy heading into 2026."),
+    ])
+    pages += magazine_page_html("NFL", today, rnks, nfl_sidebar, nfl_stories)
     init = f"const EAST={ej};const WEST={wj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');"
     html = page_shell("NFL","#f97316","#ea6c0a","rgba(249,115,22,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
@@ -874,7 +1036,7 @@ def generate_hub_html():
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>THE FIELD — Sports Analytics Hub</title>
+<title>THE FIELD - Sports Analytics Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -981,18 +1143,21 @@ def main():
 
     log("\n[1/4] NBA")
     nba_east, nba_west = fetch_nba_standings()
-    nba_today = fetch_games("basketball", "nba")
-    generate_nba_html(nba_east, nba_west, [], nba_today)
+    nba_today     = fetch_games("basketball", "nba")
+    nba_yesterday = fetch_yesterday("basketball", "nba")
+    generate_nba_html(nba_east, nba_west, nba_yesterday, nba_today)
 
     log("\n[2/4] NHL")
     nhl_east, nhl_west = fetch_nhl_standings()
-    nhl_today = fetch_games("hockey", "nhl")
-    generate_nhl_html(nhl_east, nhl_west, [], nhl_today)
+    nhl_today     = fetch_games("hockey", "nhl")
+    nhl_yesterday = fetch_yesterday("hockey", "nhl")
+    generate_nhl_html(nhl_east, nhl_west, nhl_yesterday, nhl_today)
 
     log("\n[3/4] MLB")
     mlb_al, mlb_nl = fetch_mlb_standings()
-    mlb_today = fetch_games("baseball", "mlb")
-    generate_mlb_html(mlb_al, mlb_nl, [], mlb_today)
+    mlb_today     = fetch_games("baseball", "mlb")
+    mlb_yesterday = fetch_yesterday("baseball", "mlb")
+    generate_mlb_html(mlb_al, mlb_nl, mlb_yesterday, mlb_today)
 
     log("\n[4/4] NFL")
     nfl_afc, nfl_nfc = fetch_nfl_standings()

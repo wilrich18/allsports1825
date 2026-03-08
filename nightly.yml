@@ -1,0 +1,34 @@
+name: Nightly Sports Update
+
+on:
+  schedule:
+    # Runs at 4:05 AM UTC = 11:05 PM CT (after games finish)
+    - cron: '5 4 * * *'
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run updater
+        run: python3 the_field_updater.py
+
+      - name: Commit updated HTML files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html nba.html nhl.html mlb.html nfl.html
+          git diff --cached --quiet || git commit -m "🏟️ Nightly update $(date -u '+%Y-%m-%d')"
+          git push

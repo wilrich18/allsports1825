@@ -1,253 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>THE FIELD — NFL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --navy:#0a1628;--acc:#f97316;--acc2:#ea6c0a;--gold:#fdb927;
-  --white:#f0f4f8;--gray:#7a8fa6;
-  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-nav{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}
-.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}
+<style>*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0a1628;--acc:#f97316;--acc2:#ea6c0a;--gold:#fdb927;--white:#f0f4f8;--gray:#7a8fa6;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
+body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;padding:0 24px;height:54px;overflow-x:auto;gap:0;}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:3px;color:var(--white);margin-right:24px;white-space:nowrap;flex-shrink:0;}
 .nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:2px;flex:1;}
-.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
+.nav-links{display:flex;gap:2px;}
+.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--gray);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
-.live-pill{background:var(--acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
-.page{display:none;}
-.page.active{display:block;animation:fadeUp 0.3s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hero{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}
+.nav-link.active{color:var(--acc);}
+.page{display:none;min-height:100vh;padding-top:54px;}
+.page.active{display:block;}
+.hero{background:linear-gradient(135deg,#0a1628,#0d2348,#0a1628);padding:60px 24px 50px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(249,115,22,0.10),transparent);pointer-events:none;}
-.hero-inner{max-width:1100px;margin:0 auto;position:relative;}
-.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
-.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}
-.hero-title em{color:var(--acc);font-style:normal;}
-.hero-sub{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}
-.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
-.hero-stat-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}
-.hero-stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
-.section{max-width:1100px;margin:0 auto;padding:36px 24px;}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(52px,8vw,96px);line-height:0.9;letter-spacing:2px;margin-bottom:14px;}
+.hero-title em{font-style:normal;-webkit-text-stroke:1px rgba(255,255,255,0.3);color:transparent;}
+.hero-sub{font-size:14px;color:var(--gray);max-width:500px;line-height:1.6;}
+.live-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:#4ade80;margin-bottom:16px;}
+.section{max-width:1100px;margin:0 auto;padding:40px 24px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
 .standings-wrap{overflow-x:auto;}
-.standings-table{width:100%;border-collapse:collapse;font-size:14px;}
-.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}
-.standings-table th:nth-child(2){text-align:left;}
-.standings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}
-.standings-table td:nth-child(2){text-align:left;}
-.standings-table tr:hover td{background:var(--card2);}
-.team-name{font-weight:600;}.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}
-.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.standings-table{width:100%;border-collapse:collapse;font-size:13px;}
+.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.standings-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);white-space:nowrap;}
+.standings-table tr:hover td{background:var(--card);}
+.standings-table tr.playoff-line td{border-bottom:2px solid var(--acc);}
+.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);font-size:12px;}
+.team-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;}
 .record-w{color:var(--white);font-weight:600;}.record-l{color:var(--gray);}
-tr.playoff-line td{border-top:2px solid var(--gold)!important;}
-.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a0f0a);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}
-.digest-lead::before{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.08),transparent 70%);}
+.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.div-header-row td{padding:10px 12px 4px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+.div-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s;}
+.game-card:hover{border-color:rgba(255,255,255,0.15);}
+.game-card-top{padding:16px;}
+.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;}
+.game-matchup{display:flex;align-items:center;gap:8px;}
+.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;}
+.game-team.fav{color:var(--white);}.game-team.dog{color:var(--gray);text-align:right;}
+.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gray);padding:0 4px;}
+.game-score{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.2);}
+.gscore{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;}
+.gscore.w{color:var(--white);}.gscore.l{color:var(--gray);}
+.gfinal{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;color:var(--gold);}
+.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a1428);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.digest-lead::before{content:'';position:absolute;top:-40px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(253,185,39,0.06),transparent 70%);}
 .dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}
-.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}
-.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}
-.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}
-.sw{color:var(--white);}.sl{color:var(--gray);}.sdot{color:var(--acc);margin:0 7px;}
-.art-sub{font-size:11px;color:var(--gray);margin-top:2px;}
-.chev{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}
-.chev.open{transform:rotate(180deg);}
-.art-body{display:none;padding:18px 20px;}
-.art-body.open{display:block;}
-.art-body p{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}
-.art-body p:last-child{margin-bottom:0;}
-.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
-.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(20px,4vw,34px);line-height:1.0;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;line-height:1.6;max-width:580px;}
+.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;}
+.art-teams{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gray);margin-top:2px;}
+.chev{font-size:12px;color:var(--gray);transition:transform 0.2s;}.chev.open{transform:rotate(180deg);}
+.art-body{display:none;padding:16px;font-size:13px;line-height:1.7;color:var(--gray);}.art-body.open{display:block;}
+.mag-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;}
+@media(max-width:900px){.mag-layout{grid-template-columns:1fr;}}
+.rank-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
 .rank-item:last-child{border-bottom:none;}
-.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}
+.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--gray);line-height:1;min-width:32px;}
 .rank-n.t3{color:var(--gold);}
-.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}
-.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
-.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}
-.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
+.rank-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;}
+.rank-rec{font-size:12px;color:var(--gray);margin-top:2px;}
+.rank-note{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
+.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
 .tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
-.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
-.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
 .sc-row:last-child{border-bottom:none;}
-.sc-team{font-weight:600;}
+.sc-team{color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:600;}
 .sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
-.offseason-card{background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(249,115,22,0.03));border:1px solid rgba(249,115,22,0.2);border-radius:14px;padding:28px;margin-bottom:20px;}
-.oc-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin-bottom:8px;}
-.oc-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;margin-bottom:6px;}
-.oc-sub{color:var(--gray);font-size:14px;}
-footer{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
-footer strong{color:var(--white);}
-@media(max-width:768px){.mag-layout{grid-template-columns:1fr;}}
-</style>
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.prop-card.high{border-left:3px solid #4ade80;}.prop-card.medium{border-left:3px solid var(--gold);}
+.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;margin-bottom:2px;}
+.prop-team{font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;}
+.prop-line{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px;}
+.prop-odds{font-size:13px;color:var(--gray);margin-bottom:8px;}
+.prop-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.b-high{background:rgba(74,222,128,0.15);color:#4ade80;}.b-med{background:rgba(253,185,39,0.15);color:var(--gold);}
+.prop-reason{font-size:12px;color:var(--gray);line-height:1.5;}
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--gray);}
+footer strong{color:var(--white);}</style>
 </head>
 <body>
-
 <nav>
-  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NFL</a>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('digest',this)">Season Recap</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NFL</a>
+    <div class="nav-links"><button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
+      <button class="nav-link" onclick="showPage('digest',this)">Season Recap</button>
+      <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button></div>
   </div>
-  <div class="live-pill">🏈 OFFSEASON</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">2025 NFL Season · Final Standings</div>
-      <h1 class="hero-title">NFL<br><em>STANDINGS</em></h1>
-      <p class="hero-sub">Final 2025 regular season records for all 32 teams.</p>
-      <div class="hero-stats">
-        <div><div class="hero-stat-val">🏆</div><div class="hero-stat-lbl">SB LX: Seattle 29, NE 13</div></div>
-        <div><div class="hero-stat-val">SB LIX</div><div class="hero-stat-lbl">Eagles 40, Chiefs 22</div></div>
-      </div>
-    </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025 NFL Season · Final Standings</div>
+    <h1 class="hero-title">NFL<br><em>STANDINGS</em></h1>
+    <p class="hero-sub">Final AFC and NFC standings from the 2025 season.</p>
+  </div></div>
+  <div class="section"><div class="two-col">
+  <div>
+    <div class="section-title">AFC</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="east-body"></tbody>
+    </table></div>
   </div>
-  <div class="section">
-    <div class="offseason-card">
-      <div class="oc-label">🏆 Super Bowl LX Champion</div>
-      <div class="oc-title">Seattle Seahawks 29, New England Patriots 13</div>
-      <div class="oc-sub">Sam Darnold named Super Bowl MVP · SB LIX: Philadelphia Eagles 40, Kansas City Chiefs 22</div>
-    </div>
-    <div class="section-title">AFC — Final 2025 Standings</div>
-    <div class="standings-wrap">
-      <table class="standings-table">
-        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>+/-</th><th>L10</th></tr></thead>
-        <tbody id="east-body"></tbody>
-      </table>
-    </div>
-    <div class="section-title" style="margin-top:30px">NFC — Final 2025 Standings</div>
-    <div class="standings-wrap">
-      <table class="standings-table">
-        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>+/-</th><th>L10</th></tr></thead>
-        <tbody id="west-body"></tbody>
-      </table>
-    </div>
+  <div>
+    <div class="section-title">NFC</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="west-body"></tbody>
+    </table></div>
   </div>
+</div></div>
 </div>
-
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">2025 NFL Season · In Review</div>
-      <div class="dhl">THE SEASON THAT ENDED<br>THE CHIEFS DYNASTY</div>
-      <div class="ddeck">Kansas City went 6-11, ending their four-year dynasty. Seattle and New England emerged as the unlikely Super Bowl participants, with the Seahawks claiming the Lombardi Trophy.</div>
+      <div class="dlabel">Season Recap · 2025-26</div>
+      <div class="dhl">Super Bowl LX: Seahawks 29, Patriots 13</div>
+      <div class="ddeck">Kenneth Walker III was named Super Bowl MVP as Seattle dominated New England 29-13 to claim the Lombardi Trophy.</div>
     </div>
-    <div class="section-title">Season Highlights</div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">SEAHAWKS 29</span><span class="sdot">·</span><span class="sl">PATRIOTS 13</span></div><div class="art-sub">Super Bowl LX · February 2026</div></div>
-        <div style="display:flex;align-items:center;gap:8px"><span style="background:rgba(249,115,22,0.13);color:var(--acc);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:4px;">SB LX CHAMPION</span><span class="chev open">▾</span></div>
-      </div>
-      <div class="art-body open">
-        <p>The Seattle Seahawks are Super Bowl LX Champions, defeating the New England Patriots 29-13. Sam Darnold was named Super Bowl MVP after a masterful performance, completing 24 of 32 passes for 287 yards and 3 touchdowns.</p>
-        <p>Seattle finished the 2025 regular season at 14-3, the best record in the AFC, before marching through the playoffs. The Patriots, at 14-3 in the NFC, provided the storyline of the season — their unlikely run ended in a second-half collapse against the Seahawks' dominant defense.</p>
-      </div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">EAGLES 40</span><span class="sdot">·</span><span class="sl">CHIEFS 22</span></div><div class="art-sub">Super Bowl LIX · February 2025</div></div>
-        <div style="display:flex;align-items:center;gap:8px"><span class="chev">▾</span></div>
-      </div>
-      <div class="art-body">
-        <p>Philadelphia dominated Kansas City 40-22 in Super Bowl LIX. Jalen Hurts was named MVP with 3 passing TDs and a rushing TD. The Eagles' defense held Mahomes to under 250 yards and forced 3 turnovers in a complete team performance.</p>
-      </div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div><div class="art-score"><span class="sw">CHIEFS</span><span class="sdot">·</span><span class="sl">6-11 · Dynasty Over</span></div><div class="art-sub">2025 Regular Season</div></div>
-        <div style="display:flex;align-items:center;gap:8px"><span class="chev">▾</span></div>
-      </div>
-      <div class="art-body">
-        <p>The Kansas City Chiefs went 6-11 in 2025, ending their four-year dynasty in historic fashion. A combination of injuries, salary cap constraints, and a dominant NFC West made this one of the most stunning collapses in modern NFL history.</p>
-        <p>Patrick Mahomes threw for 3,800 yards but the supporting cast fell apart. The Chiefs missed the playoffs for the first time since 2018, and the league took notice — parity had returned to the NFL.</p>
-      </div>
-    </div>
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Seahawks 29 — Patriots 13</div><div class="art-teams">Super Bowl LX · Final</div></div><span class="chev">▼</span></div><div class="art-body">Seattle Seahawks won Super Bowl LX 29-13 over the New England Patriots. Kenneth Walker III rushed for 135 yards and was named MVP — the first RB to win Super Bowl MVP since Terrell Davis in 1998. Kicker Jason Myers set a Super Bowl record with 5 field goals. Seattle's defense sacked Drake Maye 6 times.</div></div>
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">2025 Season Awards</div><div class="art-teams">AP NFL Awards</div></div><span class="chev">▼</span></div><div class="art-body">MVP: Josh Allen (Buffalo Bills). Super Bowl MVP: Kenneth Walker III (135 rush yds). Defensive POY: Myles Garrett. Coach of the Year: Mike Macdonald (Seattle).</div></div>
   </div>
 </div>
-
 <div id="page-magazine" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">The Field · March 8, 2026</div>
-      <h1 class="hero-title">NFL<br><em>MAGAZINE</em></h1>
-      <p class="hero-sub">Power rankings and the full story of the 2025 NFL season.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">The Field · March 8, 2026</div>
+    <h1 class="hero-title">NFL<br><em>MAGAZINE</em></h1>
+    <p class="hero-sub">Power rankings and the 2025 season story.</p>
+  </div></div>
   <div class="section">
     <div class="mag-layout">
+      <div><div class="section-title">End-of-Season Power Rankings</div><div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Seattle Seahawks</div><div class="rank-rec">14-3</div><div class="rank-note">Super Bowl LX champions. Macdonald's defense is the best in football.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Kansas City Chiefs</div><div class="rank-rec">6-11</div><div class="rank-note">Three Super Bowls in five years — Mahomes is a dynasty builder.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Buffalo Bills</div><div class="rank-rec">12-5</div><div class="rank-note">Josh Allen is the best player in football. Year in, year out.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Philadelphia Eagles</div><div class="rank-rec">11-6</div><div class="rank-note">Super Bowl LIX champs still loaded. Hurts and a deep roster.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Baltimore Ravens</div><div class="rank-rec">8-9</div><div class="rank-note">Lamar Jackson is a force of nature. Defense is ferocious.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Detroit Lions</div><div class="rank-rec">9-8</div><div class="rank-note">Most improved franchise of the decade. Goff is the real deal.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Minnesota Vikings</div><div class="rank-rec">9-8</div><div class="rank-note">Sam Darnold's redemption story ends in Seattle — but watch this team.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Los Angeles Rams</div><div class="rank-rec">12-5</div><div class="rank-note">McVay keeps finding ways to win. Stafford still elite.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Cincinnati Bengals</div><div class="rank-rec">6-11</div><div class="rank-note">Burrow and Chase — one of the best QB/WR duos ever.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">Green Bay Packers</div><div class="rank-rec">9-7</div><div class="rank-note">Love is developing into a real franchise QB.</div><div class="rank-trend tu">↑ Moving Up</div></div></div></div>
       <div>
-        <div class="section-title">Final Power Rankings — 2025</div>
-        
-      </div>
-      <div>
-        <div class="sidebar-card">
-          <div class="sc-title">🏆 2025 Champions</div>
-          <div class="sc-row"><span class="sc-team">SB LX</span><span class="sc-val" style="color:#4ade80">Seattle</span></div>
-          <div class="sc-row"><span class="sc-team">SB LIX</span><span class="sc-val" style="color:#4ade80">Philadelphia</span></div>
+        <div class="sidebar-card"><div class="sc-title">🏈 Final Records</div><div class="sc-row"><span class="sc-team">New England Patriots</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Denver Broncos</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Seattle Seahawks</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Jacksonville Jaguars</span><span class="sc-val">13-4</span></div><div class="sc-row"><span class="sc-team">Houston Texans</span><span class="sc-val">12-5</span></div></div>
+        <div class="sidebar-card"><div class="sc-title">🏆 Super Bowl LIX</div>
+          <div class="sc-row"><span class="sc-team">Seahawks</span><span class="sc-val">29</span></div>
+          <div class="sc-row"><span class="sc-team">Patriots</span><span class="sc-val">13</span></div>
+          <div class="sc-row"><span class="sc-team">MVP</span><span class="sc-val">K. Walker III</span></div>
         </div>
-        <div class="sidebar-card">
-          <div class="sc-title">🎖️ 2025 Awards</div>
-          <div class="sc-row"><span class="sc-team">MVP</span><span class="sc-val">Josh Allen</span></div>
-          <div class="sc-row"><span class="sc-team">Off. POY</span><span class="sc-val">S. Barkley</span></div>
-          <div class="sc-row"><span class="sc-team">SB MVP</span><span class="sc-val">S. Darnold</span></div>
-        </div>
-        <div class="sidebar-card">
-          <div class="sc-title">📊 Top Records</div>
-          
+        <div class="sidebar-card"><div class="sc-title">📅 2026 NFL Draft</div>
+          <div class="sc-row"><span class="sc-team">Date</span><span class="sc-val">April 23-25</span></div>
+          <div class="sc-row"><span class="sc-team">Location</span><span class="sc-val">Green Bay</span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<footer>
-  <strong>THE FIELD — NFL</strong> · 2025 Season Complete · Updated March 8, 2026<br>
-  <span>Data via ESPN · Not affiliated with the NFL · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
-</footer>
-
+<footer><strong>THE FIELD — NFL</strong> · Data via ESPN · Updated March 8, 2026 · For entertainment only · 1-800-GAMBLER</footer>
 <script>
-const AFC=[];
-const NFC=[];
-
 function renderStandings(data,id){
   const tb=document.getElementById(id);
-  data.forEach((t,i)=>{
-    const ns=t.net>0?'+'+t.net:String(t.net);
-    const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    let rc='';if(i===6)rc='playoff-line';
-    tb.innerHTML+=`<tr class="${rc}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${t.pct.toFixed(3)}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+  if(!tb)return;
+  // Build overall rank map by win pct
+  const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+  const rankMap={};sorted.forEach((t,i)=>rankMap[t.t]=i+1);
+  // Group by division
+  const divs={};
+  data.forEach(t=>{const d=t.div||'';if(!divs[d])divs[d]=[];divs[d].push(t);});
+  const hasDivs=Object.keys(divs).some(k=>k!=='');
+  if(!hasDivs){
+    sorted.forEach((t,i)=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
+    return;
+  }
+  // Sort divisions alphabetically, sort teams within each div by win pct
+  Object.keys(divs).sort().forEach(dn=>{
+    const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
+    teams.forEach(t=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      const rank=rankMap[t.t]||'';
+      tb.innerHTML+=`<tr><td><span class="team-rank">${rank}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
   });
 }
-
-function tog(hdr){
-  const body=hdr.nextElementSibling;
-  const chev=hdr.querySelector('.chev');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
+function renderGames(){
+  const g=document.getElementById('games-grid');
+  if(!g)return;
+  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
+  TONIGHT.forEach(gm=>{
+    const isLive=gm.is_live,isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
+  });
 }
-
+function tog(hdr){
+  const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');chev.classList.toggle('open');
+}
 function showPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
+  const pg=document.getElementById('page-'+name);
+  if(pg)pg.classList.add('active');
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
-renderStandings(AFC,'east-body');
-renderStandings(NFC,'west-body');
-</script>
+function renderProps(data){
+  const g=document.getElementById('props-grid');
+  if(!g)return;
+  data.forEach(p=>{
+    const bc=p.conf==='HIGH'?'b-high':'b-med';
+    g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+  });
+}
+const EAST=[{"t": "New England Patriots", "w": 14, "l": 3, "pct": 0.824, "ppg": 28.8, "opp": 18.8, "net": 10.0, "l10": "\u2014", "div": ""}, {"t": "Denver Broncos", "w": 14, "l": 3, "pct": 0.824, "ppg": 23.6, "opp": 18.3, "net": 5.3, "l10": "\u2014", "div": ""}, {"t": "Jacksonville Jaguars", "w": 13, "l": 4, "pct": 0.765, "ppg": 27.9, "opp": 19.8, "net": 8.1, "l10": "\u2014", "div": ""}, {"t": "Houston Texans", "w": 12, "l": 5, "pct": 0.706, "ppg": 23.8, "opp": 17.4, "net": 6.4, "l10": "\u2014", "div": ""}, {"t": "Buffalo Bills", "w": 12, "l": 5, "pct": 0.706, "ppg": 28.3, "opp": 21.5, "net": 6.8, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Chargers", "w": 11, "l": 6, "pct": 0.647, "ppg": 21.6, "opp": 20.0, "net": 1.6, "l10": "\u2014", "div": ""}, {"t": "Pittsburgh Steelers", "w": 10, "l": 7, "pct": 0.588, "ppg": 23.4, "opp": 22.8, "net": 0.6, "l10": "\u2014", "div": ""}, {"t": "Indianapolis Colts", "w": 8, "l": 9, "pct": 0.471, "ppg": 27.4, "opp": 24.2, "net": 3.2, "l10": "\u2014", "div": ""}, {"t": "Baltimore Ravens", "w": 8, "l": 9, "pct": 0.471, "ppg": 24.9, "opp": 23.4, "net": 1.5, "l10": "\u2014", "div": ""}, {"t": "Miami Dolphins", "w": 7, "l": 10, "pct": 0.412, "ppg": 20.4, "opp": 24.9, "net": -4.5, "l10": "\u2014", "div": ""}, {"t": "Cincinnati Bengals", "w": 6, "l": 11, "pct": 0.353, "ppg": 24.4, "opp": 28.9, "net": -4.5, "l10": "\u2014", "div": ""}, {"t": "Kansas City Chiefs", "w": 6, "l": 11, "pct": 0.353, "ppg": 21.3, "opp": 19.3, "net": 2.0, "l10": "\u2014", "div": ""}, {"t": "Cleveland Browns", "w": 5, "l": 12, "pct": 0.294, "ppg": 16.4, "opp": 22.3, "net": -5.9, "l10": "\u2014", "div": ""}, {"t": "Las Vegas Raiders", "w": 3, "l": 14, "pct": 0.176, "ppg": 14.2, "opp": 25.4, "net": -11.2, "l10": "\u2014", "div": ""}, {"t": "New York Jets", "w": 3, "l": 14, "pct": 0.176, "ppg": 17.6, "opp": 29.6, "net": -12.0, "l10": "\u2014", "div": ""}, {"t": "Tennessee Titans", "w": 3, "l": 14, "pct": 0.176, "ppg": 16.7, "opp": 28.1, "net": -11.4, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Seattle Seahawks", "w": 14, "l": 3, "pct": 0.824, "ppg": 28.4, "opp": 17.2, "net": 11.2, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Rams", "w": 12, "l": 5, "pct": 0.706, "ppg": 30.5, "opp": 20.4, "net": 10.1, "l10": "\u2014", "div": ""}, {"t": "San Francisco 49ers", "w": 12, "l": 5, "pct": 0.706, "ppg": 25.7, "opp": 21.8, "net": 3.9, "l10": "\u2014", "div": ""}, {"t": "Chicago Bears", "w": 11, "l": 6, "pct": 0.647, "ppg": 25.9, "opp": 24.4, "net": 1.5, "l10": "\u2014", "div": ""}, {"t": "Philadelphia Eagles", "w": 11, "l": 6, "pct": 0.647, "ppg": 22.3, "opp": 19.1, "net": 3.2, "l10": "\u2014", "div": ""}, {"t": "Green Bay Packers", "w": 9, "l": 7, "pct": 0.562, "ppg": 24.4, "opp": 22.5, "net": 1.9, "l10": "\u2014", "div": ""}, {"t": "Minnesota Vikings", "w": 9, "l": 8, "pct": 0.529, "ppg": 20.2, "opp": 19.6, "net": 0.6, "l10": "\u2014", "div": ""}, {"t": "Detroit Lions", "w": 9, "l": 8, "pct": 0.529, "ppg": 28.3, "opp": 24.3, "net": 4.0, "l10": "\u2014", "div": ""}, {"t": "Carolina Panthers", "w": 8, "l": 9, "pct": 0.471, "ppg": 18.3, "opp": 22.4, "net": -4.1, "l10": "\u2014", "div": ""}, {"t": "Tampa Bay Buccaneers", "w": 8, "l": 9, "pct": 0.471, "ppg": 22.4, "opp": 24.2, "net": -1.8, "l10": "\u2014", "div": ""}, {"t": "Atlanta Falcons", "w": 8, "l": 9, "pct": 0.471, "ppg": 20.8, "opp": 23.6, "net": -2.8, "l10": "\u2014", "div": ""}, {"t": "Dallas Cowboys", "w": 7, "l": 9, "pct": 0.438, "ppg": 29.4, "opp": 31.9, "net": -2.5, "l10": "\u2014", "div": ""}, {"t": "New Orleans Saints", "w": 6, "l": 11, "pct": 0.353, "ppg": 18.0, "opp": 22.5, "net": -4.5, "l10": "\u2014", "div": ""}, {"t": "Washington Commanders", "w": 5, "l": 12, "pct": 0.294, "ppg": 20.9, "opp": 26.5, "net": -5.6, "l10": "\u2014", "div": ""}, {"t": "New York Giants", "w": 4, "l": 13, "pct": 0.235, "ppg": 22.4, "opp": 25.8, "net": -3.4, "l10": "\u2014", "div": ""}, {"t": "Arizona Cardinals", "w": 3, "l": 14, "pct": 0.176, "ppg": 20.9, "opp": 28.7, "net": -7.8, "l10": "\u2014", "div": ""}];renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');</script>
 </body>
 </html>

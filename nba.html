@@ -1,350 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>THE FIELD — NBA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --navy:#0a1628;--red:#c8102e;--red2:#e8132f;--gold:#fdb927;
-  --white:#f0f4f8;--gray:#7a8fa6;
-  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-nav{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}
-.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}
+<style>*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0a1628;--acc:#c8102e;--acc2:#e8132f;--gold:#fdb927;--white:#f0f4f8;--gray:#7a8fa6;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
+body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;padding:0 24px;height:54px;overflow-x:auto;gap:0;}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:3px;color:var(--white);margin-right:24px;white-space:nowrap;flex-shrink:0;}
 .nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:2px;flex:1;}
-.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
+.nav-links{display:flex;gap:2px;}
+.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--gray);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
-.live-pill{background:var(--red);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
-.page{display:none;}
-.page.active{display:block;animation:fadeUp 0.3s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hero{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}
+.nav-link.active{color:var(--acc);}
+.page{display:none;min-height:100vh;padding-top:54px;}
+.page.active{display:block;}
+.hero{background:linear-gradient(135deg,#0a1628,#0d2348,#0a1628);padding:60px 24px 50px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(200,16,46,0.11),transparent);pointer-events:none;}
-.hero-inner{max-width:1100px;margin:0 auto;position:relative;}
-.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
-.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}
-.hero-title em{color:var(--red);font-style:normal;}
-.hero-sub{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}
-.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
-.hero-stat-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}
-.hero-stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
-.section{max-width:1100px;margin:0 auto;padding:36px 24px;}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(52px,8vw,96px);line-height:0.9;letter-spacing:2px;margin-bottom:14px;}
+.hero-title em{font-style:normal;-webkit-text-stroke:1px rgba(255,255,255,0.3);color:transparent;}
+.hero-sub{font-size:14px;color:var(--gray);max-width:500px;line-height:1.6;}
+.live-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:#4ade80;margin-bottom:16px;}
+.section{max-width:1100px;margin:0 auto;padding:40px 24px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
 .standings-wrap{overflow-x:auto;}
-.standings-table{width:100%;border-collapse:collapse;font-size:14px;}
-.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}
-.standings-table th:nth-child(2){text-align:left;}
-.standings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}
-.standings-table td:nth-child(2){text-align:left;}
-.standings-table tr:hover td{background:var(--card2);}
-.team-name{font-weight:600;}.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}
-.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.standings-table{width:100%;border-collapse:collapse;font-size:13px;}
+.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.standings-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);white-space:nowrap;}
+.standings-table tr:hover td{background:var(--card);}
+.standings-table tr.playoff-line td{border-bottom:2px solid var(--acc);}
+.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);font-size:12px;}
+.team-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;}
 .record-w{color:var(--white);font-weight:600;}.record-l{color:var(--gray);}
-.streak-w{color:#4ade80;font-weight:600;}.streak-l{color:#f87171;font-weight:600;}
-tr.playoff-line td{border-top:2px solid var(--gold)!important;}
-tr.playin-line td{border-top:2px dashed rgba(253,185,39,0.4)!important;}
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}
-.game-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.game-card-top{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
-.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.game-matchup{display:flex;align-items:center;justify-content:space-between;}
-.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;flex:1;}
-.game-team.fav{color:var(--white);}.game-team.dog{color:var(--gray);}
-.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);padding:0 8px;}
-.game-score{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}
-.gscore{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;}
+.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.div-header-row td{padding:10px 12px 4px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+.div-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s;}
+.game-card:hover{border-color:rgba(255,255,255,0.15);}
+.game-card-top{padding:16px;}
+.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;}
+.game-matchup{display:flex;align-items:center;gap:8px;}
+.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;}
+.game-team.fav{color:var(--white);}.game-team.dog{color:var(--gray);text-align:right;}
+.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gray);padding:0 4px;}
+.game-score{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.2);}
+.gscore{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;}
 .gscore.w{color:var(--white);}.gscore.l{color:var(--gray);}
-.gfinal{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--gold);}
-.pred-wrap{max-width:680px;margin:0 auto;}
-.team-row{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:20px;}
-.team-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
-.tbadge{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:4px;display:inline-block;margin-bottom:8px;}
-.tbadge-h{background:rgba(74,222,128,0.12);color:#4ade80;}
-.tbadge-a{background:rgba(248,113,113,0.12);color:#f87171;}
-.tlabel{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
-select.tsel{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;padding:10px 12px;cursor:pointer;appearance:none;}
-select.tsel:focus{outline:none;border-color:var(--gold);}
-select.tsel option{background:#0f2040;}
-.vs-mid{display:flex;align-items:center;justify-content:center;padding-top:28px;}
-.vs-big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;color:var(--gray);}
-.pred-btn{width:100%;padding:14px;margin-bottom:20px;background:linear-gradient(135deg,var(--red),var(--red2));border:none;border-radius:10px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 18px rgba(200,16,46,0.28);}
-.pred-btn:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(200,16,46,0.42);}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
-.result-card.w{border-color:rgba(74,222,128,0.28);background:rgba(74,222,128,0.05);}
-.r-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
-.r-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:38px;line-height:1;color:var(--white);}
-.r-val.gold{color:var(--gold);}
-.r-sub{font-size:12px;color:var(--gray);margin-top:3px;}
-.bar-wrap{margin:16px 0;}
-.bar-labels{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;margin-bottom:5px;}
-.bar-track{height:10px;border-radius:5px;background:rgba(248,113,113,0.25);overflow:hidden;}
-.bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
-.winner-banner{text-align:center;padding:16px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:1px;}
-.winner-sub{font-size:13px;color:var(--gray);font-weight:600;display:block;margin-top:3px;}
-.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a0a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}
-.digest-lead::before{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,0.09),transparent 70%);}
+.gfinal{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;color:var(--gold);}
+.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a1428);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.digest-lead::before{content:'';position:absolute;top:-40px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(253,185,39,0.06),transparent 70%);}
 .dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}
-.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}
-.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}
-.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}
-.sw{color:var(--white);}.sl{color:var(--gray);}.sdot{color:var(--red);margin:0 7px;}
-.art-sub{font-size:11px;color:var(--gray);margin-top:2px;}
-.atag{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:4px;}
-.tag-u{background:rgba(253,185,39,0.13);color:var(--gold);}
-.tag-c{background:rgba(200,16,46,0.13);color:#ff6b6b;}
-.tag-h{background:rgba(139,92,246,0.13);color:#a78bfa;}
-.chev{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}
-.chev.open{transform:rotate(180deg);}
-.art-body{display:none;padding:18px 20px;}
-.art-body.open{display:block;}
-.art-body p{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}
-.art-body p:last-child{margin-bottom:0;}
-.stat-bar{display:flex;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin:12px 0;}
-.sp{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
-.sp span{color:var(--gold);}
-.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
-.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(20px,4vw,34px);line-height:1.0;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;line-height:1.6;max-width:580px;}
+.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;}
+.art-teams{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gray);margin-top:2px;}
+.chev{font-size:12px;color:var(--gray);transition:transform 0.2s;}.chev.open{transform:rotate(180deg);}
+.art-body{display:none;padding:16px;font-size:13px;line-height:1.7;color:var(--gray);}.art-body.open{display:block;}
+.mag-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;}
+@media(max-width:900px){.mag-layout{grid-template-columns:1fr;}}
+.rank-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
 .rank-item:last-child{border-bottom:none;}
-.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}
+.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--gray);line-height:1;min-width:32px;}
 .rank-n.t3{color:var(--gold);}
-.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}
-.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
-.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}
-.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
+.rank-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;}
+.rank-rec{font-size:12px;color:var(--gray);margin-top:2px;}
+.rank-note{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
+.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
 .tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
-.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
-.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
 .sc-row:last-child{border-bottom:none;}
-.sc-team{font-weight:600;}
+.sc-team{color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:600;}
 .sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
-.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
-.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.prop-card.high::before{background:linear-gradient(90deg,#4ade80,#22c55e);}
-.prop-card.medium::before{background:linear-gradient(90deg,var(--gold),#f59e0b);}
-.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}
-.prop-team{font-size:12px;color:var(--gray);margin-bottom:9px;}
-.prop-line{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;margin-bottom:3px;}
-.prop-odds{font-size:12px;color:var(--gray);margin-bottom:8px;}
-.prop-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
-.b-high{background:rgba(74,222,128,0.13);color:#4ade80;}
-.b-med{background:rgba(253,185,39,0.13);color:var(--gold);}
-.prop-reason{font-size:13px;color:#94a3b8;line-height:1.55;}
-.disclaimer{background:rgba(200,16,46,0.07);border:1px solid rgba(200,16,46,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#f87171;line-height:1.5;text-align:center;}
-footer{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
-footer strong{color:var(--white);}
-@media(max-width:768px){.team-row{grid-template-columns:1fr;}.vs-mid{padding-top:0;}.result-grid{grid-template-columns:1fr 1fr;}.mag-layout{grid-template-columns:1fr;}.games-grid{grid-template-columns:1fr;}}
-</style>
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.prop-card.high{border-left:3px solid #4ade80;}.prop-card.medium{border-left:3px solid var(--gold);}
+.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;margin-bottom:2px;}
+.prop-team{font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;}
+.prop-line{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px;}
+.prop-odds{font-size:13px;color:var(--gray);margin-bottom:8px;}
+.prop-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.b-high{background:rgba(74,222,128,0.15);color:#4ade80;}.b-med{background:rgba(253,185,39,0.15);color:var(--gold);}
+.prop-reason{font-size:12px;color:var(--gray);line-height:1.5;}
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--gray);}
+footer strong{color:var(--white);}</style>
 </head>
 <body>
 <nav>
-  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NBA</a>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('predictor',this)">Tonight</button>
-    <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><span>THE</span> FIELD / NBA</a>
+    <div class="nav-links"><button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
+      <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
+      <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
+      <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+      <button class="nav-link" onclick="showPage('props',this)">Player Props</button></div>
   </div>
-  <div class="live-pill">🔴 LIVE TONIGHT</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">2025-26 NBA Season · Updated March 8, 2026</div>
-      <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
-      <p class="hero-sub">Live records, net ratings and playoff picture for all 30 teams.</p>
-      <div class="hero-stats">
-        <div><div class="hero-stat-val">50-15</div><div class="hero-stat-lbl">Thunder — Best Record</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="section">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025-26 NBA Season · Updated March 8, 2026</div>
+    <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
+    <p class="hero-sub">Full Eastern and Western Conference standings.</p>
+  </div></div>
+  <div class="section"><div class="two-col">
+  <div>
     <div class="section-title">Eastern Conference</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>Net</th><th>L10</th><th>Streak</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
-    <div class="section-title" style="margin-top:30px">Western Conference</div>
+  </div>
+  <div>
+    <div class="section-title">Western Conference</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OppPPG</th><th>Net</th><th>L10</th><th>Streak</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
-    <div style="margin-top:10px;font-size:12px;color:var(--gray);display:flex;gap:22px;flex-wrap:wrap;">
-      <span><span style="color:var(--gold)">——</span> Playoff cutoff (6th seed)</span>
-      <span><span style="color:rgba(253,185,39,0.4)">- - -</span> Play-In cutoff (10th seed)</span>
-    </div>
   </div>
+</div></div>
 </div>
-
-<div id="page-predictor" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">2025-26 Season · Real Records</div>
-      <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
-      <p class="hero-sub">Tonight's scores and matchups, plus build any custom matchup for an instant prediction.</p>
-    </div>
-  </div>
+<div id="page-tonight" class="page">
+  <div class="hero"><div class="hero-inner">
+    <div class="live-pill">🔴 LIVE TONIGHT</div>
+    <div class="hero-eyebrow">March 8, 2026</div>
+    <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+    <p class="hero-sub">Live scores and tonight's NBA matchups.</p>
+  </div></div>
   <div class="section">
-    <div class="section-title">Tonight's Games — SUNDAY, March 8, 2026</div>
-    <div class="games-grid" id="lines-grid"></div>
+    <div class="section-title">Tonight's Games</div>
+    <div class="games-grid" id="games-grid"></div>
   </div>
 </div>
-
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">SUNDAY March 8, 2026 · Recapping March 7, 2026</div>
-      <div class="dhl">NBA DAILY DIGEST</div>
-      <div class="ddeck">Last night's scores, standout performances, and everything that happened around the league.</div>
+      <div class="dlabel">Daily Digest · March 8, 2026</div>
+      <div class="dhl">Last Night's NBA Action</div>
+      <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    <div class="section-title">Game Recaps — March 7, 2026</div>
-    
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">MAGIC 119</span>
-            <span class="sdot">·</span>
-            <span class="sl">TIMBERWOLVES 92</span>
-          </div>
-          <div class="art-sub">Orlando Magic @ Minnesota Timberwolves · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Orlando Magic put on a dominant performance, rolling past Minnesota Timberwolves by 27 to win 119-92. The Magic were in control from the opening tip, leading wire-to-wire and never letting Timberwolves get comfortable. The win keeps Orlando Magic moving in the right direction as the season heads toward its final stretch, while Minnesota Timberwolves will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">NETS 107</span>
-            <span class="sdot">·</span>
-            <span class="sl">PISTONS 105</span>
-          </div>
-          <div class="art-sub">Brooklyn Nets @ Detroit Pistons · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Brooklyn Nets edged Detroit Pistons 107-105 in a narrow finish. The game came down to the final possessions, with Nets making the clutch plays when it mattered most. The win keeps Brooklyn Nets moving in the right direction as the season heads toward its final stretch, while Detroit Pistons will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">HAWKS 125</span>
-            <span class="sdot">·</span>
-            <span class="sl">76ERS 116</span>
-          </div>
-          <div class="art-sub">Philadelphia 76ers @ Atlanta Hawks · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Atlanta Hawks took care of business with a comfortable 125-116 victory over Philadelphia 76ers. Hawks pulled away in the second half, using a strong third quarter to build a lead they wouldn't relinquish. The win keeps Atlanta Hawks moving in the right direction as the season heads toward its final stretch, while Philadelphia 76ers will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">CLIPPERS 123</span>
-            <span class="sdot">·</span>
-            <span class="sl">GRIZZLIES 120</span>
-          </div>
-          <div class="art-sub">LA Clippers @ Memphis Grizzlies · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, LA Clippers edged Memphis Grizzlies 123-120 in a narrow finish. The game came down to the final possessions, with Clippers making the clutch plays when it mattered most. The win keeps LA Clippers moving in the right direction as the season heads toward its final stretch, while Memphis Grizzlies will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">BUCKS 113</span>
-            <span class="sdot">·</span>
-            <span class="sl">JAZZ 99</span>
-          </div>
-          <div class="art-sub">Utah Jazz @ Milwaukee Bucks · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Milwaukee Bucks took care of business with a comfortable 113-99 victory over Utah Jazz. Bucks pulled away in the second half, using a strong third quarter to build a lead they wouldn't relinquish. The win keeps Milwaukee Bucks moving in the right direction as the season heads toward its final stretch, while Utah Jazz will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">THUNDER 104</span>
-            <span class="sdot">·</span>
-            <span class="sl">WARRIORS 97</span>
-          </div>
-          <div class="art-sub">Golden State Warriors @ Oklahoma City Thunder · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Oklahoma City Thunder held off Golden State Warriors for a solid 104-97 win. Thunder pulled away in the second half, using a strong third quarter to build a lead they wouldn't relinquish. The win keeps Oklahoma City Thunder moving in the right direction as the season heads toward its final stretch, while Golden State Warriors will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
+    <p style="color:var(--gray)">No games yesterday.</p>
   </div>
 </div>
-
 <div id="page-magazine" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">The Field · March 8, 2026</div>
-      <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
-      <p class="hero-sub">Power rankings, playoff picture and the full story of the season.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">The Field · March 8, 2026</div>
+    <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
+    <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
+  </div></div>
   <div class="section">
     <div class="mag-layout">
+      <div><div class="section-title">Power Rankings — March 8, 2026</div><div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Oklahoma City Thunder</div><div class="rank-rec">50-15</div><div class="rank-note">OKC leads the West with elite two-way play and SGA in MVP form.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Cleveland Cavaliers</div><div class="rank-rec">39-25</div><div class="rank-note">Best record in the East — Donovan Mitchell is must-watch.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Boston Celtics</div><div class="rank-rec">43-21</div><div class="rank-note">Defending champs showing why — deep and battle-tested.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Minnesota Timberwolves</div><div class="rank-rec">40-24</div><div class="rank-note">Edwards carrying the load — defense elite as always.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Denver Nuggets</div><div class="rank-rec">39-25</div><div class="rank-note">Jokic doing Jokic things. Watch when the Nuggets get healthy.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">New York Knicks</div><div class="rank-rec">41-23</div><div class="rank-note">Most improved team in the East. Brunson making everyone better.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Golden State Warriors</div><div class="rank-rec">32-31</div><div class="rank-note">Curry still special. Youth movement gaining momentum.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Indiana Pacers</div><div class="rank-rec">15-48</div><div class="rank-note">Tyrese Haliburton leading the most exciting offense in the East.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Memphis Grizzlies</div><div class="rank-rec">23-39</div><div class="rank-note">Ja Morant back and locked in — watch this team surge.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">LA Lakers</div><div class="rank-rec">—-—</div><div class="rank-note">LeBron and AD combo still formidable when healthy.</div><div class="rank-trend td">↓ Sliding</div></div></div></div>
       <div>
-        <div class="section-title">Power Rankings — March 8, 2026</div>
-        <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Oklahoma City Thunder</div><div class="rank-rec">50-15</div><div class="rank-note">Best record in the league. Built to win in April and beyond.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">San Antonio Spurs</div><div class="rank-rec">46-17</div><div class="rank-note">Elite on both ends. MVP candidate is locked in all month.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Detroit Pistons</div><div class="rank-rec">45-17</div><div class="rank-note">Rolling. Defense suffocates and offense is clicking.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Boston Celtics</div><div class="rank-rec">42-21</div><div class="rank-note">Consistent and dangerous. Never count them out.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">New York Knicks</div><div class="rank-rec">41-23</div><div class="rank-note">The most complete team in their conference.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Houston Rockets</div><div class="rank-rec">39-23</div><div class="rank-note">Young stars arriving. Exciting basketball every night.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Minnesota Timberwolves</div><div class="rank-rec">40-24</div><div class="rank-note">Dealing with injuries but too talented to count out.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Cleveland Cavaliers</div><div class="rank-rec">39-24</div><div class="rank-note">Need wins now. Playoff window is closing.</div><div class="rank-trend td">↓ Sliding</div></div></div>
-      </div>
-      <div>
-        <div class="sidebar-card">
-          <div class="sc-title">🏆 Current Seeds</div>
-          <div class="sc-row"><span class="sc-team">E1 Pistons</span><span class="sc-val">45-17</span></div><div class="sc-row"><span class="sc-team">E2 Celtics</span><span class="sc-val">42-21</span></div><div class="sc-row"><span class="sc-team">E3 Knicks</span><span class="sc-val">41-23</span></div><div class="sc-row"><span class="sc-team">W1 Thunder</span><span class="sc-val">50-15</span></div><div class="sc-row"><span class="sc-team">W2 Spurs</span><span class="sc-val">46-17</span></div><div class="sc-row"><span class="sc-team">W3 Rockets</span><span class="sc-val">39-23</span></div>
+        <div class="sidebar-card"><div class="sc-title">🏀 Best Records</div><div class="sc-row"><span class="sc-team">Atlanta Hawks</span><span class="sc-val">33-31</span></div><div class="sc-row"><span class="sc-team">Philadelphia 76ers</span><span class="sc-val">34-29</span></div><div class="sc-row"><span class="sc-team">Miami Heat</span><span class="sc-val">35-29</span></div><div class="sc-row"><span class="sc-team">Orlando Magic</span><span class="sc-val">34-28</span></div><div class="sc-row"><span class="sc-team">Phoenix Suns</span><span class="sc-val">36-27</span></div></div>
+        <div class="sidebar-card"><div class="sc-title">📊 Playoff Picture</div>
+          <div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">43-21</span></div>
+          <div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">32-31</span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 <div id="page-props" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">March 8, 2026 · Tonight's Slate</div>
-      <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
-      <p class="hero-sub">Top player prop picks with confidence ratings and reasoning for tonight's games.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">March 8, 2026</div>
+    <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+    <p class="hero-sub">Best prop bets for tonight's NBA games.</p>
+  </div></div>
   <div class="section">
-    <div class="section-title">Tonight's Best Props — March 8, 2026</div>
+    <div class="section-title">Tonight's Best Props</div>
     <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ All lines and picks are for entertainment only. Not financial or gambling advice. Gamble responsibly. 1-800-GAMBLER.</div>
+    <p style="font-size:11px;color:var(--gray);margin-top:16px;text-align:center">For entertainment only. Not gambling advice. 1-800-GAMBLER.</p>
   </div>
 </div>
 
-<footer>
-  <strong>THE FIELD — NBA</strong> · 2025-26 Season · Updated March 8, 2026<br>
-  <span>Data via ESPN · Not affiliated with the NBA · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
-</footer>
-
+<footer><strong>THE FIELD — NBA</strong> · Data via ESPN · Updated March 8, 2026 · For entertainment only · 1-800-GAMBLER</footer>
 <script>
+<<<<<<< Updated upstream
 const EAST=[{t:"Detroit Pistons",w:45,l:17,ppg:116.8,opp:109.6,net:7.2,l10:"5-5",str:""},{t:"Boston Celtics",w:42,l:21,ppg:114.5,opp:107.0,net:7.5,l10:"5-5",str:""},{t:"New York Knicks",w:41,l:23,ppg:117.2,opp:110.6,net:6.6,l10:"5-5",str:""},{t:"Cleveland Cavaliers",w:39,l:24,ppg:119.1,opp:114.9,net:4.2,l10:"5-5",str:""},{t:"Toronto Raptors",w:35,l:27,ppg:113.5,opp:112.0,net:1.5,l10:"5-5",str:""},{t:"Orlando Magic",w:34,l:28,ppg:114.8,opp:114.0,net:0.8,l10:"5-5",str:""},{t:"Miami Heat",w:35,l:29,ppg:120.1,opp:116.6,net:3.5,l10:"5-5",str:""},{t:"Philadelphia 76ers",w:34,l:29,ppg:115.8,opp:116.1,net:-0.3,l10:"5-5",str:""},{t:"Atlanta Hawks",w:33,l:31,ppg:117.7,opp:117.3,net:0.4,l10:"5-5",str:""},{t:"Charlotte Hornets",w:32,l:32,ppg:116.2,opp:112.5,net:3.7,l10:"5-5",str:""},{t:"Milwaukee Bucks",w:27,l:35,ppg:111.4,opp:115.5,net:-4.1,l10:"5-5",str:""},{t:"Chicago Bulls",w:26,l:37,ppg:115.5,opp:119.7,net:-4.2,l10:"5-5",str:""},{t:"Washington Wizards",w:16,l:46,ppg:112.2,opp:123.0,net:-10.8,l10:"5-5",str:""},{t:"Brooklyn Nets",w:16,l:47,ppg:106.9,opp:115.6,net:-8.7,l10:"5-5",str:""},{t:"Indiana Pacers",w:15,l:48,ppg:111.4,opp:119.9,net:-8.5,l10:"5-5",str:""}];
 const WEST=[{t:"Oklahoma City Thunder",w:50,l:15,ppg:118.6,opp:107.6,net:11.0,l10:"5-5",str:""},{t:"San Antonio Spurs",w:46,l:17,ppg:118.2,opp:111.4,net:6.8,l10:"5-5",str:""},{t:"Houston Rockets",w:39,l:23,ppg:114.5,opp:109.3,net:5.2,l10:"5-5",str:""},{t:"Minnesota Timberwolves",w:40,l:24,ppg:118.6,opp:114.5,net:4.1,l10:"5-5",str:""},{t:"Denver Nuggets",w:39,l:25,ppg:120.2,opp:116.4,net:3.8,l10:"5-5",str:""},{t:"Los Angeles Lakers",w:38,l:25,ppg:116.0,opp:115.3,net:0.7,l10:"5-5",str:""},{t:"Phoenix Suns",w:36,l:27,ppg:112.1,opp:111.2,net:0.9,l10:"5-5",str:""},{t:"Golden State Warriors",w:32,l:31,ppg:115.0,opp:113.9,net:1.1,l10:"5-5",str:""},{t:"LA Clippers",w:31,l:32,ppg:112.6,opp:112.2,net:0.4,l10:"5-5",str:""},{t:"Portland Trail Blazers",w:30,l:34,ppg:115.1,opp:118.1,net:-3.0,l10:"5-5",str:""},{t:"Memphis Grizzlies",w:23,l:39,ppg:115.7,opp:117.8,net:-2.1,l10:"5-5",str:""},{t:"Dallas Mavericks",w:21,l:42,ppg:113.3,opp:117.7,net:-4.4,l10:"5-5",str:""},{t:"New Orleans Pelicans",w:20,l:45,ppg:115.2,opp:120.2,net:-5.0,l10:"5-5",str:""},{t:"Utah Jazz",w:19,l:45,ppg:117.4,opp:125.0,net:-7.6,l10:"5-5",str:""},{t:"Sacramento Kings",w:14,l:50,ppg:110.4,opp:121.3,net:-10.9,l10:"5-5",str:""}];
 const TONIGHT=[{time:"5:00 PM ET",home:"Cleveland Cavaliers",away:"Boston Celtics",h_score:36,a_score:56,is_final:false,is_live:true},{time:"7:30 PM ET",home:"Los Angeles Lakers",away:"New York Knicks",h_score:0,a_score:0,is_final:false,is_live:false},{time:"10:00 PM ET",home:"Miami Heat",away:"Detroit Pistons",h_score:0,a_score:0,is_final:false,is_live:false},{time:"10:00 PM ET",home:"Toronto Raptors",away:"Dallas Mavericks",h_score:0,a_score:0,is_final:false,is_live:false},{time:"11:00 PM ET",home:"New Orleans Pelicans",away:"Washington Wizards",h_score:0,a_score:0,is_final:false,is_live:false},{time:"12:00 AM ET",home:"Milwaukee Bucks",away:"Orlando Magic",h_score:0,a_score:0,is_final:false,is_live:false},{time:"12:00 AM ET",home:"San Antonio Spurs",away:"Houston Rockets",h_score:0,a_score:0,is_final:false,is_live:false},{time:"1:00 AM ET",home:"Portland Trail Blazers",away:"Indiana Pacers",h_score:0,a_score:0,is_final:false,is_live:false},{time:"1:00 AM ET",home:"Sacramento Kings",away:"Chicago Bulls",h_score:0,a_score:0,is_final:false,is_live:false},{time:"2:00 AM ET",home:"Phoenix Suns",away:"Charlotte Hornets",h_score:0,a_score:0,is_final:false,is_live:false}];
@@ -357,87 +201,69 @@ const PROPS=[
   {player:"LeBron James",team:"Los Angeles Lakers",line:"Over 8.5 assists",odds:"-105",conf:"MEDIUM",cls:"medium",reason:"LeBron is in full playmaker mode. Plus money on a player averaging 9+ assists."}
 ];
 
+=======
+>>>>>>> Stashed changes
 function renderStandings(data,id){
   const tb=document.getElementById(id);
-  data.forEach((t,i)=>{
-    const pct=(t.w/(t.w+t.l)).toFixed(3);
-    const ns=t.net>=0?'+'+t.net:String(t.net);
-    const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    const sc=(t.str||'').startsWith('W')?'streak-w':'streak-l';
-    let rc='';if(i===5)rc='playoff-line';if(i===9)rc='playin-line';
-    tb.innerHTML+=`<tr class="${rc}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td><td class="${sc}">${t.str||'—'}</td></tr>`;
+  if(!tb)return;
+  // Build overall rank map by win pct
+  const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+  const rankMap={};sorted.forEach((t,i)=>rankMap[t.t]=i+1);
+  // Group by division
+  const divs={};
+  data.forEach(t=>{const d=t.div||'';if(!divs[d])divs[d]=[];divs[d].push(t);});
+  const hasDivs=Object.keys(divs).some(k=>k!=='');
+  if(!hasDivs){
+    sorted.forEach((t,i)=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
+    return;
+  }
+  // Sort divisions alphabetically, sort teams within each div by win pct
+  Object.keys(divs).sort().forEach(dn=>{
+    const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
+    teams.forEach(t=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      const rank=rankMap[t.t]||'';
+      tb.innerHTML+=`<tr><td><span class="team-rank">${rank}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
   });
 }
-
-function renderLines(){
-  const g=document.getElementById('lines-grid');
-  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:10px 0">No games tonight. Check back tomorrow.</p>';return;}
+function renderGames(){
+  const g=document.getElementById('games-grid');
+  if(!g)return;
+  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
   TONIGHT.forEach(gm=>{
-    const isLive=gm.is_live, isFinal=gm.is_final;
-    const hw=isFinal&&gm.h_score>gm.a_score, aw=isFinal&&gm.a_score>gm.h_score;
-    const statusLabel=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    const scoreRow=(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:'';
-    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${statusLabel}</div>
-      <div class="game-matchup">
-        <div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div>
-        <div class="game-vs">vs</div>
-        <div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div>
-      </div></div>${scoreRow}</div>`;
+    const isLive=gm.is_live,isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
   });
 }
-
-
-
-  const H=getT(hn),A=getT(an);if(!H||!A)return;
-  const hs=Math.round((H.ppg*0.4+A.opp*0.4+H.net*0.15+5)+3);
-  const as_=Math.round(A.ppg*0.4+H.opp*0.4+A.net*0.15+5);
-  const sp=hs-as_;
-  const spStr=sp>0?hn.split(' ').slice(-1)[0]+' -'+Math.abs(sp).toFixed(1):an.split(' ').slice(-1)[0]+' -'+Math.abs(sp).toFixed(1);
-  const hp=1/(1+Math.exp(-0.15*sp)); const ap=1-hp;
-  const cf=Math.min(95,Math.max(50,50+Math.abs(H.net-A.net)*1.5)).toFixed(0);
-  const hw=hp>0.5;
-  out.innerHTML=`<div class="result-grid">
-    <div class="result-card ${hw?'w':''}"><div class="r-label">🏠 HOME — ${hn}</div><div class="r-val">${hs}</div><div class="r-sub">${(hp*100).toFixed(1)}% win probability</div></div>
-    <div class="result-card ${!hw?'w':''}"><div class="r-label">✈️ AWAY — ${an}</div><div class="r-val">${as_}</div><div class="r-sub">${(ap*100).toFixed(1)}% win probability</div></div>
-    <div class="result-card"><div class="r-label">Spread</div><div class="r-val gold" style="font-size:22px">${spStr}</div></div>
-    <div class="result-card"><div class="r-label">Confidence</div><div class="r-val gold">${cf}<span style="font-size:18px">/100</span></div></div>
-  </div>
-  <div class="bar-wrap">
-    <div class="bar-labels"><span style="color:#4ade80">${hn} ${(hp*100).toFixed(0)}%</span><span style="color:#f87171">${an} ${(ap*100).toFixed(0)}%</span></div>
-    <div class="bar-track"><div class="bar-fill" style="width:${(hp*100).toFixed(0)}%"></div></div>
-  </div>
-  <div class="winner-banner">${hw?'🏠 '+hn.toUpperCase()+' WINS':'✈️ '+an.toUpperCase()+' WINS'}
-    <span class="winner-sub">${(Math.max(hp,ap)*100).toFixed(1)}% probability · ${cf}/100 confidence</span>
-  </div>`;
+function tog(hdr){
+  const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');chev.classList.toggle('open');
 }
-
-function renderProps(){
+function showPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  const pg=document.getElementById('page-'+name);
+  if(pg)pg.classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderProps(data){
   const g=document.getElementById('props-grid');
-  PROPS.forEach(p=>{
+  if(!g)return;
+  data.forEach(p=>{
     const bc=p.conf==='HIGH'?'b-high':'b-med';
     g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
   });
 }
-
-function tog(hdr){
-  const body=hdr.nextElementSibling;
-  const chev=hdr.querySelector('.chev');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
-}
-
-function showPage(name,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-renderStandings(EAST,'east-body');
-renderStandings(WEST,'west-body');
-renderLines();
-renderProps();
-</script>
+const EAST=[{"t": "Atlanta Hawks", "w": 33, "l": 31, "ppg": 117.7, "opp": 117.3, "net": 0.4, "pct": 33.0, "l10": "\u2014", "div": ""}, {"t": "Philadelphia 76ers", "w": 34, "l": 29, "ppg": 115.8, "opp": 116.1, "net": -0.3, "pct": 17.0, "l10": "\u2014", "div": ""}, {"t": "Miami Heat", "w": 35, "l": 29, "ppg": 120.1, "opp": 116.6, "net": 3.5, "pct": 11.667, "l10": "\u2014", "div": ""}, {"t": "Orlando Magic", "w": 34, "l": 28, "ppg": 114.8, "opp": 114.0, "net": 0.8, "pct": 11.333, "l10": "\u2014", "div": ""}, {"t": "Toronto Raptors", "w": 35, "l": 27, "ppg": 113.5, "opp": 112.0, "net": 1.5, "pct": 8.75, "l10": "\u2014", "div": ""}, {"t": "Cleveland Cavaliers", "w": 39, "l": 25, "ppg": 118.8, "opp": 114.8, "net": 4.0, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "New York Knicks", "w": 41, "l": 23, "ppg": 117.2, "opp": 110.6, "net": 6.6, "pct": 4.556, "l10": "\u2014", "div": ""}, {"t": "Boston Celtics", "w": 43, "l": 21, "ppg": 114.5, "opp": 106.9, "net": 7.6, "pct": 3.909, "l10": "\u2014", "div": ""}, {"t": "Detroit Pistons", "w": 45, "l": 17, "ppg": 116.8, "opp": 109.6, "net": 7.2, "pct": 3.214, "l10": "\u2014", "div": ""}, {"t": "Charlotte Hornets", "w": 32, "l": 32, "ppg": 116.2, "opp": 112.5, "net": 3.7, "pct": 0.5, "l10": "\u2014", "div": ""}, {"t": "Indiana Pacers", "w": 15, "l": 48, "ppg": 111.4, "opp": 119.9, "net": -8.5, "pct": -0.938, "l10": "\u2014", "div": ""}, {"t": "Brooklyn Nets", "w": 16, "l": 47, "ppg": 106.9, "opp": 115.6, "net": -8.7, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Washington Wizards", "w": 16, "l": 46, "ppg": 112.2, "opp": 123.0, "net": -10.8, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Chicago Bulls", "w": 26, "l": 37, "ppg": 115.5, "opp": 119.7, "net": -4.2, "pct": -5.2, "l10": "\u2014", "div": ""}, {"t": "Milwaukee Bucks", "w": 27, "l": 35, "ppg": 111.4, "opp": 115.5, "net": -4.1, "pct": -6.75, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Phoenix Suns", "w": 36, "l": 27, "ppg": 112.1, "opp": 111.2, "net": 0.9, "pct": 9.0, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Lakers", "w": 38, "l": 25, "ppg": 116.0, "opp": 115.3, "net": 0.7, "pct": 6.333, "l10": "\u2014", "div": ""}, {"t": "Denver Nuggets", "w": 39, "l": 25, "ppg": 120.2, "opp": 116.4, "net": 3.8, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Minnesota Timberwolves", "w": 40, "l": 24, "ppg": 118.6, "opp": 114.5, "net": 4.1, "pct": 5.0, "l10": "\u2014", "div": ""}, {"t": "Houston Rockets", "w": 39, "l": 23, "ppg": 114.5, "opp": 109.3, "net": 5.2, "pct": 4.875, "l10": "\u2014", "div": ""}, {"t": "San Antonio Spurs", "w": 46, "l": 17, "ppg": 118.2, "opp": 111.4, "net": 6.8, "pct": 3.286, "l10": "\u2014", "div": ""}, {"t": "Oklahoma City Thunder", "w": 50, "l": 15, "ppg": 118.6, "opp": 107.6, "net": 11.0, "pct": 2.941, "l10": "\u2014", "div": ""}, {"t": "Golden State Warriors", "w": 32, "l": 31, "ppg": 115.0, "opp": 113.9, "net": 1.1, "pct": 0.508, "l10": "\u2014", "div": ""}, {"t": "LA Clippers", "w": 31, "l": 32, "ppg": 112.6, "opp": 112.2, "net": 0.4, "pct": 0.492, "l10": "\u2014", "div": ""}, {"t": "Sacramento Kings", "w": 14, "l": 50, "ppg": 110.4, "opp": 121.3, "net": -10.9, "pct": -0.778, "l10": "\u2014", "div": ""}, {"t": "Utah Jazz", "w": 19, "l": 45, "ppg": 117.4, "opp": 125.0, "net": -7.6, "pct": -1.462, "l10": "\u2014", "div": ""}, {"t": "New Orleans Pelicans", "w": 20, "l": 45, "ppg": 115.2, "opp": 120.2, "net": -5.0, "pct": -1.667, "l10": "\u2014", "div": ""}, {"t": "Dallas Mavericks", "w": 21, "l": 42, "ppg": 113.3, "opp": 117.7, "net": -4.4, "pct": -2.1, "l10": "\u2014", "div": ""}, {"t": "Memphis Grizzlies", "w": 23, "l": 39, "ppg": 115.7, "opp": 117.8, "net": -2.1, "pct": -2.875, "l10": "\u2014", "div": ""}, {"t": "Portland Trail Blazers", "w": 30, "l": 34, "ppg": 115.1, "opp": 118.1, "net": -3.0, "pct": -15.0, "l10": "\u2014", "div": ""}];const TONIGHT=[{"time": "12:00 PM ET", "home": "Cleveland Cavaliers", "away": "Boston Celtics", "h_score": 98, "a_score": 109, "is_final": true, "is_live": false}, {"time": "2:00 PM ET", "home": "Los Angeles Lakers", "away": "New York Knicks", "h_score": 101, "a_score": 90, "is_final": false, "is_live": true}, {"time": "5:00 PM ET", "home": "Miami Heat", "away": "Detroit Pistons", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "5:00 PM ET", "home": "Toronto Raptors", "away": "Dallas Mavericks", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "6:00 PM ET", "home": "New Orleans Pelicans", "away": "Washington Wizards", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "7:00 AM ET", "home": "Milwaukee Bucks", "away": "Orlando Magic", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "7:00 AM ET", "home": "San Antonio Spurs", "away": "Houston Rockets", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "8:00 AM ET", "home": "Portland Trail Blazers", "away": "Indiana Pacers", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "8:00 AM ET", "home": "Sacramento Kings", "away": "Chicago Bulls", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}, {"time": "9:00 AM ET", "home": "Phoenix Suns", "away": "Charlotte Hornets", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false}];const PROPS_DATA=[{"player": "Shai Gilgeous-Alexander", "team": "Oklahoma City Thunder", "line": "Over 31.5 points", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "SGA is averaging 32.5 PPG \u2014 the best scorer in the league right now."}, {"player": "Donovan Mitchell", "team": "Cleveland Cavaliers", "line": "Over 26.5 points", "odds": "-118", "conf": "HIGH", "cls": "high", "reason": "Mitchell is locked in as the Cavs' go-to scorer every night."}, {"player": "Nikola Jokic", "team": "Denver Nuggets", "line": "Over 10.5 rebounds", "odds": "-120", "conf": "HIGH", "cls": "high", "reason": "Jokic averages 12.6 RPG \u2014 consistently below his season average."}, {"player": "Anthony Edwards", "team": "Minnesota Timberwolves", "line": "Over 25.5 points", "odds": "-110", "conf": "HIGH", "cls": "high", "reason": "Ant is the engine of the Wolves offense \u2014 hits this in 60%+ of games."}, {"player": "Jayson Tatum", "team": "Boston Celtics", "line": "Over 5.5 assists", "odds": "-105", "conf": "MEDIUM", "cls": "medium", "reason": "Tatum's playmaking has elevated as the Celtics run more through him."}, {"player": "Tyrese Haliburton", "team": "Indiana Pacers", "line": "Over 9.5 assists", "odds": "-112", "conf": "MEDIUM", "cls": "medium", "reason": "Haliburton leads the league in assists \u2014 this line is conservative."}];renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
 </body>
 </html>

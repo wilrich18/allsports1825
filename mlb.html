@@ -1,611 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>THE FIELD — MLB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --navy:#0a1628;--acc:#22c55e;--acc2:#16a34a;--gold:#fdb927;
-  --white:#f0f4f8;--gray:#7a8fa6;
-  --border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-nav{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;height:54px;}
-.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;letter-spacing:2px;color:var(--white);margin-right:28px;text-decoration:none;}
+<style>*{margin:0;padding:0;box-sizing:border-box;}
+:root{--navy:#0a1628;--acc:#22c55e;--acc2:#16a34a;--gold:#fdb927;--white:#f0f4f8;--gray:#7a8fa6;--border:rgba(255,255,255,0.07);--card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.08);}
+body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;padding:0 24px;height:54px;overflow-x:auto;gap:0;}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:3px;color:var(--white);margin-right:24px;white-space:nowrap;flex-shrink:0;}
 .nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:2px;flex:1;}
-.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);padding:6px 14px;border-radius:4px;transition:all 0.15s;cursor:pointer;border:none;background:none;}
+.nav-links{display:flex;gap:2px;}
+.nav-link{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--gray);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .nav-link:hover,.nav-link.active{color:var(--white);background:var(--card2);}
-.live-pill{background:var(--acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:3px 10px;border-radius:10px;margin-left:auto;letter-spacing:1px;}
-.page{display:none;}
-.page.active{display:block;animation:fadeUp 0.3s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hero{position:relative;background:linear-gradient(135deg,#0a1628 0%,#0d2348 50%,#0a1628 100%);padding:56px 24px 44px;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(34,197,94,0.09),transparent);pointer-events:none;}
-.hero-inner{max-width:1100px;margin:0 auto;position:relative;}
-.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
-.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(44px,7vw,84px);line-height:0.93;letter-spacing:-1px;margin-bottom:14px;}
-.hero-title em{color:var(--acc);font-style:normal;}
-.hero-sub{color:var(--gray);font-size:15px;max-width:460px;margin-bottom:28px;}
-.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
-.hero-stat-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:34px;color:var(--gold);line-height:1;}
-.hero-stat-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:2px;}
-.section{max-width:1100px;margin:0 auto;padding:36px 24px;}
-.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.nav-link.active{color:var(--acc);}
+.page{display:none;min-height:100vh;padding-top:54px;}
+.page.active{display:block;}
+.hero{background:linear-gradient(135deg,#0a1628,#0d2348,#0a1628);padding:60px 24px 50px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 50%,rgba(34,197,94,0.08),transparent);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(52px,8vw,96px);line-height:0.9;letter-spacing:2px;margin-bottom:14px;}
+.hero-title em{font-style:normal;-webkit-text-stroke:1px rgba(255,255,255,0.3);color:transparent;}
+.hero-sub{font-size:14px;color:var(--gray);max-width:500px;line-height:1.6;}
+.live-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:#4ade80;margin-bottom:16px;}
+.section{max-width:1100px;margin:0 auto;padding:40px 24px;}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
 .standings-wrap{overflow-x:auto;}
-.standings-table{width:100%;border-collapse:collapse;font-size:14px;}
-.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:center;border-bottom:1px solid var(--border);}
-.standings-table th:nth-child(2){text-align:left;}
-.standings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s;}
-.standings-table td:nth-child(2){text-align:left;}
-.standings-table tr:hover td{background:var(--card2);}
-.team-name{font-weight:600;}.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);}
-.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.standings-table{width:100%;border-collapse:collapse;font-size:13px;}
+.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.standings-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);white-space:nowrap;}
+.standings-table tr:hover td{background:var(--card);}
+.standings-table tr.playoff-line td{border-bottom:2px solid var(--acc);}
+.team-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);font-size:12px;}
+.team-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;}
 .record-w{color:var(--white);font-weight:600;}.record-l{color:var(--gray);}
-tr.playoff-line td{border-top:2px solid var(--gold)!important;}
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:36px;}
-.game-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.game-card-top{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
-.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.game-matchup{display:flex;align-items:center;justify-content:space-between;}
-.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;flex:1;}
-.game-team.fav{color:var(--white);}.game-team.dog{color:var(--gray);}
-.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);padding:0 8px;}
-.game-score{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);}
-.gscore{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;}
+.net-pos{color:#4ade80;font-weight:600;}.net-neg{color:#f87171;font-weight:600;}
+.div-header-row td{padding:10px 12px 4px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+.div-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s;}
+.game-card:hover{border-color:rgba(255,255,255,0.15);}
+.game-card-top{padding:16px;}
+.game-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;}
+.game-matchup{display:flex;align-items:center;gap:8px;}
+.game-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;flex:1;}
+.game-team.fav{color:var(--white);}.game-team.dog{color:var(--gray);text-align:right;}
+.game-vs{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gray);padding:0 4px;}
+.game-score{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.2);}
+.gscore{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;}
 .gscore.w{color:var(--white);}.gscore.l{color:var(--gray);}
-.gfinal{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--gold);}
-.digest-lead{background:linear-gradient(135deg,#0f1e34,#0a1a14);border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:22px;position:relative;overflow:hidden;}
-.digest-lead::before{content:'';position:absolute;top:-50px;right:-50px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,0.07),transparent 70%);}
+.gfinal{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;color:var(--gold);}
+.digest-lead{background:linear-gradient(135deg,#0f1e34,#1a1428);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.digest-lead::before{content:'';position:absolute;top:-40px;right:-40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(253,185,39,0.06),transparent 70%);}
 .dlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
-.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,38px);line-height:1.0;margin-bottom:8px;}
-.ddeck{color:var(--gray);font-size:14px;font-style:italic;line-height:1.6;max-width:580px;}
-.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;}
-.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;}
-.sw{color:var(--white);}.sl{color:var(--gray);}.sdot{color:var(--acc);margin:0 7px;}
-.art-sub{font-size:11px;color:var(--gray);margin-top:2px;}
-.chev{transition:transform 0.2s;color:var(--gray);font-size:16px;margin-left:8px;}
-.chev.open{transform:rotate(180deg);}
-.art-body{display:none;padding:18px 20px;}
-.art-body.open{display:block;}
-.art-body p{color:#cbd5e1;line-height:1.75;margin-bottom:13px;font-size:14px;}
-.art-body p:last-child{margin-bottom:0;}
-.stat-bar{display:flex;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,0.04);border-radius:7px;padding:10px 14px;margin:12px 0;}
-.sp{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
-.sp span{color:var(--gold);}
-.mag-layout{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
-.rank-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.dhl{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(20px,4vw,34px);line-height:1.0;margin-bottom:8px;}
+.ddeck{color:var(--gray);font-size:14px;line-height:1.6;max-width:580px;}
+.article{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.art-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.art-score{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;}
+.art-teams{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gray);margin-top:2px;}
+.chev{font-size:12px;color:var(--gray);transition:transform 0.2s;}.chev.open{transform:rotate(180deg);}
+.art-body{display:none;padding:16px;font-size:13px;line-height:1.7;color:var(--gray);}.art-body.open{display:block;}
+.mag-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;}
+@media(max-width:900px){.mag-layout{grid-template-columns:1fr;}}
+.rank-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
 .rank-item:last-child{border-bottom:none;}
-.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;line-height:1;color:rgba(255,255,255,0.12);min-width:38px;text-align:center;padding-top:2px;}
+.rank-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:var(--gray);line-height:1;min-width:32px;}
 .rank-n.t3{color:var(--gold);}
-.rank-team{font-weight:600;font-size:15px;margin-bottom:2px;}
-.rank-rec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--gray);letter-spacing:1px;margin-bottom:4px;}
-.rank-note{font-size:13px;color:#94a3b8;line-height:1.5;}
-.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;margin-top:4px;}
+.rank-team{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;}
+.rank-rec{font-size:12px;color:var(--gray);margin-top:2px;}
+.rank-note{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
+.rank-trend{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
 .tu{color:#4ade80;}.td{color:#f87171;}.tf{color:var(--gray);}
-.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
-.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
-.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;}
+.sc-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
 .sc-row:last-child{border-bottom:none;}
-.sc-team{font-weight:600;}
+.sc-team{color:var(--white);font-family:'Barlow Condensed',sans-serif;font-weight:600;}
 .sc-val{color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
-footer{border-top:1px solid var(--border);padding:22px;text-align:center;font-size:12px;color:var(--gray);margin-top:40px;}
-footer strong{color:var(--white);}
-@media(max-width:768px){.mag-layout{grid-template-columns:1fr;}.games-grid{grid-template-columns:1fr;}}
-.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;}
-.prop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.prop-card.high::before{background:linear-gradient(90deg,#4ade80,#22c55e);}
-.prop-card.medium::before{background:linear-gradient(90deg,var(--gold),#f59e0b);}
-.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;margin-bottom:1px;}
-.prop-team{font-size:12px;color:var(--gray);margin-bottom:9px;}
-.prop-line{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;margin-bottom:3px;}
-.prop-odds{font-size:12px;color:var(--gray);margin-bottom:8px;}
-.prop-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
-.b-high{background:rgba(74,222,128,0.13);color:#4ade80;}
-.b-med{background:rgba(253,185,39,0.13);color:var(--gold);}
-.prop-reason{font-size:13px;color:#94a3b8;line-height:1.55;}
-.disclaimer{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18);border-radius:8px;padding:11px 15px;margin-top:22px;font-size:11px;color:#22c55e;line-height:1.5;text-align:center;}
-</style>
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.prop-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.prop-card.high{border-left:3px solid #4ade80;}.prop-card.medium{border-left:3px solid var(--gold);}
+.prop-player{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;margin-bottom:2px;}
+.prop-team{font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:10px;font-family:'Barlow Condensed',sans-serif;font-weight:600;text-transform:uppercase;}
+.prop-line{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px;}
+.prop-odds{font-size:13px;color:var(--gray);margin-bottom:8px;}
+.prop-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.b-high{background:rgba(74,222,128,0.15);color:#4ade80;}.b-med{background:rgba(253,185,39,0.15);color:var(--gold);}
+.prop-reason{font-size:12px;color:var(--gray);line-height:1.5;}
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--gray);}
+footer strong{color:var(--white);}</style>
 </head>
 <body>
-
 <nav>
-  <a class="nav-logo" href="index.html"><span>THE</span> FIELD / MLB</a>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
-    <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
-    <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
-    <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-    <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html"><span>THE</span> FIELD / MLB</a>
+    <div class="nav-links"><button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
+      <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
+      <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
+      <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+      <button class="nav-link" onclick="showPage('props',this)">Player Props</button></div>
   </div>
-  <div class="live-pill">⚾ 2025 SEASON</div>
 </nav>
 
 <div id="page-standings" class="page active">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">2025 MLB Season · Updated March 8, 2026</div>
-      <h1 class="hero-title">MLB<br><em>STANDINGS</em></h1>
-      <p class="hero-sub">Current records and division standings for all 30 teams.</p>
-      <div class="hero-stats">
-        <div><div class="hero-stat-val">12-2</div><div class="hero-stat-lbl">Giants — Best Record</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="section">
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">2025 MLB Season · Updated March 8, 2026</div>
+    <h1 class="hero-title">MLB<br><em>STANDINGS</em></h1>
+    <p class="hero-sub">American League and National League standings.</p>
+  </div></div>
+  <div class="section"><div style="background:rgba(253,185,39,0.08);border:1px solid rgba(253,185,39,0.2);border-radius:12px;padding:24px;margin-bottom:28px;text-align:center">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:var(--gold);margin-bottom:8px">⚾ Spring Training 2025</div>
+  <div style="color:var(--gray);font-size:14px">Regular season standings will appear here starting April 1, 2025.</div>
+</div><div class="two-col">
+  <div>
     <div class="section-title">American League</div>
-    <div class="standings-wrap">
-      <table class="standings-table">
-        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
-        <tbody id="east-body"></tbody>
-      </table>
-    </div>
-    <div class="section-title" style="margin-top:30px">National League</div>
-    <div class="standings-wrap">
-      <table class="standings-table">
-        <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
-        <tbody id="west-body"></tbody>
-      </table>
-    </div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="east-body"></tbody>
+    </table></div>
   </div>
+  <div>
+    <div class="section-title">National League</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>R/G</th><th>RA/G</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="west-body"></tbody>
+    </table></div>
+  </div>
+</div></div>
 </div>
-
 <div id="page-tonight" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">2025 MLB Season</div>
-      <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
-      <p class="hero-sub">Tonight's MLB slate — scores and matchups.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="live-pill">🔴 LIVE TONIGHT</div>
+    <div class="hero-eyebrow">March 8, 2026</div>
+    <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
+    <p class="hero-sub">Live scores and tonight's MLB matchups.</p>
+  </div></div>
   <div class="section">
-    <div class="section-title">Tonight's Games — SUNDAY, March 8, 2026</div>
+    <div class="section-title">Tonight's Games</div>
     <div class="games-grid" id="games-grid"></div>
   </div>
 </div>
-
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">SUNDAY March 8, 2026 · Recapping March 7, 2026</div>
-      <div class="dhl">MLB DAILY DIGEST</div>
-      <div class="ddeck">Last night's scores, standout performances, and everything that happened around the league.</div>
+      <div class="dlabel">Daily Digest · March 8, 2026</div>
+      <div class="dhl">Last Night's MLB Action</div>
+      <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    <div class="section-title">Game Recaps — March 7, 2026</div>
-    
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ASTROS 5</span>
-            <span class="sdot">·</span>
-            <span class="sl">MARLINS 4</span>
-          </div>
-          <div class="art-sub">Miami Marlins @ Houston Astros · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Houston Astros edged Miami Marlins 5-4 in a narrow finish. A tight pitching duel that went down to the wire, with Astros scratching across the decisive run at just the right moment. The win keeps Houston Astros moving in the right direction as the season heads toward its final stretch, while Miami Marlins will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ORIOLES 2</span>
-            <span class="sdot">·</span>
-            <span class="sl">BRAVES 2</span>
-          </div>
-          <div class="art-sub">Baltimore Orioles @ Atlanta Braves · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Baltimore Orioles edged Atlanta Braves 2-2 in a narrow finish. Orioles got timely hitting and solid pitching to secure the win over a scrappy Braves squad. The win keeps Baltimore Orioles moving in the right direction as the season heads toward its final stretch, while Atlanta Braves will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ORIOLES 3</span>
-            <span class="sdot">·</span>
-            <span class="sl">TWINS 2</span>
-          </div>
-          <div class="art-sub">Minnesota Twins @ Baltimore Orioles · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Baltimore Orioles edged Minnesota Twins 3-2 in a narrow finish. A tight pitching duel that went down to the wire, with Orioles scratching across the decisive run at just the right moment. The win keeps Baltimore Orioles moving in the right direction as the season heads toward its final stretch, while Minnesota Twins will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">SOX 2</span>
-            <span class="sdot">·</span>
-            <span class="sl">RAYS 0</span>
-          </div>
-          <div class="art-sub">Tampa Bay Rays @ Boston Red Sox · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Boston Red Sox edged Tampa Bay Rays 2-0 in a narrow finish. Sox got timely hitting and solid pitching to secure the win over a scrappy Rays squad. The win keeps Boston Red Sox moving in the right direction as the season heads toward its final stretch, while Tampa Bay Rays will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">PIRATES 5</span>
-            <span class="sdot">·</span>
-            <span class="sl">TIGERS 3</span>
-          </div>
-          <div class="art-sub">Pittsburgh Pirates @ Detroit Tigers · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Pittsburgh Pirates edged Detroit Tigers 5-3 in a narrow finish. Pirates got timely hitting and solid pitching to secure the win over a scrappy Tigers squad. The win keeps Pittsburgh Pirates moving in the right direction as the season heads toward its final stretch, while Detroit Tigers will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">JAYS 1</span>
-            <span class="sdot">·</span>
-            <span class="sl">PHILLIES 0</span>
-          </div>
-          <div class="art-sub">Toronto Blue Jays @ Philadelphia Phillies · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Toronto Blue Jays edged Philadelphia Phillies 1-0 in a narrow finish. A tight pitching duel that went down to the wire, with Jays scratching across the decisive run at just the right moment. The win keeps Toronto Blue Jays moving in the right direction as the season heads toward its final stretch, while Philadelphia Phillies will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">METS 3</span>
-            <span class="sdot">·</span>
-            <span class="sl">CARDINALS 2</span>
-          </div>
-          <div class="art-sub">New York Mets @ St. Louis Cardinals · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, New York Mets edged St. Louis Cardinals 3-2 in a narrow finish. A tight pitching duel that went down to the wire, with Mets scratching across the decisive run at just the right moment. The win keeps New York Mets moving in the right direction as the season heads toward its final stretch, while St. Louis Cardinals will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">CUBS 4</span>
-            <span class="sdot">·</span>
-            <span class="sl">ATHLETICS 3</span>
-          </div>
-          <div class="art-sub">Athletics @ Chicago Cubs · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Chicago Cubs edged Athletics 4-3 in a narrow finish. A tight pitching duel that went down to the wire, with Cubs scratching across the decisive run at just the right moment. The win keeps Chicago Cubs moving in the right direction as the season heads toward its final stretch, while Athletics will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">GUARDIANS 7</span>
-            <span class="sdot">·</span>
-            <span class="sl">PADRES 1</span>
-          </div>
-          <div class="art-sub">San Diego Padres @ Cleveland Guardians · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Cleveland Guardians held off San Diego Padres for a solid 7-1 win. The Guardians offense exploded early and never looked back, putting up crooked numbers that Padres couldn't answer. The win keeps Cleveland Guardians moving in the right direction as the season heads toward its final stretch, while San Diego Padres will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ROYALS 6</span>
-            <span class="sdot">·</span>
-            <span class="sl">REDS 2</span>
-          </div>
-          <div class="art-sub">Cincinnati Reds @ Kansas City Royals · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Kansas City Royals held off Cincinnati Reds for a solid 6-2 win. Royals got timely hitting and solid pitching to secure the win over a scrappy Reds squad. The win keeps Kansas City Royals moving in the right direction as the season heads toward its final stretch, while Cincinnati Reds will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">GIANTS 7</span>
-            <span class="sdot">·</span>
-            <span class="sl">RANGERS 5</span>
-          </div>
-          <div class="art-sub">Texas Rangers @ San Francisco Giants · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, San Francisco Giants edged Texas Rangers 7-5 in a narrow finish. Giants got timely hitting and solid pitching to secure the win over a scrappy Rangers squad. The win keeps San Francisco Giants moving in the right direction as the season heads toward its final stretch, while Texas Rangers will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">BREWERS 7</span>
-            <span class="sdot">·</span>
-            <span class="sl">ANGELS 1</span>
-          </div>
-          <div class="art-sub">Milwaukee Brewers @ Los Angeles Angels · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Milwaukee Brewers held off Los Angeles Angels for a solid 7-1 win. The Brewers offense exploded early and never looked back, putting up crooked numbers that Angels couldn't answer. The win keeps Milwaukee Brewers moving in the right direction as the season heads toward its final stretch, while Los Angeles Angels will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">SOX 5</span>
-            <span class="sdot">·</span>
-            <span class="sl">MARINERS 1</span>
-          </div>
-          <div class="art-sub">Chicago White Sox @ Seattle Mariners · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>Chicago White Sox held off Seattle Mariners for a solid 5-1 win. Sox got timely hitting and solid pitching to secure the win over a scrappy Mariners squad. The win keeps Chicago White Sox moving in the right direction as the season heads toward its final stretch, while Seattle Mariners will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">GIANTS 7</span>
-            <span class="sdot">·</span>
-            <span class="sl">DIAMONDBACKS 4</span>
-          </div>
-          <div class="art-sub">San Francisco Giants @ Arizona Diamondbacks · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, San Francisco Giants edged Arizona Diamondbacks 7-4 in a narrow finish. Giants got timely hitting and solid pitching to secure the win over a scrappy Diamondbacks squad. The win keeps San Francisco Giants moving in the right direction as the season heads toward its final stretch, while Arizona Diamondbacks will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ANGELS 3</span>
-            <span class="sdot">·</span>
-            <span class="sl">ATHLETICS 0</span>
-          </div>
-          <div class="art-sub">Los Angeles Angels @ Athletics · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Los Angeles Angels edged Athletics 3-0 in a narrow finish. Angels got timely hitting and solid pitching to secure the win over a scrappy Athletics squad. The win keeps Los Angeles Angels moving in the right direction as the season heads toward its final stretch, while Athletics will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">NATIONALS 3</span>
-            <span class="sdot">·</span>
-            <span class="sl">YANKEES 0</span>
-          </div>
-          <div class="art-sub">New York Yankees @ Washington Nationals · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Washington Nationals edged New York Yankees 3-0 in a narrow finish. Nationals got timely hitting and solid pitching to secure the win over a scrappy Yankees squad. The win keeps Washington Nationals moving in the right direction as the season heads toward its final stretch, while New York Yankees will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
-    <div class="article">
-      <div class="art-hdr" onclick="tog(this)">
-        <div>
-          <div class="art-score">
-            <span class="sw">ROCKIES 6</span>
-            <span class="sdot">·</span>
-            <span class="sl">DODGERS 4</span>
-          </div>
-          <div class="art-sub">Colorado Rockies @ Los Angeles Dodgers · March 7, 2026</div>
-        </div>
-        <span class="chev">▾</span>
-      </div>
-      <div class="art-body"><p>In one of the night's closest games, Colorado Rockies edged Los Angeles Dodgers 6-4 in a narrow finish. Rockies got timely hitting and solid pitching to secure the win over a scrappy Dodgers squad. The win keeps Colorado Rockies moving in the right direction as the season heads toward its final stretch, while Los Angeles Dodgers will look to bounce back in their next outing. Both teams return to action in the coming days with playoff positioning still very much on the line.</p></div>
-    </div>
+    <p style="color:var(--gray)">Spring training underway — regular season starts April 1.</p>
   </div>
 </div>
-
 <div id="page-magazine" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">The Field · March 8, 2026</div>
-      <h1 class="hero-title">MLB<br><em>MAGAZINE</em></h1>
-      <p class="hero-sub">Power rankings and the full story of the 2025 season.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">The Field · March 8, 2026</div>
+    <h1 class="hero-title">MLB<br><em>MAGAZINE</em></h1>
+    <p class="hero-sub">Power rankings, hot streaks and the full story of the season.</p>
+  </div></div>
   <div class="section">
     <div class="mag-layout">
+      <div><div class="section-title">Power Rankings — March 8, 2026</div><div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Los Angeles Dodgers</div><div class="rank-rec">—-—</div><div class="rank-note">Ohtani, Freeman, Betts — deepest lineup in baseball.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">New York Yankees</div><div class="rank-rec">—-—</div><div class="rank-note">Judge is the best power hitter alive. Rotation is elite.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Atlanta Braves</div><div class="rank-rec">—-—</div><div class="rank-note">Acuña healthy changes everything. Rotation is deep.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Philadelphia Phillies</div><div class="rank-rec">—-—</div><div class="rank-note">Wheeler and Nola give them the best 1-2 in the NL.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Baltimore Orioles</div><div class="rank-rec">—-—</div><div class="rank-note">Young core is maturing fast. Could surprise everyone.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Houston Astros</div><div class="rank-rec">—-—</div><div class="rank-note">Always dangerous. Alvarez is a postseason monster.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Cleveland Guardians</div><div class="rank-rec">—-—</div><div class="rank-note">Pitching staff is underrated. Bieber return is huge.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">San Diego Padres</div><div class="rank-rec">—-—</div><div class="rank-note">Tatis healthy and hungry. Watch this team in the West.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Boston Red Sox</div><div class="rank-rec">—-—</div><div class="rank-note">Devers is a force. Rotation depth is the question.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">Seattle Mariners</div><div class="rank-rec">—-—</div><div class="rank-note">Julio Rodriguez emerging as a true franchise player.</div><div class="rank-trend tu">↑ Moving Up</div></div></div></div>
       <div>
-        <div class="section-title">Power Rankings — March 8, 2026</div>
-        <div class="rank-item">
-          <div class="rank-n t3">1</div>
-          <div>
-            <div class="rank-team">San Francisco Giants</div>
-            <div class="rank-rec">12-2</div>
-            <div class="rank-note">The most complete team in baseball. Deep rotation and potent lineup.</div>
-            <div class="rank-trend tu">↑ Moving Up</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n t3">2</div>
-          <div>
-            <div class="rank-team">Atlanta Braves</div>
-            <div class="rank-rec">10-2</div>
-            <div class="rank-note">Dominant pitching staff and timely hitting making them dangerous.</div>
-            <div class="rank-trend tu">↑ Moving Up</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n t3">3</div>
-          <div>
-            <div class="rank-team">New York Yankees</div>
-            <div class="rank-rec">10-4</div>
-            <div class="rank-note">Red-hot right now. Their lineup is clicking top to bottom.</div>
-            <div class="rank-trend tu">↑ Moving Up</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n ">4</div>
-          <div>
-            <div class="rank-team">Los Angeles Dodgers</div>
-            <div class="rank-rec">10-5</div>
-            <div class="rank-note">Consistent and experienced. Always a threat come October.</div>
-            <div class="rank-trend tf">→ Holding</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n ">5</div>
-          <div>
-            <div class="rank-team">Pittsburgh Pirates</div>
-            <div class="rank-rec">10-5</div>
-            <div class="rank-note">Pitching-first team playing their best ball of the season.</div>
-            <div class="rank-trend tf">→ Holding</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n ">6</div>
-          <div>
-            <div class="rank-team">Washington Nationals</div>
-            <div class="rank-rec">7-4</div>
-            <div class="rank-note">Young core has arrived. Exciting to watch every single night.</div>
-            <div class="rank-trend tf">→ Holding</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n ">7</div>
-          <div>
-            <div class="rank-team">St. Louis Cardinals</div>
-            <div class="rank-rec">8-5</div>
-            <div class="rank-note">Battling through injuries and still in the thick of it.</div>
-            <div class="rank-trend td">↓ Sliding</div>
-          </div>
-        </div><div class="rank-item">
-          <div class="rank-n ">8</div>
-          <div>
-            <div class="rank-team">Colorado Rockies</div>
-            <div class="rank-rec">8-6</div>
-            <div class="rank-note">Talented roster that needs to string wins together soon.</div>
-            <div class="rank-trend td">↓ Sliding</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="sidebar-card">
-          <div class="sc-title">🏆 Top Teams</div>
-          <div class="sc-row"><span class="sc-team">San Francisco Giants</span><span class="sc-val">12-2</span></div><div class="sc-row"><span class="sc-team">Atlanta Braves</span><span class="sc-val">10-2</span></div><div class="sc-row"><span class="sc-team">New York Yankees</span><span class="sc-val">10-4</span></div><div class="sc-row"><span class="sc-team">Los Angeles Dodgers</span><span class="sc-val">10-5</span></div><div class="sc-row"><span class="sc-team">Pittsburgh Pirates</span><span class="sc-val">10-5</span></div>
+        <div class="sidebar-card"><div class="sc-title">⚾ Best Records</div><div class="sc-row"><span class="sc-team">Season starts April 1</span></div></div>
+        <div class="sidebar-card"><div class="sc-title">📊 Playoff Picture</div>
+          <div class="sc-row"><span class="sc-team">AL Wild Card</span><span class="sc-val">—</span></div>
+          <div class="sc-row"><span class="sc-team">NL Wild Card</span><span class="sc-val">—</span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 <div id="page-props" class="page">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">March 8, 2026 · Tonight's Slate</div>
-      <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
-      <p class="hero-sub">Top prop picks with confidence ratings for tonight's games.</p>
-    </div>
-  </div>
+  <div class="hero"><div class="hero-inner">
+    <div class="hero-eyebrow">March 8, 2026</div>
+    <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
+    <p class="hero-sub">Best prop bets for tonight's MLB games.</p>
+  </div></div>
   <div class="section">
     <div class="section-title">Tonight's Best Props</div>
     <div class="props-grid" id="props-grid"></div>
-    <div class="disclaimer">⚠️ For entertainment only. Not financial or gambling advice. 1-800-GAMBLER.</div>
+    <p style="font-size:11px;color:var(--gray);margin-top:16px;text-align:center">For entertainment only. Not gambling advice. 1-800-GAMBLER.</p>
   </div>
 </div>
 
-<footer>
-  <strong>THE FIELD — MLB</strong> · 2025 Season · Updated March 8, 2026<br>
-  <span>Data via ESPN · Not affiliated with MLB · <a href="index.html" style="color:var(--gold)">← Back to Hub</a></span>
-</footer>
-
+<footer><strong>THE FIELD — MLB</strong> · Data via ESPN · Updated March 8, 2026 · For entertainment only · 1-800-GAMBLER</footer>
 <script>
+<<<<<<< Updated upstream
 const EAST=[];
 const WEST=[{t:"San Francisco Giants",w:12,l:2,ppg:7.4,opp:4.4,net:3.0,l10:"—",pct:0.857},{t:"Atlanta Braves",w:10,l:2,ppg:6.6,opp:4.4,net:2.2,l10:"—",pct:0.833},{t:"New York Yankees",w:10,l:4,ppg:6.1,opp:3.6,net:2.5,l10:"—",pct:0.714},{t:"Los Angeles Dodgers",w:10,l:5,ppg:6.8,opp:5.1,net:1.7,l10:"—",pct:0.667},{t:"Pittsburgh Pirates",w:10,l:5,ppg:5.6,opp:4.2,net:1.4,l10:"—",pct:0.667},{t:"Washington Nationals",w:7,l:4,ppg:5.4,opp:4.9,net:0.5,l10:"—",pct:0.636},{t:"St. Louis Cardinals",w:8,l:5,ppg:4.7,opp:4.3,net:0.4,l10:"—",pct:0.615},{t:"Colorado Rockies",w:8,l:6,ppg:6.7,opp:6.4,net:0.3,l10:"—",pct:0.571},{t:"Chicago White Sox",w:9,l:7,ppg:5.4,opp:4.1,net:1.3,l10:"—",pct:0.562},{t:"New York Mets",w:6,l:5,ppg:4.5,opp:3.7,net:0.8,l10:"—",pct:0.545},{t:"Baltimore Orioles",w:7,l:6,ppg:4.8,opp:5.8,net:-1.0,l10:"—",pct:0.538},{t:"Texas Rangers",w:8,l:7,ppg:5.4,opp:4.7,net:0.7,l10:"—",pct:0.533},{t:"Cleveland Guardians",w:8,l:8,ppg:6.0,opp:5.3,net:0.7,l10:"—",pct:0.5},{t:"Milwaukee Brewers",w:7,l:7,ppg:5.8,opp:5.0,net:0.8,l10:"—",pct:0.5},{t:"Cincinnati Reds",w:6,l:6,ppg:6.8,opp:7.6,net:-0.8,l10:"—",pct:0.5},{t:"Boston Red Sox",w:7,l:7,ppg:5.7,opp:6.9,net:-1.2,l10:"—",pct:0.5},{t:"Chicago Cubs",w:7,l:8,ppg:4.3,opp:5.3,net:-1.0,l10:"—",pct:0.467},{t:"San Diego Padres",w:7,l:8,ppg:6.1,opp:5.1,net:1.0,l10:"—",pct:0.467},{t:"Arizona Diamondbacks",w:7,l:8,ppg:5.3,opp:6.4,net:-1.1,l10:"—",pct:0.467},{t:"Kansas City Royals",w:6,l:7,ppg:6.6,opp:6.4,net:0.2,l10:"—",pct:0.462},{t:"Miami Marlins",w:6,l:7,ppg:3.5,opp:4.8,net:-1.3,l10:"—",pct:0.462},{t:"Philadelphia Phillies",w:5,l:8,ppg:5.2,opp:5.4,net:-0.2,l10:"—",pct:0.385},{t:"Los Angeles Angels",w:6,l:10,ppg:4.2,opp:6.6,net:-2.4,l10:"—",pct:0.375},{t:"Houston Astros",w:4,l:7,ppg:4.4,opp:4.9,net:-0.5,l10:"—",pct:0.364},{t:"Toronto Blue Jays",w:4,l:8,ppg:6.0,opp:6.1,net:-0.1,l10:"—",pct:0.333},{t:"Tampa Bay Rays",w:5,l:10,ppg:3.4,opp:4.3,net:-0.9,l10:"—",pct:0.333},{t:"Detroit Tigers",w:3,l:7,ppg:6.8,opp:7.8,net:-1.0,l10:"—",pct:0.3},{t:"Athletics",w:4,l:10,ppg:4.6,opp:6.4,net:-1.8,l10:"—",pct:0.286},{t:"Seattle Mariners",w:4,l:10,ppg:5.7,opp:8.6,net:-2.9,l10:"—",pct:0.286},{t:"Minnesota Twins",w:3,l:10,ppg:4.8,opp:6.5,net:-1.7,l10:"—",pct:0.231}];
 const TONIGHT=[{time:"5:05 PM ET",home:"Baltimore Orioles",away:"Toronto Blue Jays",h_score:0,a_score:1,is_final:false,is_live:true},{time:"5:05 PM ET",home:"Minnesota Twins",away:"Philadelphia Phillies",h_score:3,a_score:1,is_final:false,is_live:true},{time:"5:05 PM ET",home:"Pittsburgh Pirates",away:"Boston Red Sox",h_score:2,a_score:1,is_final:false,is_live:true},{time:"5:05 PM ET",home:"Tampa Bay Rays",away:"Atlanta Braves",h_score:6,a_score:5,is_final:false,is_live:true},{time:"5:05 PM ET",home:"Washington Nationals",away:"Houston Astros",h_score:0,a_score:0,is_final:false,is_live:true},{time:"5:07 PM ET",home:"Toronto Blue Jays",away:"Detroit Tigers",h_score:1,a_score:0,is_final:false,is_live:true},{time:"5:10 PM ET",home:"Miami Marlins",away:"St. Louis Cardinals",h_score:1,a_score:1,is_final:false,is_live:true},{time:"5:10 PM ET",home:"New York Mets",away:"New York Yankees",h_score:3,a_score:2,is_final:false,is_live:true},{time:"8:05 PM ET",home:"Athletics",away:"Los Angeles Angels",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:05 PM ET",home:"Athletics",away:"Los Angeles Dodgers",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:05 PM ET",home:"Chicago Cubs",away:"San Francisco Giants",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:05 PM ET",home:"Chicago White Sox",away:"Kansas City Royals",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:05 PM ET",home:"Cincinnati Reds",away:"Arizona Diamondbacks",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:05 PM ET",home:"Texas Rangers",away:"Los Angeles Angels",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:10 PM ET",home:"Colorado Rockies",away:"Cleveland Guardians",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:10 PM ET",home:"Milwaukee Brewers",away:"Seattle Mariners",h_score:0,a_score:0,is_final:false,is_live:false},{time:"8:10 PM ET",home:"San Diego Padres",away:"Cincinnati Reds",h_score:0,a_score:0,is_final:false,is_live:false}];
 
+=======
+>>>>>>> Stashed changes
 function renderStandings(data,id){
   const tb=document.getElementById(id);
-  data.forEach((t,i)=>{
-    const ns=t.net>0?'+'+t.net:String(t.net);
-    const nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    let rc='';if(i===4)rc='playoff-line';
-    tb.innerHTML+=`<tr class="${rc}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${t.pct.toFixed(3)}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+  if(!tb)return;
+  // Build overall rank map by win pct
+  const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+  const rankMap={};sorted.forEach((t,i)=>rankMap[t.t]=i+1);
+  // Group by division
+  const divs={};
+  data.forEach(t=>{const d=t.div||'';if(!divs[d])divs[d]=[];divs[d].push(t);});
+  const hasDivs=Object.keys(divs).some(k=>k!=='');
+  if(!hasDivs){
+    sorted.forEach((t,i)=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
+    return;
+  }
+  // Sort divisions alphabetically, sort teams within each div by win pct
+  Object.keys(divs).sort().forEach(dn=>{
+    const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
+    teams.forEach(t=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      const rank=rankMap[t.t]||'';
+      tb.innerHTML+=`<tr><td><span class="team-rank">${rank}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
   });
 }
-
 function renderGames(){
   const g=document.getElementById('games-grid');
+  if(!g)return;
   if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
   TONIGHT.forEach(gm=>{
-    const isLive=gm.is_live;
-    const isFinal=gm.is_final;
-    const hw=isFinal&&gm.h_score>gm.a_score;
-    const aw=isFinal&&gm.a_score>gm.h_score;
-    const statusLabel=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    g.innerHTML+=`<div class="game-card">
-      <div class="game-card-top">
-        <div class="game-time">${statusLabel}</div>
-        <div class="game-matchup">
-          <div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
-            <div class="game-team fav">${gm.home}</div></div>
-          <div class="game-vs">vs</div>
-          <div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
-            <div class="game-team dog">${gm.away}</div></div>
-        </div>
-      </div>
-      ${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}
-    </div>`;
+    const isLive=gm.is_live,isFinal=gm.is_final;
+    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
   });
 }
-
 function tog(hdr){
-  const body=hdr.nextElementSibling;
-  const chev=hdr.querySelector('.chev');
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
+  const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
+  body.classList.toggle('open');chev.classList.toggle('open');
 }
-
 function showPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
+  const pg=document.getElementById('page-'+name);
+  if(pg)pg.classList.add('active');
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
-renderStandings(EAST,'east-body');
-renderStandings(WEST,'west-body');
-const PROPS_DATA=[
-  {player:"Shohei Ohtani",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-125",conf:"HIGH",cls:"high",reason:"Ohtani barrels the ball at an elite rate. 1.5 total bases is achievable in a single hit."},
-  {player:"Aaron Judge",team:"New York Yankees",line:"Over 0.5 home runs",odds:"+185",conf:"HIGH",cls:"high",reason:"Judge leads MLB in HR. At +185 this is tremendous value for the best power hitter in baseball."},
-  {player:"Freddie Freeman",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-115",conf:"HIGH",cls:"high",reason:"Freeman is the Dodgers most consistent contact hitter. Makes hard contact every game."},
-  {player:"Juan Soto",team:"New York Yankees",line:"Over 0.5 walks",odds:"-130",conf:"HIGH",cls:"high",reason:"Soto has an elite eye and draws 1+ walks in the majority of his games."},
-  {player:"Mookie Betts",team:"Los Angeles Dodgers",line:"Over 1.5 total bases",odds:"-110",conf:"MEDIUM",cls:"medium",reason:"Betts is one of the most consistent performers in baseball."},
-  {player:"Ronald Acuna Jr.",team:"Atlanta Braves",line:"Over 0.5 stolen bases",odds:"+110",conf:"MEDIUM",cls:"medium",reason:"Acuna is the most dangerous baserunner in baseball. Plus money makes this great value."},
-];
-const SPORT_PROPS=PROPS_DATA;
-function renderProps(){
+function renderProps(data){
   const g=document.getElementById('props-grid');
   if(!g)return;
-  SPORT_PROPS.forEach(p=>{
+  data.forEach(p=>{
     const bc=p.conf==='HIGH'?'b-high':'b-med';
     g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
   });
 }
-renderProps();
-renderGames();
-</script>
+const EAST=[];const WEST=[];const TONIGHT=[{"time": "12:00 PM ET", "home": "Baltimore Orioles", "away": "Toronto Blue Jays", "h_score": 0, "a_score": 1, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Minnesota Twins", "away": "Philadelphia Phillies", "h_score": 7, "a_score": 6, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Pittsburgh Pirates", "away": "Boston Red Sox", "h_score": 9, "a_score": 7, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Tampa Bay Rays", "away": "Atlanta Braves", "h_score": 9, "a_score": 8, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Washington Nationals", "away": "Houston Astros", "h_score": 3, "a_score": 1, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Toronto Blue Jays", "away": "Detroit Tigers", "h_score": 5, "a_score": 0, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "Miami Marlins", "away": "St. Louis Cardinals", "h_score": 2, "a_score": 2, "is_final": true, "is_live": false}, {"time": "12:00 PM ET", "home": "New York Mets", "away": "New York Yankees", "h_score": 10, "a_score": 4, "is_final": true, "is_live": false}, {"time": "3:00 PM ET", "home": "Athletics", "away": "Los Angeles Angels", "h_score": 4, "a_score": 3, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Athletics", "away": "Los Angeles Dodgers", "h_score": 6, "a_score": 7, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Chicago Cubs", "away": "San Francisco Giants", "h_score": 5, "a_score": 6, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Chicago White Sox", "away": "Kansas City Royals", "h_score": 5, "a_score": 4, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Cincinnati Reds", "away": "Arizona Diamondbacks", "h_score": 4, "a_score": 2, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Texas Rangers", "away": "Los Angeles Angels", "h_score": 6, "a_score": 7, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Colorado Rockies", "away": "Cleveland Guardians", "h_score": 2, "a_score": 3, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "Milwaukee Brewers", "away": "Seattle Mariners", "h_score": 6, "a_score": 3, "is_final": false, "is_live": true}, {"time": "3:00 PM ET", "home": "San Diego Padres", "away": "Cincinnati Reds", "h_score": 4, "a_score": 2, "is_final": false, "is_live": true}];const PROPS_DATA=[{"player": "Shohei Ohtani", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-125", "conf": "HIGH", "cls": "high", "reason": "Ohtani barrels the ball at an elite rate. Achievable in a single hit."}, {"player": "Aaron Judge", "team": "New York Yankees", "line": "Over 0.5 home runs", "odds": "+185", "conf": "HIGH", "cls": "high", "reason": "Judge leads MLB in HR. Great value for the best power hitter in baseball."}, {"player": "Freddie Freeman", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "Freeman is the Dodgers' most consistent contact hitter."}, {"player": "Juan Soto", "team": "New York Yankees", "line": "Over 0.5 walks", "odds": "-130", "conf": "HIGH", "cls": "high", "reason": "Soto has an elite eye and draws walks in the majority of his games."}, {"player": "Mookie Betts", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-110", "conf": "MEDIUM", "cls": "medium", "reason": "One of the most consistent performers in baseball."}, {"player": "Ronald Acu\u00f1a Jr.", "team": "Atlanta Braves", "line": "Over 0.5 stolen bases", "odds": "+110", "conf": "MEDIUM", "cls": "medium", "reason": "Most dangerous baserunner in baseball. Plus money is great value."}];renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
 </body>
 </html>

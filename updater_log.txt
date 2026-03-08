@@ -1,0 +1,704 @@
+[2026-03-06 15:09:57] =======================================================
+[2026-03-06 15:09:57] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-06 15:09:57] =======================================================
+[2026-03-06 15:09:57] 
+[1/4] NBA
+[2026-03-06 15:09:57] 🏀 Fetching NBA standings...
+[2026-03-06 15:09:58]   ✅ NBA: 15 East + 15 West teams
+[2026-03-06 15:09:59] 🌐 Generating nba.html...
+[2026-03-06 15:09:59]   ✅ nba.html saved (46,084 chars)
+[2026-03-06 15:09:59] 
+[2/4] NHL
+[2026-03-06 15:09:59] 🏒 Fetching NHL standings...
+[2026-03-06 15:09:59]   ✅ NHL: 16 East + 16 West
+[2026-03-06 15:10:01] 🌐 Generating nhl.html...
+[2026-03-06 15:10:01]   ✅ nhl.html saved (49,404 chars)
+[2026-03-06 15:10:01] 
+[3/4] MLB
+[2026-03-06 15:10:01] ⚾ Fetching MLB standings...
+[2026-03-06 15:10:01]   ℹ️  MLB spring training — no regular season standings yet
+[2026-03-06 15:10:01] 🌐 Generating mlb.html...
+[2026-03-06 15:10:01]   ✅ mlb.html saved (16,092 chars)
+[2026-03-06 15:10:01] 
+[4/4] NFL
+[2026-03-06 15:10:01] 🏈 Fetching NFL standings...
+[2026-03-06 15:10:02]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-06 15:10:02] 🌐 Generating nfl.html...
+[2026-03-06 15:10:02]   ✅ nfl.html saved (29,827 chars)
+[2026-03-06 15:10:02] 
+[5/5] Hub
+[2026-03-06 15:10:02] 🌐 Generating index.html...
+[2026-03-06 15:10:02]   ✅ index.html saved (10,523 chars)
+[2026-03-06 15:10:02] 
+[2026-03-06 15:10:02] =======================================================
+[2026-03-06 15:10:02] 🎉  All done! 5 files updated in:
+[2026-03-06 15:10:02]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-06 15:10:02] 
+[2026-03-06 15:10:02]     index.html  — Home hub
+[2026-03-06 15:10:02]     nba.html    — NBA basketball
+[2026-03-06 15:10:02]     nhl.html    — NHL hockey
+[2026-03-06 15:10:02]     mlb.html    — MLB baseball
+[2026-03-06 15:10:02]     nfl.html    — NFL football
+[2026-03-06 15:10:02] 
+[2026-03-06 15:10:02]     Drag the entire folder to Netlify to publish.
+[2026-03-06 15:10:02]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-06 15:10:02] =======================================================
+[2026-03-06 19:01:24] =======================================================
+[2026-03-06 19:01:24] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-06 19:01:24] =======================================================
+[2026-03-06 19:01:24] 
+[1/4] NBA
+[2026-03-06 19:01:24] 🏀 Fetching NBA standings...
+[2026-03-06 19:01:24]   ✅ NBA: 15 East + 15 West teams
+[2026-03-06 19:01:25] 🌐 Generating nba.html...
+[2026-03-06 19:01:25]   ✅ nba.html saved (46,086 chars)
+[2026-03-06 19:01:25] 
+[2/4] NHL
+[2026-03-06 19:01:25] 🏒 Fetching NHL standings...
+[2026-03-06 19:01:25]   ✅ NHL: 16 East + 16 West
+[2026-03-06 19:01:26] 🌐 Generating nhl.html...
+[2026-03-06 19:01:26]   ✅ nhl.html saved (49,404 chars)
+[2026-03-06 19:01:26] 
+[3/4] MLB
+[2026-03-06 19:01:26] ⚾ Fetching MLB standings...
+[2026-03-06 19:01:26]   ℹ️  MLB spring training — no regular season standings yet
+[2026-03-06 19:01:26] 🌐 Generating mlb.html...
+[2026-03-06 19:01:26]   ✅ mlb.html saved (16,092 chars)
+[2026-03-06 19:01:26] 
+[4/4] NFL
+[2026-03-06 19:01:26] 🏈 Fetching NFL standings...
+[2026-03-06 19:01:27]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-06 19:01:27] 🌐 Generating nfl.html...
+[2026-03-06 19:01:27]   ✅ nfl.html saved (29,827 chars)
+[2026-03-06 19:01:27] 
+[5/5] Hub
+[2026-03-06 19:01:27] 🌐 Generating index.html...
+[2026-03-06 19:01:27]   ✅ index.html saved (10,523 chars)
+[2026-03-06 19:01:27] 
+[2026-03-06 19:01:27] =======================================================
+[2026-03-06 19:01:27] 🎉  All done! 5 files updated in:
+[2026-03-06 19:01:27]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-06 19:01:27] 
+[2026-03-06 19:01:27]     index.html  — Home hub
+[2026-03-06 19:01:27]     nba.html    — NBA basketball
+[2026-03-06 19:01:27]     nhl.html    — NHL hockey
+[2026-03-06 19:01:27]     mlb.html    — MLB baseball
+[2026-03-06 19:01:27]     nfl.html    — NFL football
+[2026-03-06 19:01:27] 
+[2026-03-06 19:01:27]     Drag the entire folder to Netlify to publish.
+[2026-03-06 19:01:27]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-06 19:01:27] =======================================================
+[2026-03-06 19:04:35] =======================================================
+[2026-03-06 19:04:35] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-06 19:04:35] =======================================================
+[2026-03-06 19:04:35] 
+[1/4] NBA
+[2026-03-06 19:04:35] 🏀 Fetching NBA standings...
+[2026-03-06 19:04:35]   ✅ NBA: 15 East + 15 West teams
+[2026-03-06 19:04:36] 🌐 Generating nba.html...
+[2026-03-06 19:04:36]   ✅ nba.html saved (46,086 chars)
+[2026-03-06 19:04:36] 
+[2/4] NHL
+[2026-03-06 19:04:36] 🏒 Fetching NHL standings...
+[2026-03-06 19:04:36]   ✅ NHL: 16 East + 16 West
+[2026-03-06 19:04:37] 🌐 Generating nhl.html...
+[2026-03-06 19:04:37]   ✅ nhl.html saved (49,404 chars)
+[2026-03-06 19:04:37] 
+[3/4] MLB
+[2026-03-06 19:04:37] ⚾ Fetching MLB standings...
+[2026-03-06 19:04:37]   ℹ️  MLB spring training — no regular season standings yet
+[2026-03-06 19:04:37] 🌐 Generating mlb.html...
+[2026-03-06 19:04:37]   ✅ mlb.html saved (16,092 chars)
+[2026-03-06 19:04:37] 
+[4/4] NFL
+[2026-03-06 19:04:37] 🏈 Fetching NFL standings...
+[2026-03-06 19:04:38]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-06 19:04:38] 🌐 Generating nfl.html...
+[2026-03-06 19:04:38]   ✅ nfl.html saved (29,827 chars)
+[2026-03-06 19:04:38] 
+[5/5] Hub
+[2026-03-06 19:04:38] 🌐 Generating index.html...
+[2026-03-06 19:04:38]   ✅ index.html saved (10,523 chars)
+[2026-03-06 19:04:38] 
+[2026-03-06 19:04:38] =======================================================
+[2026-03-06 19:04:38] 🎉  All done! 5 files updated in:
+[2026-03-06 19:04:38]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-06 19:04:38] 
+[2026-03-06 19:04:38]     index.html  — Home hub
+[2026-03-06 19:04:38]     nba.html    — NBA basketball
+[2026-03-06 19:04:38]     nhl.html    — NHL hockey
+[2026-03-06 19:04:38]     mlb.html    — MLB baseball
+[2026-03-06 19:04:38]     nfl.html    — NFL football
+[2026-03-06 19:04:38] 
+[2026-03-06 19:04:38]     Drag the entire folder to Netlify to publish.
+[2026-03-06 19:04:38]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-06 19:04:38] =======================================================
+[2026-03-06 19:13:04] =======================================================
+[2026-03-06 19:13:04] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-06 19:13:04] =======================================================
+[2026-03-06 19:13:04] 
+[1/4] NBA
+[2026-03-06 19:13:04] 🏀 Fetching NBA standings...
+[2026-03-06 19:13:04]   ✅ NBA: 15 East + 15 West teams
+[2026-03-06 19:13:04] 🌐 Generating nba.html...
+[2026-03-06 19:13:04]   ✅ nba.html saved (44,779 chars)
+[2026-03-06 19:13:04] 
+[2/4] NHL
+[2026-03-06 19:13:04] 🏒 Fetching NHL standings...
+[2026-03-06 19:13:05]   ✅ NHL: 16 East + 16 West
+[2026-03-06 19:13:05] 🌐 Generating nhl.html...
+[2026-03-06 19:13:05]   ✅ nhl.html saved (47,620 chars)
+[2026-03-06 19:13:05] 
+[3/4] MLB
+[2026-03-06 19:13:05] ⚾ Fetching MLB standings...
+[2026-03-06 19:13:05]   ℹ️  MLB spring training — no regular season standings yet
+[2026-03-06 19:13:06] 🌐 Generating mlb.html...
+[2026-03-06 19:13:06]   ✅ mlb.html saved (16,092 chars)
+[2026-03-06 19:13:06] 
+[4/4] NFL
+[2026-03-06 19:13:06] 🏈 Fetching NFL standings...
+[2026-03-06 19:13:06]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-06 19:13:06] 🌐 Generating nfl.html...
+[2026-03-06 19:13:06]   ✅ nfl.html saved (29,825 chars)
+[2026-03-06 19:13:06] 
+[5/5] Hub
+[2026-03-06 19:13:06] 🌐 Generating index.html...
+[2026-03-06 19:13:06]   ✅ index.html saved (10,523 chars)
+[2026-03-06 19:13:06] 
+[2026-03-06 19:13:06] =======================================================
+[2026-03-06 19:13:06] 🎉  All done! 5 files updated in:
+[2026-03-06 19:13:06]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-06 19:13:06] 
+[2026-03-06 19:13:06]     index.html  — Home hub
+[2026-03-06 19:13:06]     nba.html    — NBA basketball
+[2026-03-06 19:13:06]     nhl.html    — NHL hockey
+[2026-03-06 19:13:06]     mlb.html    — MLB baseball
+[2026-03-06 19:13:06]     nfl.html    — NFL football
+[2026-03-06 19:13:06] 
+[2026-03-06 19:13:06]     Drag the entire folder to Netlify to publish.
+[2026-03-06 19:13:06]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-06 19:13:06] =======================================================
+[2026-03-08 12:30:37] =======================================================
+[2026-03-08 12:30:37] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:30:37] =======================================================
+[2026-03-08 12:30:37] 
+[1/4] NBA
+[2026-03-08 12:30:37] 🏀 Fetching NBA standings...
+[2026-03-08 12:30:37]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 12:30:38] 🌐 Generating nba.html...
+[2026-03-08 12:30:38]   ✅ nba.html saved (37,090 chars)
+[2026-03-08 12:30:38] 
+[2/4] NHL
+[2026-03-08 12:30:38] 🏒 Fetching NHL standings...
+[2026-03-08 12:30:38]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:30:39] 🌐 Generating nhl.html...
+[2026-03-08 12:30:39]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:30:39] 
+[3/4] MLB
+[2026-03-08 12:30:39] ⚾ Fetching MLB standings...
+[2026-03-08 12:30:39]   ✅ MLB: 0 AL + 30 NL teams
+[2026-03-08 12:30:40] 🌐 Generating mlb.html...
+[2026-03-08 12:30:40]   ✅ mlb.html saved (43,107 chars)
+[2026-03-08 12:30:40] 
+[4/4] NFL
+[2026-03-08 12:30:40] 🏈 Fetching NFL standings...
+[2026-03-08 12:30:41]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:30:41] 🌐 Generating nfl.html...
+[2026-03-08 12:30:41]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:30:41] 
+[5/5] Hub
+[2026-03-08 12:30:41] 🌐 Generating index.html...
+[2026-03-08 12:30:41]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:30:41] 
+[2026-03-08 12:30:41] =======================================================
+[2026-03-08 12:30:41] 🎉  All done! 5 files updated in:
+[2026-03-08 12:30:41]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:30:41] 
+[2026-03-08 12:30:41]     index.html  — Home hub
+[2026-03-08 12:30:41]     nba.html    — NBA basketball
+[2026-03-08 12:30:41]     nhl.html    — NHL hockey
+[2026-03-08 12:30:41]     mlb.html    — MLB baseball
+[2026-03-08 12:30:41]     nfl.html    — NFL football
+[2026-03-08 12:30:41] 
+[2026-03-08 12:30:41]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:30:41]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:30:41] =======================================================
+[2026-03-08 12:41:16] =======================================================
+[2026-03-08 12:41:16] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:41:16] =======================================================
+[2026-03-08 12:41:16] 
+[1/4] NBA
+[2026-03-08 12:41:16] 🏀 Fetching NBA standings...
+[2026-03-08 12:41:16]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 12:41:17] 🌐 Generating nba.html...
+[2026-03-08 12:41:17]   ✅ nba.html saved (37,091 chars)
+[2026-03-08 12:41:17] 
+[2/4] NHL
+[2026-03-08 12:41:17] 🏒 Fetching NHL standings...
+[2026-03-08 12:41:17]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:41:18] 🌐 Generating nhl.html...
+[2026-03-08 12:41:18]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:41:18] 
+[3/4] MLB
+[2026-03-08 12:41:18] ⚾ Fetching MLB standings...
+[2026-03-08 12:41:18]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:41:19] 🌐 Generating mlb.html...
+[2026-03-08 12:41:19]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:41:19] 
+[4/4] NFL
+[2026-03-08 12:41:19] 🏈 Fetching NFL standings...
+[2026-03-08 12:41:20]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:41:20] 🌐 Generating nfl.html...
+[2026-03-08 12:41:20]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:41:20] 
+[5/5] Hub
+[2026-03-08 12:41:20] 🌐 Generating index.html...
+[2026-03-08 12:41:20]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:41:20] 
+[2026-03-08 12:41:20] =======================================================
+[2026-03-08 12:41:20] 🎉  All done! 5 files updated in:
+[2026-03-08 12:41:20]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:41:20] 
+[2026-03-08 12:41:20]     index.html  — Home hub
+[2026-03-08 12:41:20]     nba.html    — NBA basketball
+[2026-03-08 12:41:20]     nhl.html    — NHL hockey
+[2026-03-08 12:41:20]     mlb.html    — MLB baseball
+[2026-03-08 12:41:20]     nfl.html    — NFL football
+[2026-03-08 12:41:20] 
+[2026-03-08 12:41:20]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:41:20]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:41:20] =======================================================
+[2026-03-08 12:44:17] =======================================================
+[2026-03-08 12:44:17] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:44:17] =======================================================
+[2026-03-08 12:44:17] 
+[1/4] NBA
+[2026-03-08 12:44:17] 🏀 Fetching NBA standings...
+[2026-03-08 12:44:18]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 12:44:18] 🌐 Generating nba.html...
+[2026-03-08 12:44:18]   ✅ nba.html saved (37,026 chars)
+[2026-03-08 12:44:18] 
+[2/4] NHL
+[2026-03-08 12:44:18] 🏒 Fetching NHL standings...
+[2026-03-08 12:44:19]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:44:20] 🌐 Generating nhl.html...
+[2026-03-08 12:44:20]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:44:20] 
+[3/4] MLB
+[2026-03-08 12:44:20] ⚾ Fetching MLB standings...
+[2026-03-08 12:44:20]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:44:21] 🌐 Generating mlb.html...
+[2026-03-08 12:44:21]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:44:21] 
+[4/4] NFL
+[2026-03-08 12:44:21] 🏈 Fetching NFL standings...
+[2026-03-08 12:44:21]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:44:22] 🌐 Generating nfl.html...
+[2026-03-08 12:44:22]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:44:22] 
+[5/5] Hub
+[2026-03-08 12:44:22] 🌐 Generating index.html...
+[2026-03-08 12:44:22]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:44:22] 
+[2026-03-08 12:44:22] =======================================================
+[2026-03-08 12:44:22] 🎉  All done! 5 files updated in:
+[2026-03-08 12:44:22]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:44:22] 
+[2026-03-08 12:44:22]     index.html  — Home hub
+[2026-03-08 12:44:22]     nba.html    — NBA basketball
+[2026-03-08 12:44:22]     nhl.html    — NHL hockey
+[2026-03-08 12:44:22]     mlb.html    — MLB baseball
+[2026-03-08 12:44:22]     nfl.html    — NFL football
+[2026-03-08 12:44:22] 
+[2026-03-08 12:44:22]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:44:22]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:44:22] =======================================================
+[2026-03-08 12:45:50] =======================================================
+[2026-03-08 12:45:50] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:45:50] =======================================================
+[2026-03-08 12:45:50] 
+[1/4] NBA
+[2026-03-08 12:45:50] 🏀 Fetching NBA standings...
+[2026-03-08 12:45:51]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 12:45:51] 🌐 Generating nba.html...
+[2026-03-08 12:45:51]   ✅ nba.html saved (36,976 chars)
+[2026-03-08 12:45:51] 
+[2/4] NHL
+[2026-03-08 12:45:51] 🏒 Fetching NHL standings...
+[2026-03-08 12:45:52]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:45:53] 🌐 Generating nhl.html...
+[2026-03-08 12:45:53]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:45:53] 
+[3/4] MLB
+[2026-03-08 12:45:53] ⚾ Fetching MLB standings...
+[2026-03-08 12:45:53]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:45:54] 🌐 Generating mlb.html...
+[2026-03-08 12:45:54]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:45:54] 
+[4/4] NFL
+[2026-03-08 12:45:54] 🏈 Fetching NFL standings...
+[2026-03-08 12:45:54]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:45:55] 🌐 Generating nfl.html...
+[2026-03-08 12:45:55]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:45:55] 
+[5/5] Hub
+[2026-03-08 12:45:55] 🌐 Generating index.html...
+[2026-03-08 12:45:55]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:45:55] 
+[2026-03-08 12:45:55] =======================================================
+[2026-03-08 12:45:55] 🎉  All done! 5 files updated in:
+[2026-03-08 12:45:55]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:45:55] 
+[2026-03-08 12:45:55]     index.html  — Home hub
+[2026-03-08 12:45:55]     nba.html    — NBA basketball
+[2026-03-08 12:45:55]     nhl.html    — NHL hockey
+[2026-03-08 12:45:55]     mlb.html    — MLB baseball
+[2026-03-08 12:45:55]     nfl.html    — NFL football
+[2026-03-08 12:45:55] 
+[2026-03-08 12:45:55]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:45:55]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:45:55] =======================================================
+[2026-03-08 12:47:03] =======================================================
+[2026-03-08 12:47:03] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:47:03] =======================================================
+[2026-03-08 12:47:03] 
+[1/4] NBA
+[2026-03-08 12:47:03] 🏀 Fetching NBA standings...
+[2026-03-08 12:47:14]   ⚠️  NBA standings failed: 401 Client Error: Unauthorized for url: https://api.balldontlie.io/v1/standings?season=2025
+[2026-03-08 12:47:15] 🌐 Generating nba.html...
+[2026-03-08 12:47:15]   ✅ nba.html saved (31,998 chars)
+[2026-03-08 12:47:15] 
+[2/4] NHL
+[2026-03-08 12:47:15] 🏒 Fetching NHL standings...
+[2026-03-08 12:47:15]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:47:16] 🌐 Generating nhl.html...
+[2026-03-08 12:47:16]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:47:16] 
+[3/4] MLB
+[2026-03-08 12:47:16] ⚾ Fetching MLB standings...
+[2026-03-08 12:47:16]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:47:17] 🌐 Generating mlb.html...
+[2026-03-08 12:47:17]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:47:17] 
+[4/4] NFL
+[2026-03-08 12:47:17] 🏈 Fetching NFL standings...
+[2026-03-08 12:47:17]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:47:18] 🌐 Generating nfl.html...
+[2026-03-08 12:47:18]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:47:18] 
+[5/5] Hub
+[2026-03-08 12:47:18] 🌐 Generating index.html...
+[2026-03-08 12:47:18]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:47:18] 
+[2026-03-08 12:47:18] =======================================================
+[2026-03-08 12:47:18] 🎉  All done! 5 files updated in:
+[2026-03-08 12:47:18]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:47:18] 
+[2026-03-08 12:47:18]     index.html  — Home hub
+[2026-03-08 12:47:18]     nba.html    — NBA basketball
+[2026-03-08 12:47:18]     nhl.html    — NHL hockey
+[2026-03-08 12:47:18]     mlb.html    — MLB baseball
+[2026-03-08 12:47:18]     nfl.html    — NFL football
+[2026-03-08 12:47:18] 
+[2026-03-08 12:47:18]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:47:18]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:47:18] =======================================================
+[2026-03-08 12:49:36] =======================================================
+[2026-03-08 12:49:36] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:49:36] =======================================================
+[2026-03-08 12:49:36] 
+[1/4] NBA
+[2026-03-08 12:49:36] 🏀 Fetching NBA standings...
+[2026-03-08 12:49:37]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 12:49:37] 🌐 Generating nba.html...
+[2026-03-08 12:49:37]   ✅ nba.html saved (36,976 chars)
+[2026-03-08 12:49:37] 
+[2/4] NHL
+[2026-03-08 12:49:37] 🏒 Fetching NHL standings...
+[2026-03-08 12:49:38]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:49:38] 🌐 Generating nhl.html...
+[2026-03-08 12:49:38]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:49:38] 
+[3/4] MLB
+[2026-03-08 12:49:38] ⚾ Fetching MLB standings...
+[2026-03-08 12:49:39]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:49:40] 🌐 Generating mlb.html...
+[2026-03-08 12:49:40]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:49:40] 
+[4/4] NFL
+[2026-03-08 12:49:40] 🏈 Fetching NFL standings...
+[2026-03-08 12:49:40]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:49:41] 🌐 Generating nfl.html...
+[2026-03-08 12:49:41]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:49:41] 
+[5/5] Hub
+[2026-03-08 12:49:41] 🌐 Generating index.html...
+[2026-03-08 12:49:41]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:49:41] 
+[2026-03-08 12:49:41] =======================================================
+[2026-03-08 12:49:41] 🎉  All done! 5 files updated in:
+[2026-03-08 12:49:41]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:49:41] 
+[2026-03-08 12:49:41]     index.html  — Home hub
+[2026-03-08 12:49:41]     nba.html    — NBA basketball
+[2026-03-08 12:49:41]     nhl.html    — NHL hockey
+[2026-03-08 12:49:41]     mlb.html    — MLB baseball
+[2026-03-08 12:49:41]     nfl.html    — NFL football
+[2026-03-08 12:49:41] 
+[2026-03-08 12:49:41]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:49:41]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:49:41] =======================================================
+[2026-03-08 12:51:21] =======================================================
+[2026-03-08 12:51:21] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:51:21] =======================================================
+[2026-03-08 12:51:21] 
+[1/4] NBA
+[2026-03-08 12:51:21] 🏀 Fetching NBA standings (this takes ~6 mins due to rate limits)...
+[2026-03-08 12:51:32]   ⚠️  NBA standings failed getting teams: 401 Client Error: Unauthorized for url: https://api.balldontlie.io/v1/teams?per_page=100
+[2026-03-08 12:51:33] 🌐 Generating nba.html...
+[2026-03-08 12:51:33]   ✅ nba.html saved (31,998 chars)
+[2026-03-08 12:51:33] 
+[2/4] NHL
+[2026-03-08 12:51:33] 🏒 Fetching NHL standings...
+[2026-03-08 12:51:33]   ✅ NHL: 16 East + 16 West
+[2026-03-08 12:51:34] 🌐 Generating nhl.html...
+[2026-03-08 12:51:34]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 12:51:34] 
+[3/4] MLB
+[2026-03-08 12:51:34] ⚾ Fetching MLB standings...
+[2026-03-08 12:51:34]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 12:51:35] 🌐 Generating mlb.html...
+[2026-03-08 12:51:35]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 12:51:35] 
+[4/4] NFL
+[2026-03-08 12:51:35] 🏈 Fetching NFL standings...
+[2026-03-08 12:51:36]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 12:51:36] 🌐 Generating nfl.html...
+[2026-03-08 12:51:36]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 12:51:36] 
+[5/5] Hub
+[2026-03-08 12:51:36] 🌐 Generating index.html...
+[2026-03-08 12:51:36]   ✅ index.html saved (10,470 chars)
+[2026-03-08 12:51:36] 
+[2026-03-08 12:51:36] =======================================================
+[2026-03-08 12:51:36] 🎉  All done! 5 files updated in:
+[2026-03-08 12:51:36]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 12:51:36] 
+[2026-03-08 12:51:36]     index.html  — Home hub
+[2026-03-08 12:51:36]     nba.html    — NBA basketball
+[2026-03-08 12:51:36]     nhl.html    — NHL hockey
+[2026-03-08 12:51:36]     mlb.html    — MLB baseball
+[2026-03-08 12:51:36]     nfl.html    — NFL football
+[2026-03-08 12:51:36] 
+[2026-03-08 12:51:36]     Drag the entire folder to Netlify to publish.
+[2026-03-08 12:51:36]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 12:51:36] =======================================================
+[2026-03-08 12:52:32] =======================================================
+[2026-03-08 12:52:32] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 12:52:32] =======================================================
+[2026-03-08 12:52:32] 
+[1/4] NBA
+[2026-03-08 12:52:32] 🏀 Fetching NBA standings (this takes ~6 mins due to rate limits)...
+[2026-03-08 12:52:33]   Got 45 teams
+[2026-03-08 12:52:33]   Atlanta Hawks: 40-44
+[2026-03-08 12:52:33]   Boston Celtics: 67-26
+[2026-03-08 12:52:33]   Brooklyn Nets: 26-56
+[2026-03-08 12:52:34]     ⏳ Rate limited — waiting 65s...
+[2026-03-08 12:53:39]   Charlotte Hornets: 19-63
+[2026-03-08 12:53:39]   Chicago Bulls: 39-44
+[2026-03-08 12:53:39]   ⏳ Rate limit pause... (5 requests so far)
+[2026-03-08 12:54:42]   Cleveland Cavaliers: 69-22
+[2026-03-08 12:54:42]   Dallas Mavericks: 40-44
+[2026-03-08 12:54:42]   Denver Nuggets: 57-39
+[2026-03-08 12:54:43]   Detroit Pistons: 46-42
+[2026-03-08 12:54:43]   Golden State Warriors: 54-41
+[2026-03-08 12:54:43]   ⏳ Rate limit pause... (10 requests so far)
+[2026-03-08 12:55:45]   Houston Rockets: 55-34
+[2026-03-08 12:55:46]   Indiana Pacers: 65-40
+[2026-03-08 12:55:46]   LA Clippers: 53-36
+[2026-03-08 12:55:46]   Los Angeles Lakers: 51-36
+[2026-03-08 12:55:46]   ⏳ Rate limit pause... (15 requests so far)
+[2026-03-08 12:56:49]   Memphis Grizzlies: 49-39
+[2026-03-08 12:56:49]   Miami Heat: 39-49
+[2026-03-08 12:56:50]   Milwaukee Bucks: 50-38
+[2026-03-08 12:56:50]   Minnesota Timberwolves: 58-39
+[2026-03-08 12:56:50]   New Orleans Pelicans: 21-61
+[2026-03-08 12:56:50]   ⏳ Rate limit pause... (20 requests so far)
+[2026-03-08 12:57:53]   New York Knicks: 61-39
+[2026-03-08 12:57:53]   Oklahoma City Thunder: 84-22
+[2026-03-08 12:57:54]   Orlando Magic: 43-45
+[2026-03-08 12:57:54]   ⏳ Rate limit pause... (25 requests so far)
+[2026-03-08 12:58:56]   Philadelphia 76ers: 24-58
+[2026-03-08 12:58:57]   Phoenix Suns: 36-46
+[2026-03-08 12:58:57]   Portland Trail Blazers: 36-46
+[2026-03-08 12:58:58]   Sacramento Kings: 40-43
+[2026-03-08 12:58:58]   San Antonio Spurs: 34-48
+[2026-03-08 12:58:58]   ⏳ Rate limit pause... (30 requests so far)
+[2026-03-08 13:00:01]   Toronto Raptors: 30-52
+[2026-03-08 13:00:01]   Utah Jazz: 17-65
+[2026-03-08 13:00:02]   Washington Wizards: 18-64
+[2026-03-08 13:00:02]   Chicago Stags: 0-0
+[2026-03-08 13:00:03]   St. Louis Bombers: 0-0
+[2026-03-08 13:00:03]   ⏳ Rate limit pause... (35 requests so far)
+[2026-03-08 13:01:06]   Cleveland Rebels: 0-0
+[2026-03-08 13:01:06]   Detroit Falcons: 0-0
+[2026-03-08 13:01:07]   Toronto Huskies: 0-0
+[2026-03-08 13:01:07]   Washington Capitols: 0-0
+[2026-03-08 13:01:07]   Providence Steamrollers: 0-0
+[2026-03-08 13:01:07]   ⏳ Rate limit pause... (40 requests so far)
+[2026-03-08 13:02:10]   Pittsburgh Ironmen: 0-0
+[2026-03-08 13:02:10]   Baltimore Bullets: 0-0
+[2026-03-08 13:02:10]   Indianapolis Jets: 0-0
+[2026-03-08 13:02:10]   Anderson Packers: 0-0
+[2026-03-08 13:02:11]   Waterloo Hawks: 0-0
+[2026-03-08 13:02:11]   ⏳ Rate limit pause... (45 requests so far)
+[2026-03-08 13:03:13]   Indianapolis Olympians: 0-0
+[2026-03-08 13:03:13]   Denver Nuggets: 0-0
+[2026-03-08 13:03:14]   Sheboygan Redskins: 0-0
+[2026-03-08 13:03:14]   ✅ NBA: 30 East + 15 West teams
+[2026-03-08 13:03:15] 🌐 Generating nba.html...
+[2026-03-08 13:03:15]   ✅ nba.html saved (37,972 chars)
+[2026-03-08 13:03:15] 
+[2/4] NHL
+[2026-03-08 13:03:15] 🏒 Fetching NHL standings...
+[2026-03-08 13:03:15]   ✅ NHL: 16 East + 16 West
+[2026-03-08 13:03:17] 🌐 Generating nhl.html...
+[2026-03-08 13:03:17]   ✅ nhl.html saved (37,251 chars)
+[2026-03-08 13:03:17] 
+[3/4] MLB
+[2026-03-08 13:03:17] ⚾ Fetching MLB standings...
+[2026-03-08 13:03:17]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 13:03:18] 🌐 Generating mlb.html...
+[2026-03-08 13:03:18]   ✅ mlb.html saved (37,390 chars)
+[2026-03-08 13:03:18] 
+[4/4] NFL
+[2026-03-08 13:03:18] 🏈 Fetching NFL standings...
+[2026-03-08 13:03:19]   ✅ NFL: 0 AFC + 0 NFC
+[2026-03-08 13:03:20] 🌐 Generating nfl.html...
+[2026-03-08 13:03:20]   ✅ nfl.html saved (16,450 chars)
+[2026-03-08 13:03:20] 
+[5/5] Hub
+[2026-03-08 13:03:20] 🌐 Generating index.html...
+[2026-03-08 13:03:20]   ✅ index.html saved (10,470 chars)
+[2026-03-08 13:03:20] 
+[2026-03-08 13:03:20] =======================================================
+[2026-03-08 13:03:20] 🎉  All done! 5 files updated in:
+[2026-03-08 13:03:20]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 13:03:20] 
+[2026-03-08 13:03:20]     index.html  — Home hub
+[2026-03-08 13:03:20]     nba.html    — NBA basketball
+[2026-03-08 13:03:20]     nhl.html    — NHL hockey
+[2026-03-08 13:03:20]     mlb.html    — MLB baseball
+[2026-03-08 13:03:20]     nfl.html    — NFL football
+[2026-03-08 13:03:20] 
+[2026-03-08 13:03:20]     Drag the entire folder to Netlify to publish.
+[2026-03-08 13:03:20]     Run with --schedule to auto-update at 11pm nightly.
+[2026-03-08 13:03:20] =======================================================
+[2026-03-08 13:14:25] =======================================================
+[2026-03-08 13:14:25] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 13:14:25] =======================================================
+[2026-03-08 13:14:25] 
+[1/4] NBA
+[2026-03-08 13:14:25] 🏀 Fetching NBA standings...
+[2026-03-08 13:14:25]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 13:14:26] 🌐 Generating nba.html...
+[2026-03-08 13:14:26]   ✅ nba.html saved (26,485 chars)
+[2026-03-08 13:14:26] 
+[2/4] NHL
+[2026-03-08 13:14:26] 🏒 Fetching NHL standings...
+[2026-03-08 13:14:26]   ✅ NHL: 16 East + 16 West
+[2026-03-08 13:14:26] 🌐 Generating nhl.html...
+[2026-03-08 13:14:26]   ✅ nhl.html saved (26,172 chars)
+[2026-03-08 13:14:26] 
+[3/4] MLB
+[2026-03-08 13:14:26] ⚾ Fetching MLB standings...
+[2026-03-08 13:14:27]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 13:14:27] 🌐 Generating mlb.html...
+[2026-03-08 13:14:27]   ✅ mlb.html saved (23,950 chars)
+[2026-03-08 13:14:27] 
+[4/4] NFL
+[2026-03-08 13:14:27] 🏈 Fetching NFL standings...
+[2026-03-08 13:14:27]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 13:14:27] 🌐 Generating nfl.html...
+[2026-03-08 13:14:27]   ✅ nfl.html saved (23,727 chars)
+[2026-03-08 13:14:27] 
+[5/5] Hub
+[2026-03-08 13:14:27] 🌐 Generating index.html...
+[2026-03-08 13:14:27]   ✅ index.html saved (10,285 chars)
+[2026-03-08 13:14:27] 
+=======================================================
+[2026-03-08 13:14:27] 🎉  All done! 5 files updated in:
+[2026-03-08 13:14:27]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 13:14:27] =======================================================
+[2026-03-08 13:21:52] =======================================================
+[2026-03-08 13:21:52] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 13:21:52] =======================================================
+[2026-03-08 13:21:52] 
+[1/4] NBA
+[2026-03-08 13:21:52] 🏀 Fetching NBA standings...
+[2026-03-08 13:21:53]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 13:21:53] 🌐 Generating nba.html...
+[2026-03-08 13:21:53]   ✅ nba.html saved (26,485 chars)
+[2026-03-08 13:21:53] 
+[2/4] NHL
+[2026-03-08 13:21:53] 🏒 Fetching NHL standings...
+[2026-03-08 13:21:53]   ✅ NHL: 16 East + 16 West
+[2026-03-08 13:21:54] 🌐 Generating nhl.html...
+[2026-03-08 13:21:54]   ✅ nhl.html saved (26,172 chars)
+[2026-03-08 13:21:54] 
+[3/4] MLB
+[2026-03-08 13:21:54] ⚾ Fetching MLB standings...
+[2026-03-08 13:21:54]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 13:21:55] 🌐 Generating mlb.html...
+[2026-03-08 13:21:55]   ✅ mlb.html saved (23,950 chars)
+[2026-03-08 13:21:55] 
+[4/4] NFL
+[2026-03-08 13:21:55] 🏈 Fetching NFL standings...
+[2026-03-08 13:21:55]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 13:21:55] 🌐 Generating nfl.html...
+[2026-03-08 13:21:55]   ✅ nfl.html saved (23,742 chars)
+[2026-03-08 13:21:55] 
+[5/5] Hub
+[2026-03-08 13:21:55] 🌐 Generating index.html...
+[2026-03-08 13:21:55]   ✅ index.html saved (10,285 chars)
+[2026-03-08 13:21:55] 
+=======================================================
+[2026-03-08 13:21:55] 🎉  All done! 5 files updated in:
+[2026-03-08 13:21:55]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 13:21:55] =======================================================
+[2026-03-08 17:01:24] =======================================================
+[2026-03-08 17:01:24] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 17:01:24] =======================================================
+[2026-03-08 17:01:24] 
+[1/4] NBA
+[2026-03-08 17:01:24] 🏀 Fetching NBA standings...
+[2026-03-08 17:01:25]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 17:01:26] 🌐 Generating nba.html...
+[2026-03-08 17:01:26]   ✅ nba.html saved (28,256 chars)
+[2026-03-08 17:01:26] 
+[2/4] NHL
+[2026-03-08 17:01:26] 🏒 Fetching NHL standings...
+[2026-03-08 17:01:27]   ✅ NHL: 16 East + 16 West
+[2026-03-08 17:01:27] 🌐 Generating nhl.html...
+[2026-03-08 17:01:27]   ✅ nhl.html saved (28,273 chars)
+[2026-03-08 17:01:27] 
+[3/4] MLB
+[2026-03-08 17:01:27] ⚾ Fetching MLB standings...
+[2026-03-08 17:01:28]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 17:01:29] 🌐 Generating mlb.html...
+[2026-03-08 17:01:29]   ✅ mlb.html saved (25,378 chars)
+[2026-03-08 17:01:29] 
+[4/4] NFL
+[2026-03-08 17:01:29] 🏈 Fetching NFL standings...
+[2026-03-08 17:01:30]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 17:01:30] 🌐 Generating nfl.html...
+[2026-03-08 17:01:30]   ✅ nfl.html saved (25,736 chars)
+[2026-03-08 17:01:30] 
+[5/5] Hub
+[2026-03-08 17:01:30] 🌐 Generating index.html...
+[2026-03-08 17:01:30]   ✅ index.html saved (10,285 chars)
+[2026-03-08 17:01:30] 
+=======================================================
+[2026-03-08 17:01:30] 🎉  All done! 5 files updated in:
+[2026-03-08 17:01:30]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 17:01:30] =======================================================
