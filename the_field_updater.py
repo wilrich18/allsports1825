@@ -415,84 +415,54 @@ def fallback_recap(home, h_score, away, a_score):
     )
 
 def fetch_bdl_recap(home, h_score, away, a_score):
-    """Fetch NBA game recap with player stats via BallDontLie API."""
+    """Fetch NBA game recap via BallDontLie, write rich recap from score data."""
     try:
         from datetime import timedelta
         ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         hdrs = {"Authorization": BALLDONTLIE_API_KEY}
 
-        # Step 1 — find the game ID
         r = requests.get("https://api.balldontlie.io/nba/v1/games",
                          params={"dates[]": ydate, "per_page": 30},
                          headers=hdrs, timeout=10)
         r.raise_for_status()
         games = r.json().get("data", [])
 
-        game_id = ht = at = hs = as_ = None
+        ht = at = hs = as_ = None
         for g in games:
             ht = g.get("home_team", {}).get("full_name", "")
             at = g.get("visitor_team", {}).get("full_name", "")
             if (home.lower() in ht.lower() or ht.lower() in home.lower()) and                (away.lower() in at.lower() or at.lower() in away.lower()):
-                game_id = g["id"]
                 hs = g.get("home_team_score", h_score)
                 as_ = g.get("visitor_team_score", a_score)
                 break
 
-        if not game_id:
+        if ht is None:
             return fallback_recap(home, h_score, away, a_score)
 
-        # Step 2 — get player stats for the game
-        r2 = requests.get("https://api.balldontlie.io/nba/v1/stats",
-                          params={"game_ids[]": game_id, "per_page": 50},
-                          headers=hdrs, timeout=10)
-        r2.raise_for_status()
-        stats = r2.json().get("data", [])
-
-        # Sort by points, get top performers from each team
-        stats = [s for s in stats if s.get("pts") is not None]
-        stats.sort(key=lambda x: x.get("pts", 0), reverse=True)
-
-        winner_name = ht if hs > as_ else at
-        loser_name  = at if hs > as_ else ht
-        w_score = max(hs, as_)
-        l_score = min(hs, as_)
+        winner = ht if hs > as_ else at
+        loser  = at if hs > as_ else ht
+        w_score, l_score = max(hs, as_), min(hs, as_)
         margin = abs(hs - as_)
+        home_won = hs > as_
 
-        # Top scorer overall
-        top = stats[0] if stats else None
-        # Top scorer from each team
-        winner_abbr = home[:3].upper() if hs == h_score else away[:3].upper()
-        w_stats = [s for s in stats if winner_name.lower() in s.get("team",{}).get("full_name","").lower()]
-        l_stats = [s for s in stats if loser_name.lower() in s.get("team",{}).get("full_name","").lower()]
-
-        def fmt_player(s):
-            p = s.get("player", {})
-            name = f"{p.get('first_name','')} {p.get('last_name','')}".strip()
-            pts, reb, ast = s.get("pts",0), s.get("reb",0), s.get("ast",0)
-            parts = [f"{pts} points"]
-            if reb >= 8: parts.append(f"{reb} rebounds")
-            if ast >= 7: parts.append(f"{ast} assists")
-            return name, ", ".join(parts)
-
-        if margin <= 4:
-            tone = "edged"
-        elif margin <= 12:
-            tone = "defeated"
+        if margin <= 3:
+            s1 = f"{winner} survived a nail-biter against {loser}, escaping with a {w_score}-{l_score} victory last night."
+            s2 = f"The game came down to the wire, with just {margin} points separating the two teams at the final buzzer."
+            s3 = f"{loser} will feel the sting of this one, but {winner} showed the resilience to grind out a crucial win."
+        elif margin <= 8:
+            s1 = f"{winner} held off {loser} {w_score}-{l_score} in a competitive contest last night."
+            s2 = f"{'The home crowd played a factor as' if home_won else 'The visitors came in and took care of business,'} {winner} pulled away late to secure the {margin}-point victory."
+            s3 = f"{loser} made it a game but couldn't find enough offense down the stretch to force a different outcome."
+        elif margin <= 18:
+            s1 = f"{winner} took care of business against {loser} last night, winning convincingly {w_score}-{l_score}."
+            s2 = f"The {margin}-point margin tells the story — {winner} controlled the tempo and never let {loser} get comfortable."
+            s3 = f"It's a quality win for {winner} as they continue to build their case in the standings."
         else:
-            tone = "dominated"
+            s1 = f"{winner} put on a dominant display against {loser} last night, winning {w_score}-{l_score} in a blowout."
+            s2 = f"The {margin}-point margin was a statement — {winner} led comfortably for most of the night and never let {loser} back into the game."
+            s3 = f"{loser} will need to regroup quickly after being handled so decisively on the court."
 
-        lines = [f"{winner_name} {tone} {loser_name} {w_score}-{l_score} last night in a{'  tight finish' if margin<=4 else ' strong performance' if margin<=12 else ' dominant showing'}."]
-
-        if w_stats:
-            wn, ws = fmt_player(w_stats[0])
-            lines.append(f"{wn} led {winner_name} with {ws}{'.' if not l_stats else ','}")
-        if l_stats:
-            ln, ls = fmt_player(l_stats[0])
-            lines.append(f"while {ln} paced {loser_name} with {ls} in a losing effort.")
-
-        lines.append(f"The {margin}-point result keeps {winner_name} building momentum heading into their next matchup.")
-
-        return " ".join(lines)
+        return f"{s1} {s2} {s3}"
 
     except Exception as e:
         log(f"  ⚠️  BallDontLie recap failed: {e}")

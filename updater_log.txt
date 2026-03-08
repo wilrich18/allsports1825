@@ -1184,3 +1184,46 @@
 [2026-03-08 18:28:17] 🎉  All done! 5 files updated in:
 [2026-03-08 18:28:17]     /Users/williamrichter/Desktop/ALLSPORTS/
 [2026-03-08 18:28:17] =======================================================
+[2026-03-08 18:30:07] =======================================================
+[2026-03-08 18:30:07] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 18:30:07] =======================================================
+[2026-03-08 18:30:07] 
+[1/4] NBA
+[2026-03-08 18:30:07] 🏀 Fetching NBA standings...
+[2026-03-08 18:30:08]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 18:30:09]   📰 Yesterday (20260307): 6 final games for nba
+[2026-03-08 18:30:09] 🌐 Generating nba.html...
+[2026-03-08 18:30:10]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-07&per_page=30
+[2026-03-08 18:30:10]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-07&per_page=30
+[2026-03-08 18:30:10]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-07&per_page=30
+[2026-03-08 18:30:10]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-07&per_page=30
+[2026-03-08 18:30:10]   ✅ nba.html saved (35,330 chars)
+[2026-03-08 18:30:10] 
+[2/4] NHL
+[2026-03-08 18:30:10] 🏒 Fetching NHL standings...
+[2026-03-08 18:30:10]   ✅ NHL: 16 East + 16 West
+[2026-03-08 18:30:11]   📰 Yesterday (20260307): 11 final games for nhl
+[2026-03-08 18:30:11] 🌐 Generating nhl.html...
+[2026-03-08 18:30:11]   ✅ nhl.html saved (36,690 chars)
+[2026-03-08 18:30:11] 
+[3/4] MLB
+[2026-03-08 18:30:11] ⚾ Fetching MLB standings...
+[2026-03-08 18:30:11]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 18:30:11]   📰 Yesterday (20260307): 17 final games for mlb
+[2026-03-08 18:30:11] 🌐 Generating mlb.html...
+[2026-03-08 18:30:11]   ✅ mlb.html saved (34,075 chars)
+[2026-03-08 18:30:11] 
+[4/4] NFL
+[2026-03-08 18:30:11] 🏈 Fetching NFL standings...
+[2026-03-08 18:30:11]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 18:30:11] 🌐 Generating nfl.html...
+[2026-03-08 18:30:11]   ✅ nfl.html saved (28,090 chars)
+[2026-03-08 18:30:11] 
+[5/5] Hub
+[2026-03-08 18:30:11] 🌐 Generating index.html...
+[2026-03-08 18:30:11]   ✅ index.html saved (10,285 chars)
+[2026-03-08 18:30:11] 
+=======================================================
+[2026-03-08 18:30:11] 🎉  All done! 5 files updated in:
+[2026-03-08 18:30:11]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 18:30:11] =======================================================
