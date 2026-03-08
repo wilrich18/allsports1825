@@ -94,6 +94,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.9
 .prop-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
 .b-high{background:rgba(74,222,128,0.15);color:#4ade80;}.b-med{background:rgba(253,185,39,0.15);color:var(--gold);}
 .prop-reason{font-size:12px;color:var(--gray);line-height:1.5;}
+.game-lines{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:rgba(0,0,0,0.15);}
+.gl-item{flex:1;min-width:60px;text-align:center;}
+.gl-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
+.gl-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;color:var(--gold);}
 footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--gray);}
 footer strong{color:var(--white);}</style>
 </head>
@@ -145,57 +149,32 @@ footer strong{color:var(--white);}</style>
   <div class="hero"><div class="hero-inner">
     <div class="hero-eyebrow">The Field · March 8, 2026</div>
     <h1 class="hero-title">NFL<br><em>MAGAZINE</em></h1>
-    <p class="hero-sub">Power rankings and the 2025 season story.</p>
+    <p class="hero-sub">Power rankings, season storylines and what to watch.</p>
   </div></div>
   <div class="section">
     <div class="mag-layout">
-      <div><div class="section-title">End-of-Season Power Rankings</div><div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Seattle Seahawks</div><div class="rank-rec">14-3</div><div class="rank-note">Super Bowl LX champions. Macdonald's defense is the best in football.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Kansas City Chiefs</div><div class="rank-rec">6-11</div><div class="rank-note">Three Super Bowls in five years — Mahomes is a dynasty builder.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Buffalo Bills</div><div class="rank-rec">12-5</div><div class="rank-note">Josh Allen is the best player in football. Year in, year out.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Philadelphia Eagles</div><div class="rank-rec">11-6</div><div class="rank-note">Super Bowl LIX champs still loaded. Hurts and a deep roster.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Baltimore Ravens</div><div class="rank-rec">8-9</div><div class="rank-note">Lamar Jackson is a force of nature. Defense is ferocious.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Detroit Lions</div><div class="rank-rec">9-8</div><div class="rank-note">Most improved franchise of the decade. Goff is the real deal.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Minnesota Vikings</div><div class="rank-rec">9-8</div><div class="rank-note">Sam Darnold's redemption story ends in Seattle — but watch this team.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Los Angeles Rams</div><div class="rank-rec">12-5</div><div class="rank-note">McVay keeps finding ways to win. Stafford still elite.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Cincinnati Bengals</div><div class="rank-rec">6-11</div><div class="rank-note">Burrow and Chase — one of the best QB/WR duos ever.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">Green Bay Packers</div><div class="rank-rec">9-7</div><div class="rank-note">Love is developing into a real franchise QB.</div><div class="rank-trend tu">↑ Moving Up</div></div></div></div>
       <div>
-        <div class="sidebar-card"><div class="sc-title">🏈 Final Records</div><div class="sc-row"><span class="sc-team">New England Patriots</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Denver Broncos</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Seattle Seahawks</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Jacksonville Jaguars</span><span class="sc-val">13-4</span></div><div class="sc-row"><span class="sc-team">Houston Texans</span><span class="sc-val">12-5</span></div></div>
-        <div class="sidebar-card"><div class="sc-title">🏆 Super Bowl LIX</div>
-          <div class="sc-row"><span class="sc-team">Seahawks</span><span class="sc-val">29</span></div>
-          <div class="sc-row"><span class="sc-team">Patriots</span><span class="sc-val">13</span></div>
-          <div class="sc-row"><span class="sc-team">MVP</span><span class="sc-val">K. Walker III</span></div>
-        </div>
-        <div class="sidebar-card"><div class="sc-title">📅 2026 NFL Draft</div>
-          <div class="sc-row"><span class="sc-team">Date</span><span class="sc-val">April 23-25</span></div>
-          <div class="sc-row"><span class="sc-team">Location</span><span class="sc-val">Green Bay</span></div>
+        <div class="section-title">⚡ Power Rankings — March 8, 2026</div>
+        <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Seattle Seahawks</div><div class="rank-rec">14-3</div><div class="rank-note">Super Bowl LX champions. Macdonald's defense is the best in football.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Kansas City Chiefs</div><div class="rank-rec">6-11</div><div class="rank-note">Three Super Bowls in five years — Mahomes is a dynasty builder.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Buffalo Bills</div><div class="rank-rec">12-5</div><div class="rank-note">Josh Allen is the best player in football. Year in, year out.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Philadelphia Eagles</div><div class="rank-rec">11-6</div><div class="rank-note">Super Bowl LIX champs still loaded. Hurts and a deep roster.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Baltimore Ravens</div><div class="rank-rec">8-9</div><div class="rank-note">Lamar Jackson is a force of nature. Defense is ferocious.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">Detroit Lions</div><div class="rank-rec">9-8</div><div class="rank-note">Most improved franchise of the decade. Goff is the real deal.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Minnesota Vikings</div><div class="rank-rec">9-8</div><div class="rank-note">Sam Darnold's redemption story ends in Seattle — but watch this team.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Los Angeles Rams</div><div class="rank-rec">12-5</div><div class="rank-note">McVay keeps finding ways to win. Stafford still elite.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Cincinnati Bengals</div><div class="rank-rec">6-11</div><div class="rank-note">Burrow and Chase — one of the best QB/WR duos ever.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">Green Bay Packers</div><div class="rank-rec">9-7</div><div class="rank-note">Love is developing into a real franchise QB.</div><div class="rank-trend tu">↑ Moving Up</div></div></div>
+        <div style="margin-top:36px">
+          <div class="section-title">📰 Season Storylines</div>
+          <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Seattle's Championship Run</div></div><span class="chev">▼</span></div><div class="art-body">Kenneth Walker III rushed for 135 yards and was named Super Bowl LX MVP as the Seattle Seahawks dominated the New England Patriots 29-13. Mike Macdonald's defense was suffocating all season — Drake Maye was sacked six times in the biggest game of his young career.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Stafford Wins AP MVP</div></div><span class="chev">▼</span></div><div class="art-body">Matthew Stafford won the 2025 AP NFL MVP award, throwing for 46 touchdowns in arguably the greatest season of his career. The Rams' offense under Stafford and Sean McVay was the most efficient in the NFL all year.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Drake Maye's Rise</div></div><span class="chev">▼</span></div><div class="art-body">Despite the Super Bowl loss, Drake Maye's emergence as New England's franchise QB was the feel-good story of the season. The Patriots got back to the Super Bowl faster than anyone expected — Maye's ceiling is sky-high heading into 2026.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">The Josh Allen Question</div></div><span class="chev">▼</span></div><div class="art-body">Josh Allen won the AP MVP in 2025 before this season started — his regular season dominance is unquestioned. But Allen and the Bills still haven't broken through in the playoffs, and that narrative will define his legacy heading into 2026.</div></div>
         </div>
       </div>
+      <div><div class="sidebar-card"><div class="sc-title">🏈 Final Records</div><div class="sc-row"><span class="sc-team">New England Patriots</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Denver Broncos</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Seattle Seahawks</span><span class="sc-val">14-3</span></div><div class="sc-row"><span class="sc-team">Jacksonville Jaguars</span><span class="sc-val">13-4</span></div><div class="sc-row"><span class="sc-team">Houston Texans</span><span class="sc-val">12-5</span></div></div><div class="sidebar-card"><div class="sc-title">🏆 Super Bowl LX</div><div class="sc-row"><span class="sc-team">Seahawks</span><span class="sc-val">29</span></div><div class="sc-row"><span class="sc-team">Patriots</span><span class="sc-val">13</span></div><div class="sc-row"><span class="sc-team">SB MVP</span><span class="sc-val">K. Walker III</span></div><div class="sc-row"><span class="sc-team">AP MVP</span><span class="sc-val">M. Stafford</span></div></div><div class="sidebar-card"><div class="sc-title">📅 2026 NFL Draft</div><div class="sc-row"><span class="sc-team">Date</span><span class="sc-val">April 23-25</span></div><div class="sc-row"><span class="sc-team">Location</span><span class="sc-val">Green Bay</span></div></div><div class="sidebar-card"><div class="sc-title">🗓️ 2026 Season</div><div class="sc-row"><span class="sc-team">Kickoff</span><span class="sc-val">September 2026</span></div><div class="sc-row"><span class="sc-team">Super Bowl LXI</span><span class="sc-val">Feb 2027</span></div></div></div>
     </div>
   </div>
 </div>
-
 <footer><strong>THE FIELD — NFL</strong> · Data via ESPN · Updated March 8, 2026 · For entertainment only · 1-800-GAMBLER</footer>
 <script>
 function renderStandings(data,id){
   const tb=document.getElementById(id);
   if(!tb)return;
-  // Build overall rank map by win pct
   const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
-  const rankMap={};sorted.forEach((t,i)=>rankMap[t.t]=i+1);
-  // Group by division
-  const divs={};
-  data.forEach(t=>{const d=t.div||'';if(!divs[d])divs[d]=[];divs[d].push(t);});
-  const hasDivs=Object.keys(divs).some(k=>k!=='');
-  if(!hasDivs){
-    sorted.forEach((t,i)=>{
-      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
-      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
-    });
-    return;
-  }
-  // Sort divisions alphabetically, sort teams within each div by win pct
-  Object.keys(divs).sort().forEach(dn=>{
-    const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
-    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
-    teams.forEach(t=>{
-      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
-      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-      const rank=rankMap[t.t]||'';
-      tb.innerHTML+=`<tr><td><span class="team-rank">${rank}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
-    });
+  sorted.forEach((t,i)=>{
+    const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+    const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
 function renderGames(){
@@ -206,7 +185,16 @@ function renderGames(){
     const isLive=gm.is_live,isFinal=gm.is_final;
     const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
     const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
+    const hasLine=gm.spread||gm.total||gm.h_ml;
+    let linesHtml='';
+    if(hasLine&&!isFinal&&!isLive){
+      const spread=gm.spread?`<div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${gm.spread}</div></div>`:'';
+      const total=gm.total?`<div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${gm.total}</div></div>`:'';
+      const hml=gm.h_ml?`<div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${gm.h_ml}</div></div>`:'';
+      const aml=gm.a_ml?`<div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${gm.a_ml}</div></div>`:'';
+      linesHtml=`<div class="game-lines">${spread}${total}${hml}${aml}</div>`;
+    }
+    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${linesHtml}${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
   });
 }
 function tog(hdr){

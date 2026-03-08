@@ -139,30 +139,11 @@ SHARED_JS = """
 function renderStandings(data,id){
   const tb=document.getElementById(id);
   if(!tb)return;
-  // Build overall rank map by win pct
   const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
-  const rankMap={};sorted.forEach((t,i)=>rankMap[t.t]=i+1);
-  // Group by division
-  const divs={};
-  data.forEach(t=>{const d=t.div||'';if(!divs[d])divs[d]=[];divs[d].push(t);});
-  const hasDivs=Object.keys(divs).some(k=>k!=='');
-  if(!hasDivs){
-    sorted.forEach((t,i)=>{
-      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
-      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
-    });
-    return;
-  }
-  // Sort divisions alphabetically, sort teams within each div by win pct
-  Object.keys(divs).sort().forEach(dn=>{
-    const teams=divs[dn].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
-    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9"><span class="div-label">${dn}</span></td></tr>`;
-    teams.forEach((t,di)=>{
-      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
-      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-      tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
-    });
+  sorted.forEach((t,i)=>{
+    const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+    const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
 function renderGames(){
