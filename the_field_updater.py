@@ -5,6 +5,9 @@ import os, json, time
 from datetime import datetime
 import requests
 
+# ── BallDontLie API key for NBA digest recaps ────────────────────────────
+BALLDONTLIE_API_KEY = "2f5f8dba-db12-4507-86ca-b0d659b8efb0"
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_FILE = os.path.join(BASE_DIR, "updater_log.txt")
 
@@ -389,44 +392,74 @@ def fetch_games(sport, league):
         return []
 
 
-def generate_recap(sport, home, h_score, away, a_score):
-    """Call Claude API to write a 3-sentence game recap."""
+def fallback_recap(home, h_score, away, a_score):
+    """Auto-generate a basic recap when no API data is available."""
+    winner = home if h_score > a_score else away
+    loser  = away if h_score > a_score else home
+    w_score = max(h_score, a_score)
+    l_score = min(h_score, a_score)
+    margin = abs(h_score - a_score)
+    if margin <= 2:
+        tone = "edged out"
+        nature = "a closely contested battle"
+    elif margin <= 8:
+        tone = "defeated"
+        nature = "a competitive matchup"
+    else:
+        tone = "dominated"
+        nature = "a convincing performance"
+    return (
+        f"{winner} {tone} {loser} {w_score}-{l_score} in {nature} last night. "
+        f"The {margin}-point margin told the story as {winner} controlled key stretches of the game to secure the win. "
+        f"The victory keeps {winner} moving in the right direction while {loser} will look to respond in their next outing."
+    )
+
+def fetch_bdl_recap(home, h_score, away, a_score):
+    """Fetch NBA game recap via BallDontLie API."""
     try:
-        import urllib.request, json as _json
-        winner = home if h_score > a_score else away
-        loser  = away if h_score > a_score else home
-        w_score = h_score if h_score > a_score else a_score
-        l_score = a_score if h_score > a_score else h_score
-        margin = abs(h_score - a_score)
-        prompt = (
-            f"Write a 3-sentence {sport} game recap. "
-            f"{winner} defeated {loser} {w_score}-{l_score} (margin of {margin}). "
-            f"Write it like a sports journalist — mention the final score, "
-            f"describe the nature of the win (close, dominant, overtime, blowout, etc.), "
-            f"and end with a line about what it means for each team. "
-            f"No made-up stats. Keep it to exactly 3 sentences."
-        )
-        payload = _json.dumps({
-            "model": "claude-haiku-4-5-20251001",
-            "max_tokens": 200,
-            "messages": [{"role": "user", "content": prompt}]
-        }).encode()
+        import urllib.request, json as _json, urllib.parse
+        from datetime import timedelta
+        ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        params = urllib.parse.urlencode({"dates[]": ydate, "per_page": "30"})
         req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
-            data=payload,
-            headers={"Content-Type": "application/json", "anthropic-version": "2023-06-01"},
-            method="POST"
+            f"https://api.balldontlie.io/v1/games?{params}",
+            headers={"Authorization": BALLDONTLIE_API_KEY}
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data = _json.loads(resp.read())
-            return data["content"][0]["text"].strip()
+            games = _json.loads(resp.read()).get("data", [])
+        # Match the game by team names
+        for g in games:
+            ht = g.get("home_team", {}).get("full_name", "")
+            at = g.get("visitor_team", {}).get("full_name", "")
+            if (home.lower() in ht.lower() or ht.lower() in home.lower()) and                (away.lower() in at.lower() or at.lower() in away.lower()):
+                hs = g.get("home_team_score", h_score)
+                as_ = g.get("visitor_team_score", a_score)
+                winner = ht if hs > as_ else at
+                loser  = at if hs > as_ else ht
+                w_score = max(hs, as_)
+                l_score = min(hs, as_)
+                margin = abs(hs - as_)
+                if margin <= 4:
+                    tone = "edged out"; nature = "a tight contest"
+                elif margin <= 12:
+                    tone = "defeated"; nature = "a competitive game"
+                else:
+                    tone = "cruised past"; nature = "a dominant performance"
+                return (
+                    f"{winner} {tone} {loser} {w_score}-{l_score} in {nature} last night. "
+                    f"The {margin}-point final margin reflected {winner}'s ability to make key plays when it mattered most. "
+                    f"The win keeps {winner} in strong playoff position while {loser} faces pressure to bounce back."
+                )
+        return fallback_recap(home, h_score, away, a_score)
     except Exception as e:
-        log(f"  ⚠️  Recap generation failed: {e}")
-        winner = home if h_score > a_score else away
-        loser  = away if h_score > a_score else home
-        margin = abs(h_score - a_score)
-        tone = "dominated" if margin > 15 else "edged" if margin <= 5 else "defeated"
-        return f"{winner} {tone} {loser} by {margin} in last night's contest, finishing with a final score of {home} {h_score}, {away} {a_score}. The result moves {winner} forward in the standings while {loser} looks to bounce back. More details will be available as the box score is processed."
+        log(f"  ⚠️  BallDontLie recap failed: {e}")
+        return fallback_recap(home, h_score, away, a_score)
+
+def generate_recap(sport, home, h_score, away, a_score):
+    """Get a game recap — BallDontLie for NBA, fallback for others."""
+    if sport == "NBA":
+        return fetch_bdl_recap(home, h_score, away, a_score)
+    return fallback_recap(home, h_score, away, a_score)
 
 def fetch_yesterday(sport, league):
     """Fetch completed games from yesterday via ESPN scoreboard dates param."""

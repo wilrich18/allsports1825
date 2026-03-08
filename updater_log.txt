@@ -919,3 +919,43 @@
 [2026-03-08 17:45:12] 🎉  All done! 5 files updated in:
 [2026-03-08 17:45:12]     /Users/williamrichter/Desktop/ALLSPORTS/
 [2026-03-08 17:45:12] =======================================================
+[2026-03-08 18:03:28] =======================================================
+[2026-03-08 18:03:28] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 18:03:28] =======================================================
+[2026-03-08 18:03:28] 
+[1/4] NBA
+[2026-03-08 18:03:28] 🏀 Fetching NBA standings...
+[2026-03-08 18:03:28]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 18:03:28]   📰 Yesterday (20260307): 6 final games for nba
+[2026-03-08 18:03:28] 🌐 Generating nba.html...
+[2026-03-08 18:03:30]   ⚠️  BallDontLie recap failed: HTTP Error 429: Too Many Requests
+[2026-03-08 18:03:30]   ✅ nba.html saved (35,173 chars)
+[2026-03-08 18:03:30] 
+[2/4] NHL
+[2026-03-08 18:03:30] 🏒 Fetching NHL standings...
+[2026-03-08 18:03:31]   ✅ NHL: 16 East + 16 West
+[2026-03-08 18:03:31]   📰 Yesterday (20260307): 11 final games for nhl
+[2026-03-08 18:03:31] 🌐 Generating nhl.html...
+[2026-03-08 18:03:31]   ✅ nhl.html saved (36,702 chars)
+[2026-03-08 18:03:31] 
+[3/4] MLB
+[2026-03-08 18:03:31] ⚾ Fetching MLB standings...
+[2026-03-08 18:03:31]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 18:03:32]   📰 Yesterday (20260307): 17 final games for mlb
+[2026-03-08 18:03:32] 🌐 Generating mlb.html...
+[2026-03-08 18:03:32]   ✅ mlb.html saved (34,075 chars)
+[2026-03-08 18:03:32] 
+[4/4] NFL
+[2026-03-08 18:03:32] 🏈 Fetching NFL standings...
+[2026-03-08 18:03:32]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 18:03:32] 🌐 Generating nfl.html...
+[2026-03-08 18:03:32]   ✅ nfl.html saved (28,090 chars)
+[2026-03-08 18:03:32] 
+[5/5] Hub
+[2026-03-08 18:03:32] 🌐 Generating index.html...
+[2026-03-08 18:03:32]   ✅ index.html saved (10,285 chars)
+[2026-03-08 18:03:32] 
+=======================================================
+[2026-03-08 18:03:32] 🎉  All done! 5 files updated in:
+[2026-03-08 18:03:32]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 18:03:32] =======================================================
