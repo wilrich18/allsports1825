@@ -2048,11 +2048,14 @@ def fetch_nhl_standings():
         r = safe_get("https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings",
                      {"season": datetime.now().year})
         east, west = [], []
-        WEST_DIVS = {"Pacific", "Central"}
         for conf_data in r.json().get("children", []):
-            conf_name = conf_data.get("name","").upper()
-            is_west = "WESTERN" in conf_name
-            for entry in conf_data.get("standings", {}).get("entries", []):
+            conf_name = conf_data.get("name", "").upper()
+            is_west   = "WESTERN" in conf_name
+            entries = conf_data.get("standings", {}).get("entries", [])
+            if not entries:
+                for div in conf_data.get("children", []):
+                    entries += div.get("standings", {}).get("entries", [])
+            for entry in entries:
                 try:
                     name = entry["team"]["displayName"]
                     vals = {s["name"]: s.get("value", 0) for s in entry.get("stats", [])}
@@ -2060,14 +2063,13 @@ def fetch_nhl_standings():
                     l   = int(vals.get("losses", 0) or 0)
                     gp  = w + l or 1
                     pct = round(w / gp, 3)
-                    div = entry.get("team", {}).get("division", {}).get("name", "")
-                    ppg = round(float(vals.get("goalsFor", vals.get("pointsFor", 0)) or 0) / max(gp, 1), 1)
-                    opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst", 0)) or 0) / max(gp, 1), 1)
+                    ppg = round(float(vals.get("goalsFor",    vals.get("pointsFor",     0)) or 0) / max(gp,1), 1)
+                    opp = round(float(vals.get("goalsAgainst",vals.get("pointsAgainst", 0)) or 0) / max(gp,1), 1)
                     net = round(ppg - opp, 1)
-                    l10 = "—"
-                    t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_al: east.append(t)
-                    else: west.append(t)
+                    div = entry.get("team", {}).get("division", {}).get("name", "")
+                    t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10="—", div=div, str="")
+                    if is_west: west.append(t)
+                    else:       east.append(t)
                 except: continue
         east.sort(key=lambda x: -x["pct"])
         west.sort(key=lambda x: -x["pct"])
@@ -2077,12 +2079,6 @@ def fetch_nhl_standings():
         log(f"  ⚠️  NHL standings failed: {e}")
         return [], []
 
-
-
-
-# ════════════════════════════════════════════════════════════════════════════
-#  HOME HUB — generate index.html
-# ════════════════════════════════════════════════════════════════════════════
 
 def generate_hub_html():
     log("🌐 Generating index.html...")
@@ -2267,36 +2263,53 @@ def fetch_mlb_standings():
     try:
         r = safe_get("https://site.api.espn.com/apis/v2/sports/baseball/mlb/standings",
                      {"season": datetime.now().year})
-        east, west = [], []
+        al, nl = [], []
         for conf_data in r.json().get("children", []):
             conf_name = conf_data.get("name", "").upper()
-            is_al = conf_name.startswith("AL") or "AMERICAN" in conf_name
-            # Handle both flat and nested structures
+            is_al = "AMERICAN" in conf_name or conf_name.startswith("AL")
             entries = conf_data.get("standings", {}).get("entries", [])
             if not entries:
                 for div in conf_data.get("children", []):
-                    entries += div.get("standings", {}).get("entries", [])
-            for entry in entries:
-                try:
-                    name = entry["team"]["displayName"]
-                    vals = {s["name"]: s.get("value", 0) for s in entry.get("stats", [])}
-                    w   = int(vals.get("wins", 0) or 0)
-                    l   = int(vals.get("losses", 0) or 0)
-                    gp  = w + l or 1
-                    pct = round(w / gp, 3)
-                    ppg = round(float(vals.get("runs", vals.get("pointsFor", 0)) or 0) / max(gp, 1), 1)
-                    opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst", 0)) or 0) / max(gp, 1), 1)
-                    net = round(ppg - opp, 1)
-                    l10 = "—"
-                    div = entry.get("team", {}).get("division", {}).get("name", "")
-                    t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10=l10, div=div)
-                    if is_al: east.append(t)
-                    else: west.append(t)
-                except: continue
-        east.sort(key=lambda x: -x["pct"])
-        west.sort(key=lambda x: -x["pct"])
-        log(f"  ✅ MLB: {len(east)} AL + {len(west)} NL")
-        return east, west
+                    div_name = div.get("name", "").upper()
+                    div_is_al = is_al or "AMERICAN" in div_name or div_name.startswith("AL")
+                    for entry in div.get("standings", {}).get("entries", []):
+                        try:
+                            name = entry["team"]["displayName"]
+                            vals = {s["name"]: s.get("value", 0) for s in entry.get("stats", [])}
+                            w   = int(vals.get("wins", 0) or 0)
+                            l   = int(vals.get("losses", 0) or 0)
+                            gp  = w + l or 1
+                            pct = round(w / gp, 3)
+                            ppg = round(float(vals.get("runs",        vals.get("pointsFor",     0)) or 0) / max(gp,1), 1)
+                            opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst", 0)) or 0) / max(gp,1), 1)
+                            net = round(ppg - opp, 1)
+                            t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10="—", div=div.get("name",""), str="")
+                            if div_is_al: al.append(t)
+                            else:         nl.append(t)
+                        except: continue
+            else:
+                for entry in entries:
+                    try:
+                        name = entry["team"]["displayName"]
+                        vals = {s["name"]: s.get("value", 0) for s in entry.get("stats", [])}
+                        w   = int(vals.get("wins", 0) or 0)
+                        l   = int(vals.get("losses", 0) or 0)
+                        gp  = w + l or 1
+                        pct = round(w / gp, 3)
+                        ppg = round(float(vals.get("runs",        vals.get("pointsFor",     0)) or 0) / max(gp,1), 1)
+                        opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst", 0)) or 0) / max(gp,1), 1)
+                        net = round(ppg - opp, 1)
+                        t   = dict(t=name, w=w, l=l, pct=pct, ppg=ppg, opp=opp, net=net, l10="—", div="", str="")
+                        if is_al: al.append(t)
+                        else:     nl.append(t)
+                    except: continue
+        al.sort(key=lambda x: -x["pct"])
+        nl.sort(key=lambda x: -x["pct"])
+        if not al and not nl:
+            log("  ℹ️  MLB spring training — no regular season standings yet")
+            return [], []
+        log(f"  ✅ MLB: {len(al)} AL + {len(nl)} NL teams")
+        return al, nl
     except Exception as e:
         log(f"  ⚠️  MLB standings failed: {e}")
         return [], []
