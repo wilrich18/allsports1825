@@ -6,7 +6,7 @@ from datetime import datetime
 import requests
 
 # ── BallDontLie API key for NBA digest recaps ────────────────────────────
-BALLDONTLIE_API_KEY = "2f5f8dba-db12-4507-86ca-b0d659b8efb0"
+BALLDONTLIE_API_KEY = "9b37b045-f189-4ccb-bff2-d8678f51b02d"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_FILE = os.path.join(BASE_DIR, "updater_log.txt")
