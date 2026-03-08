@@ -185,16 +185,34 @@ function renderGames(){
     const isLive=gm.is_live,isFinal=gm.is_final;
     const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
     const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    const hasLine=gm.spread||gm.total||gm.h_ml;
-    let linesHtml='';
-    if(hasLine&&!isFinal&&!isLive){
-      const spread=gm.spread?`<div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${gm.spread}</div></div>`:'';
-      const total=gm.total?`<div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${gm.total}</div></div>`:'';
-      const hml=gm.h_ml?`<div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${gm.h_ml}</div></div>`:'';
-      const aml=gm.a_ml?`<div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${gm.a_ml}</div></div>`:'';
-      linesHtml=`<div class="game-lines">${spread}${total}${hml}${aml}</div>`;
+    // Scores or matchup display
+    let scoreHtml='';
+    if(isFinal||isLive){
+      scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
     }
-    g.innerHTML+=`<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${gm.home}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${gm.away}</div></div></div></div>${linesHtml}${(isFinal||isLive)?`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`:''}</div>`;
+    // Betting lines — always show section, use — if no data
+    const spread=gm.spread||'—';
+    const total=gm.total||'—';
+    const hml=gm.h_ml||'—';
+    const aml=gm.a_ml||'—';
+    const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
+    g.innerHTML+=`<div class="game-card">
+      <div class="game-card-top">
+        <div class="game-time">${lbl}</div>
+        <div class="game-matchup">
+          <div style="flex:1">
+            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+            <div class="game-team fav">${gm.home}</div>
+          </div>
+          <div class="game-vs">vs</div>
+          <div style="flex:1;text-align:right">
+            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+            <div class="game-team dog">${gm.away}</div>
+          </div>
+        </div>
+      </div>
+      ${linesHtml}${scoreHtml}
+    </div>`;
   });
 }
 function tog(hdr){
