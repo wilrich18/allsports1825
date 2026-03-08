@@ -424,7 +424,7 @@ def fetch_bdl_recap(home, h_score, away, a_score):
 
         # Step 1 — find the game ID
         params = urllib.parse.urlencode({"dates[]": ydate, "per_page": "30"})
-        req = urllib.request.Request(f"https://api.balldontlie.io/v1/games?{params}", headers=hdrs)
+        req = urllib.request.Request(f"https://api.balldontlie.io/nba/v1/games?{params}", headers=hdrs)
         with urllib.request.urlopen(req, timeout=10) as resp:
             games = _json.loads(resp.read()).get("data", [])
 
@@ -443,7 +443,7 @@ def fetch_bdl_recap(home, h_score, away, a_score):
 
         # Step 2 — get player stats for the game
         params2 = urllib.parse.urlencode({"game_ids[]": game_id, "per_page": "50"})
-        req2 = urllib.request.Request(f"https://api.balldontlie.io/v1/stats?{params2}", headers=hdrs)
+        req2 = urllib.request.Request(f"https://api.balldontlie.io/nba/v1/stats?{params2}", headers=hdrs)
         with urllib.request.urlopen(req2, timeout=10) as resp2:
             stats = _json.loads(resp2.read()).get("data", [])
 

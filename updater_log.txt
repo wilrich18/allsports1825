@@ -1004,3 +1004,48 @@
 [2026-03-08 18:20:48] 🎉  All done! 5 files updated in:
 [2026-03-08 18:20:48]     /Users/williamrichter/Desktop/ALLSPORTS/
 [2026-03-08 18:20:48] =======================================================
+[2026-03-08 18:21:55] =======================================================
+[2026-03-08 18:21:55] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-08 18:21:55] =======================================================
+[2026-03-08 18:21:55] 
+[1/4] NBA
+[2026-03-08 18:21:55] 🏀 Fetching NBA standings...
+[2026-03-08 18:21:56]   ✅ NBA: 15 East + 15 West teams
+[2026-03-08 18:21:56]   📰 Yesterday (20260307): 6 final games for nba
+[2026-03-08 18:21:56] 🌐 Generating nba.html...
+[2026-03-08 18:21:57]   ⚠️  BallDontLie recap failed: HTTP Error 401: Unauthorized
+[2026-03-08 18:21:58]   ⚠️  BallDontLie recap failed: HTTP Error 401: Unauthorized
+[2026-03-08 18:21:59]   ⚠️  BallDontLie recap failed: HTTP Error 429: Too Many Requests
+[2026-03-08 18:21:59]   ⚠️  BallDontLie recap failed: HTTP Error 429: Too Many Requests
+[2026-03-08 18:21:59]   ⚠️  BallDontLie recap failed: HTTP Error 429: Too Many Requests
+[2026-03-08 18:21:59]   ⚠️  BallDontLie recap failed: HTTP Error 429: Too Many Requests
+[2026-03-08 18:21:59]   ✅ nba.html saved (35,312 chars)
+[2026-03-08 18:21:59] 
+[2/4] NHL
+[2026-03-08 18:21:59] 🏒 Fetching NHL standings...
+[2026-03-08 18:22:00]   ✅ NHL: 16 East + 16 West
+[2026-03-08 18:22:00]   📰 Yesterday (20260307): 11 final games for nhl
+[2026-03-08 18:22:00] 🌐 Generating nhl.html...
+[2026-03-08 18:22:00]   ✅ nhl.html saved (36,690 chars)
+[2026-03-08 18:22:00] 
+[3/4] MLB
+[2026-03-08 18:22:00] ⚾ Fetching MLB standings...
+[2026-03-08 18:22:00]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-08 18:22:01]   📰 Yesterday (20260307): 17 final games for mlb
+[2026-03-08 18:22:01] 🌐 Generating mlb.html...
+[2026-03-08 18:22:01]   ✅ mlb.html saved (34,075 chars)
+[2026-03-08 18:22:01] 
+[4/4] NFL
+[2026-03-08 18:22:01] 🏈 Fetching NFL standings...
+[2026-03-08 18:22:01]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-08 18:22:01] 🌐 Generating nfl.html...
+[2026-03-08 18:22:01]   ✅ nfl.html saved (28,090 chars)
+[2026-03-08 18:22:01] 
+[5/5] Hub
+[2026-03-08 18:22:01] 🌐 Generating index.html...
+[2026-03-08 18:22:01]   ✅ index.html saved (10,285 chars)
+[2026-03-08 18:22:01] 
+=======================================================
+[2026-03-08 18:22:01] 🎉  All done! 5 files updated in:
+[2026-03-08 18:22:01]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-08 18:22:01] =======================================================
