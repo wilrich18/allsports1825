@@ -415,42 +415,84 @@ def fallback_recap(home, h_score, away, a_score):
     )
 
 def fetch_bdl_recap(home, h_score, away, a_score):
-    """Fetch NBA game recap via BallDontLie API."""
+    """Fetch NBA game recap with player stats via BallDontLie API."""
     try:
         import urllib.request, json as _json, urllib.parse
         from datetime import timedelta
         ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        hdrs = {"Authorization": BALLDONTLIE_API_KEY}
+
+        # Step 1 — find the game ID
         params = urllib.parse.urlencode({"dates[]": ydate, "per_page": "30"})
-        req = urllib.request.Request(
-            f"https://api.balldontlie.io/v1/games?{params}",
-            headers={"Authorization": BALLDONTLIE_API_KEY}
-        )
+        req = urllib.request.Request(f"https://api.balldontlie.io/v1/games?{params}", headers=hdrs)
         with urllib.request.urlopen(req, timeout=10) as resp:
             games = _json.loads(resp.read()).get("data", [])
-        # Match the game by team names
+
+        game_id = ht = at = hs = as_ = None
         for g in games:
             ht = g.get("home_team", {}).get("full_name", "")
             at = g.get("visitor_team", {}).get("full_name", "")
             if (home.lower() in ht.lower() or ht.lower() in home.lower()) and                (away.lower() in at.lower() or at.lower() in away.lower()):
+                game_id = g["id"]
                 hs = g.get("home_team_score", h_score)
                 as_ = g.get("visitor_team_score", a_score)
-                winner = ht if hs > as_ else at
-                loser  = at if hs > as_ else ht
-                w_score = max(hs, as_)
-                l_score = min(hs, as_)
-                margin = abs(hs - as_)
-                if margin <= 4:
-                    tone = "edged out"; nature = "a tight contest"
-                elif margin <= 12:
-                    tone = "defeated"; nature = "a competitive game"
-                else:
-                    tone = "cruised past"; nature = "a dominant performance"
-                return (
-                    f"{winner} {tone} {loser} {w_score}-{l_score} in {nature} last night. "
-                    f"The {margin}-point final margin reflected {winner}'s ability to make key plays when it mattered most. "
-                    f"The win keeps {winner} in strong playoff position while {loser} faces pressure to bounce back."
-                )
-        return fallback_recap(home, h_score, away, a_score)
+                break
+
+        if not game_id:
+            return fallback_recap(home, h_score, away, a_score)
+
+        # Step 2 — get player stats for the game
+        params2 = urllib.parse.urlencode({"game_ids[]": game_id, "per_page": "50"})
+        req2 = urllib.request.Request(f"https://api.balldontlie.io/v1/stats?{params2}", headers=hdrs)
+        with urllib.request.urlopen(req2, timeout=10) as resp2:
+            stats = _json.loads(resp2.read()).get("data", [])
+
+        # Sort by points, get top performers from each team
+        stats = [s for s in stats if s.get("pts") is not None]
+        stats.sort(key=lambda x: x.get("pts", 0), reverse=True)
+
+        winner_name = ht if hs > as_ else at
+        loser_name  = at if hs > as_ else ht
+        w_score = max(hs, as_)
+        l_score = min(hs, as_)
+        margin = abs(hs - as_)
+
+        # Top scorer overall
+        top = stats[0] if stats else None
+        # Top scorer from each team
+        winner_abbr = home[:3].upper() if hs == h_score else away[:3].upper()
+        w_stats = [s for s in stats if winner_name.lower() in s.get("team",{}).get("full_name","").lower()]
+        l_stats = [s for s in stats if loser_name.lower() in s.get("team",{}).get("full_name","").lower()]
+
+        def fmt_player(s):
+            p = s.get("player", {})
+            name = f"{p.get('first_name','')} {p.get('last_name','')}".strip()
+            pts, reb, ast = s.get("pts",0), s.get("reb",0), s.get("ast",0)
+            parts = [f"{pts} points"]
+            if reb >= 8: parts.append(f"{reb} rebounds")
+            if ast >= 7: parts.append(f"{ast} assists")
+            return name, ", ".join(parts)
+
+        if margin <= 4:
+            tone = "edged"
+        elif margin <= 12:
+            tone = "defeated"
+        else:
+            tone = "dominated"
+
+        lines = [f"{winner_name} {tone} {loser_name} {w_score}-{l_score} last night in a{'  tight finish' if margin<=4 else ' strong performance' if margin<=12 else ' dominant showing'}."]
+
+        if w_stats:
+            wn, ws = fmt_player(w_stats[0])
+            lines.append(f"{wn} led {winner_name} with {ws}{'.' if not l_stats else ','}")
+        if l_stats:
+            ln, ls = fmt_player(l_stats[0])
+            lines.append(f"while {ln} paced {loser_name} with {ls} in a losing effort.")
+
+        lines.append(f"The {margin}-point result keeps {winner_name} building momentum heading into their next matchup.")
+
+        return " ".join(lines)
+
     except Exception as e:
         log(f"  ⚠️  BallDontLie recap failed: {e}")
         return fallback_recap(home, h_score, away, a_score)
