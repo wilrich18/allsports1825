@@ -257,10 +257,8 @@ function parseESPNGames(events){
     let timeStr='TBD';
     try{
       const dt=new Date(comp.date);
-      let h24=(dt.getUTCHours()-4+24)%24,m=dt.getUTCMinutes();
-      const ampm=h24<12?'AM':'PM';
-      const h12=h24%12||12;
-      timeStr=`${h12}:${m.toString().padStart(2,'0')} ${ampm} ET`;
+      const h24=(dt.getUTCHours()-5+24)%24,m=dt.getUTCMinutes();
+      timeStr=`${h24%12||12}:${m.toString().padStart(2,'0')} ${h24<12?'AM':'PM'} CT`;
     }catch(e){}
     let spread=null,total=null,h_ml=null,a_ml=null;
     try{
@@ -272,7 +270,6 @@ function parseESPNGames(events){
       if(hmo) h_ml=(hmo>0?'+':'')+hmo;
       if(amo) a_ml=(amo>0?'+':'')+amo;
     }catch(e){}
-    // Live game period/clock
     let liveDetail='';
     try{
       if(isLive){
@@ -298,58 +295,53 @@ function fmtDate(d){
   return `${y}-${m}-${dd}`;
 }
 function offsetDate(days){
-  const d=new Date();d.setDate(d.getDate()+days);return fmtDate(d);
+  // Use CT (UTC-6 CST / UTC-5 CDT) — just use UTC-5 as a safe middle ground
+  const now=new Date();
+  const ct=new Date(now.getTime()+(-5*3600000));
+  ct.setUTCDate(ct.getUTCDate()+days);
+  const y=ct.getUTCFullYear(),m=String(ct.getUTCMonth()+1).padStart(2,'0'),d=String(ct.getUTCDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
 }
-// ── ESPN game fetching for all sports ───────────────────────────
-const _espnCache={};
 
-async function fetchESPNGames(dateStr, gridId){
+// ── ESPN game fetching ────────────────────────────────────────────
+const _gameCache={};
+
+async function fetchGames(dateStr,gridId){
   const g=document.getElementById(gridId);
   if(!g)return;
-  if(_espnCache[dateStr]!==undefined){
-    _renderESPNGrid(dateStr,gridId);
-    return;
-  }
+  if(_gameCache[dateStr]!==undefined){renderGrid(dateStr,gridId);return;}
   g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
   try{
-    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${dateStr.replace(/-/g,'')}`;
+    const ds=dateStr.replace(/-/g,'');
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${ds}`;
     const r=await fetch(url);
     const data=await r.json();
-    _espnCache[dateStr]=parseESPNGames(data.events||[]);
+    _gameCache[dateStr]=parseESPNGames(data.events||[]);
   }catch(e){
-    _espnCache[dateStr]=[];
+    _gameCache[dateStr]=[];
     const g2=document.getElementById(gridId);
-    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+    if(g2)g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
     return;
   }
-  _renderESPNGrid(dateStr,gridId);
+  renderGrid(dateStr,gridId);
 }
 
-function _renderESPNGrid(dateStr,gridId){
+function renderGrid(dateStr,gridId){
   const g=document.getElementById(gridId);
   if(!g)return;
-  const games=_espnCache[dateStr]||[];
+  const games=_gameCache[dateStr]||[];
   if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled.</p>';return;}
   g.innerHTML=games.map(buildGameCard).join('');
 }
 
 function renderGames(){
-  // Fetch tonight immediately, stagger yesterday and tomorrow
-  fetchESPNGames(offsetDate(0),'games-grid');
-  setTimeout(()=>fetchESPNGames(offsetDate(-1),'yesterday-grid'),2000);
-  setTimeout(()=>fetchESPNGames(offsetDate(1),'tomorrow-grid'),4000);
-  // Refresh tonight every 60s
-  setInterval(()=>{
-    delete _espnCache[offsetDate(0)];
-    fetchESPNGames(offsetDate(0),'games-grid');
-  },60000);
+  fetchGames(offsetDate(0),'games-grid');
+  setTimeout(()=>fetchGames(offsetDate(-1),'yesterday-grid'),2000);
+  setTimeout(()=>fetchGames(offsetDate(1),'tomorrow-grid'),4000);
+  setInterval(()=>{delete _gameCache[offsetDate(0)];fetchGames(offsetDate(0),'games-grid');},60000);
 }
-function renderYesterday(){
-  _renderESPNGrid(offsetDate(-1),'yesterday-grid');
-}
-function renderTomorrow(){
-  _renderESPNGrid(offsetDate(1),'tomorrow-grid');
-}
+function renderYesterday(){renderGrid(offsetDate(-1),'yesterday-grid');}
+function renderTomorrow(){renderGrid(offsetDate(1),'tomorrow-grid');}
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
   body.classList.toggle('open');chev.classList.toggle('open');
@@ -366,38 +358,12 @@ function renderProps(allProps){
   const g=document.getElementById('props-grid');
   const note=document.getElementById('props-tonight-note');
   if(!g)return;
-  // Wait for tonight's games to load, then filter props to only playing teams
-  function doRender(){
-    const todayStr=offsetDate(0);
-    const cached=_espnCache[todayStr];
-    if(!cached){
-      setTimeout(doRender,800);
-      return;
-    }
-    const tonightTeams=new Set();
-    cached.forEach(gm=>{
-      tonightTeams.add(gm.home.toLowerCase());
-      tonightTeams.add(gm.away.toLowerCase());
-    });
-    const filtered=tonightTeams.size>0
-      ? allProps.filter(p=>tonightTeams.has(p.team.toLowerCase())||[...tonightTeams].some(t=>p.team.toLowerCase().includes(t.split(' ').pop().toLowerCase())))
-      : allProps;
-    if(note){
-      note.textContent=tonightTeams.size>0
-        ? `Showing props for tonight's ${cached.length} game${cached.length!==1?'s':''} · ${filtered.length} props`
-        : 'Could not load tonight's schedule';
-    }
-    if(!filtered.length){
-      g.innerHTML='<p style="color:var(--gray)">No props available for tonight's games.</p>';
-      return;
-    }
-    filtered.forEach(p=>{
-      const bc=p.conf==='HIGH'?'b-high':'b-med';
-      g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
-    });
-  }
-  doRender();
+  allProps.forEach(p=>{
+    const bc=p.conf==='HIGH'?'b-high':'b-med';
+    g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+  });
 }
+
 function switchSched(tab,btn){
   ['today','yesterday','tomorrow'].forEach(t=>{
     const el=document.getElementById('sched-'+t);
@@ -414,6 +380,6 @@ function switchSched(tab,btn){
     document.getElementById('tomorrow-grid').dataset.loaded='1';
   }
 }
-const EAST=[];const WEST=[];const TONIGHT=[{"time": "1:05 PM ET", "home": "Baltimore Orioles", "away": "Toronto Blue Jays", "h_score": 0, "a_score": 1, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Minnesota Twins", "away": "Philadelphia Phillies", "h_score": 7, "a_score": 6, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Pittsburgh Pirates", "away": "Boston Red Sox", "h_score": 9, "a_score": 7, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Tampa Bay Rays", "away": "Atlanta Braves", "h_score": 9, "a_score": 8, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Washington Nationals", "away": "Houston Astros", "h_score": 3, "a_score": 1, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:07 PM ET", "home": "Toronto Blue Jays", "away": "Detroit Tigers", "h_score": 5, "a_score": 0, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:10 PM ET", "home": "Miami Marlins", "away": "St. Louis Cardinals", "h_score": 2, "a_score": 2, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:10 PM ET", "home": "New York Mets", "away": "New York Yankees", "h_score": 10, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Athletics", "away": "Los Angeles Angels", "h_score": 7, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Athletics", "away": "Los Angeles Dodgers", "h_score": 11, "a_score": 7, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Chicago Cubs", "away": "San Francisco Giants", "h_score": 5, "a_score": 9, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Chicago White Sox", "away": "Kansas City Royals", "h_score": 5, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Cincinnati Reds", "away": "Arizona Diamondbacks", "h_score": 13, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Texas Rangers", "away": "Los Angeles Angels", "h_score": 7, "a_score": 10, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "Colorado Rockies", "away": "Cleveland Guardians", "h_score": 4, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "Milwaukee Brewers", "away": "Seattle Mariners", "h_score": 6, "a_score": 3, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "San Diego Padres", "away": "Cincinnati Reds", "h_score": 14, "a_score": 3, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Shohei Ohtani", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-125", "conf": "HIGH", "cls": "high", "reason": "Ohtani barrels the ball at an elite rate. Achievable in a single hit."}, {"player": "Aaron Judge", "team": "New York Yankees", "line": "Over 0.5 home runs", "odds": "+185", "conf": "HIGH", "cls": "high", "reason": "Judge leads MLB in HR. Great value for the best power hitter in baseball."}, {"player": "Freddie Freeman", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "Freeman is the Dodgers' most consistent contact hitter."}, {"player": "Juan Soto", "team": "New York Yankees", "line": "Over 0.5 walks", "odds": "-130", "conf": "HIGH", "cls": "high", "reason": "Soto has an elite eye and draws walks in the majority of his games."}, {"player": "Mookie Betts", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-110", "conf": "MEDIUM", "cls": "medium", "reason": "One of the most consistent performers in baseball."}, {"player": "Ronald Acu\u00f1a Jr.", "team": "Atlanta Braves", "line": "Over 0.5 stolen bases", "odds": "+110", "conf": "MEDIUM", "cls": "medium", "reason": "Most dangerous baserunner in baseball. Plus money is great value."}];const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
+const EAST=[];const WEST=[];const TONIGHT=[{"time": "1:05 PM ET", "home": "Atlanta Braves", "away": "Minnesota Twins", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Boston Red Sox", "away": "Philadelphia Phillies", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Detroit Tigers", "away": "Tampa Bay Rays", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "Houston Astros", "away": "St. Louis Cardinals", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "1:05 PM ET", "home": "St. Louis Cardinals", "away": "Baltimore Orioles", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Chicago White Sox", "away": "Colorado Rockies", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Cincinnati Reds", "away": "Athletics", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "Kansas City Royals", "away": "Cleveland Guardians", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:05 PM ET", "home": "San Francisco Giants", "away": "Los Angeles Angels", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "Arizona Diamondbacks", "away": "Seattle Mariners", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "Milwaukee Brewers", "away": "Los Angeles Dodgers", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:10 PM ET", "home": "San Diego Padres", "away": "Texas Rangers", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:10 PM ET", "home": "New York Mets", "away": "Miami Marlins", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:35 PM ET", "home": "New York Yankees", "away": "Pittsburgh Pirates", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Shohei Ohtani", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-125", "conf": "HIGH", "cls": "high", "reason": "Ohtani barrels the ball at an elite rate. Achievable in a single hit."}, {"player": "Aaron Judge", "team": "New York Yankees", "line": "Over 0.5 home runs", "odds": "+185", "conf": "HIGH", "cls": "high", "reason": "Judge leads MLB in HR. Great value for the best power hitter in baseball."}, {"player": "Freddie Freeman", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "Freeman is the Dodgers most consistent contact hitter."}, {"player": "Juan Soto", "team": "New York Yankees", "line": "Over 0.5 walks", "odds": "-130", "conf": "HIGH", "cls": "high", "reason": "Soto has an elite eye and draws walks in the majority of his games."}, {"player": "Mookie Betts", "team": "Los Angeles Dodgers", "line": "Over 1.5 total bases", "odds": "-110", "conf": "MEDIUM", "cls": "medium", "reason": "One of the most consistent performers in baseball."}, {"player": "Ronald Acu\u00f1a Jr.", "team": "Atlanta Braves", "line": "Over 0.5 stolen bases", "odds": "+110", "conf": "MEDIUM", "cls": "medium", "reason": "Most dangerous baserunner in baseball. Plus money is great value."}];const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
 </body>
 </html>

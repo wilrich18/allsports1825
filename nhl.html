@@ -254,10 +254,8 @@ function parseESPNGames(events){
     let timeStr='TBD';
     try{
       const dt=new Date(comp.date);
-      let h24=(dt.getUTCHours()-4+24)%24,m=dt.getUTCMinutes();
-      const ampm=h24<12?'AM':'PM';
-      const h12=h24%12||12;
-      timeStr=`${h12}:${m.toString().padStart(2,'0')} ${ampm} ET`;
+      const h24=(dt.getUTCHours()-5+24)%24,m=dt.getUTCMinutes();
+      timeStr=`${h24%12||12}:${m.toString().padStart(2,'0')} ${h24<12?'AM':'PM'} CT`;
     }catch(e){}
     let spread=null,total=null,h_ml=null,a_ml=null;
     try{
@@ -269,7 +267,6 @@ function parseESPNGames(events){
       if(hmo) h_ml=(hmo>0?'+':'')+hmo;
       if(amo) a_ml=(amo>0?'+':'')+amo;
     }catch(e){}
-    // Live game period/clock
     let liveDetail='';
     try{
       if(isLive){
@@ -295,58 +292,53 @@ function fmtDate(d){
   return `${y}-${m}-${dd}`;
 }
 function offsetDate(days){
-  const d=new Date();d.setDate(d.getDate()+days);return fmtDate(d);
+  // Use CT (UTC-6 CST / UTC-5 CDT) — just use UTC-5 as a safe middle ground
+  const now=new Date();
+  const ct=new Date(now.getTime()+(-5*3600000));
+  ct.setUTCDate(ct.getUTCDate()+days);
+  const y=ct.getUTCFullYear(),m=String(ct.getUTCMonth()+1).padStart(2,'0'),d=String(ct.getUTCDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
 }
-// ── ESPN game fetching for all sports ───────────────────────────
-const _espnCache={};
 
-async function fetchESPNGames(dateStr, gridId){
+// ── ESPN game fetching ────────────────────────────────────────────
+const _gameCache={};
+
+async function fetchGames(dateStr,gridId){
   const g=document.getElementById(gridId);
   if(!g)return;
-  if(_espnCache[dateStr]!==undefined){
-    _renderESPNGrid(dateStr,gridId);
-    return;
-  }
+  if(_gameCache[dateStr]!==undefined){renderGrid(dateStr,gridId);return;}
   g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
   try{
-    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${dateStr.replace(/-/g,'')}`;
+    const ds=dateStr.replace(/-/g,'');
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${ds}`;
     const r=await fetch(url);
     const data=await r.json();
-    _espnCache[dateStr]=parseESPNGames(data.events||[]);
+    _gameCache[dateStr]=parseESPNGames(data.events||[]);
   }catch(e){
-    _espnCache[dateStr]=[];
+    _gameCache[dateStr]=[];
     const g2=document.getElementById(gridId);
-    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+    if(g2)g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
     return;
   }
-  _renderESPNGrid(dateStr,gridId);
+  renderGrid(dateStr,gridId);
 }
 
-function _renderESPNGrid(dateStr,gridId){
+function renderGrid(dateStr,gridId){
   const g=document.getElementById(gridId);
   if(!g)return;
-  const games=_espnCache[dateStr]||[];
+  const games=_gameCache[dateStr]||[];
   if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled.</p>';return;}
   g.innerHTML=games.map(buildGameCard).join('');
 }
 
 function renderGames(){
-  // Fetch tonight immediately, stagger yesterday and tomorrow
-  fetchESPNGames(offsetDate(0),'games-grid');
-  setTimeout(()=>fetchESPNGames(offsetDate(-1),'yesterday-grid'),2000);
-  setTimeout(()=>fetchESPNGames(offsetDate(1),'tomorrow-grid'),4000);
-  // Refresh tonight every 60s
-  setInterval(()=>{
-    delete _espnCache[offsetDate(0)];
-    fetchESPNGames(offsetDate(0),'games-grid');
-  },60000);
+  fetchGames(offsetDate(0),'games-grid');
+  setTimeout(()=>fetchGames(offsetDate(-1),'yesterday-grid'),2000);
+  setTimeout(()=>fetchGames(offsetDate(1),'tomorrow-grid'),4000);
+  setInterval(()=>{delete _gameCache[offsetDate(0)];fetchGames(offsetDate(0),'games-grid');},60000);
 }
-function renderYesterday(){
-  _renderESPNGrid(offsetDate(-1),'yesterday-grid');
-}
-function renderTomorrow(){
-  _renderESPNGrid(offsetDate(1),'tomorrow-grid');
-}
+function renderYesterday(){renderGrid(offsetDate(-1),'yesterday-grid');}
+function renderTomorrow(){renderGrid(offsetDate(1),'tomorrow-grid');}
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
   body.classList.toggle('open');chev.classList.toggle('open');
@@ -363,38 +355,12 @@ function renderProps(allProps){
   const g=document.getElementById('props-grid');
   const note=document.getElementById('props-tonight-note');
   if(!g)return;
-  // Wait for tonight's games to load, then filter props to only playing teams
-  function doRender(){
-    const todayStr=offsetDate(0);
-    const cached=_espnCache[todayStr];
-    if(!cached){
-      setTimeout(doRender,800);
-      return;
-    }
-    const tonightTeams=new Set();
-    cached.forEach(gm=>{
-      tonightTeams.add(gm.home.toLowerCase());
-      tonightTeams.add(gm.away.toLowerCase());
-    });
-    const filtered=tonightTeams.size>0
-      ? allProps.filter(p=>tonightTeams.has(p.team.toLowerCase())||[...tonightTeams].some(t=>p.team.toLowerCase().includes(t.split(' ').pop().toLowerCase())))
-      : allProps;
-    if(note){
-      note.textContent=tonightTeams.size>0
-        ? `Showing props for tonight's ${cached.length} game${cached.length!==1?'s':''} · ${filtered.length} props`
-        : 'Could not load tonight's schedule';
-    }
-    if(!filtered.length){
-      g.innerHTML='<p style="color:var(--gray)">No props available for tonight's games.</p>';
-      return;
-    }
-    filtered.forEach(p=>{
-      const bc=p.conf==='HIGH'?'b-high':'b-med';
-      g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
-    });
-  }
-  doRender();
+  allProps.forEach(p=>{
+    const bc=p.conf==='HIGH'?'b-high':'b-med';
+    g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+  });
 }
+
 function switchSched(tab,btn){
   ['today','yesterday','tomorrow'].forEach(t=>{
     const el=document.getElementById('sched-'+t);
@@ -411,6 +377,6 @@ function switchSched(tab,btn){
     document.getElementById('tomorrow-grid').dataset.loaded='1';
   }
 }
-const EAST=[{"t": "Carolina Hurricanes", "w": 40, "l": 17, "otl": 6, "pct": 0.635, "ppg": 3.6, "opp": 2.9, "net": 0.7, "l10": "\u2014", "div": ""}, {"t": "Tampa Bay Lightning", "w": 39, "l": 19, "otl": 4, "pct": 0.629, "ppg": 3.6, "opp": 2.8, "net": 0.8, "l10": "\u2014", "div": ""}, {"t": "Buffalo Sabres", "w": 39, "l": 19, "otl": 6, "pct": 0.609, "ppg": 3.5, "opp": 3.0, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "Detroit Red Wings", "w": 36, "l": 21, "otl": 7, "pct": 0.562, "ppg": 3.0, "opp": 3.0, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "New York Islanders", "w": 36, "l": 23, "otl": 5, "pct": 0.562, "ppg": 2.9, "opp": 2.9, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "Boston Bruins", "w": 35, "l": 22, "otl": 6, "pct": 0.556, "ppg": 3.4, "opp": 3.2, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "Montreal Canadiens", "w": 34, "l": 18, "otl": 10, "pct": 0.548, "ppg": 3.6, "opp": 3.4, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "Columbus Blue Jackets", "w": 32, "l": 21, "otl": 9, "pct": 0.516, "ppg": 3.2, "opp": 3.2, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "Pittsburgh Penguins", "w": 32, "l": 17, "otl": 14, "pct": 0.508, "ppg": 3.4, "opp": 3.0, "net": 0.4, "l10": "\u2014", "div": ""}, {"t": "Ottawa Senators", "w": 31, "l": 22, "otl": 9, "pct": 0.5, "ppg": 3.4, "opp": 3.2, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "New Jersey Devils", "w": 32, "l": 30, "otl": 2, "pct": 0.5, "ppg": 2.6, "opp": 3.0, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Florida Panthers", "w": 31, "l": 29, "otl": 3, "pct": 0.492, "ppg": 3.0, "opp": 3.3, "net": -0.3, "l10": "\u2014", "div": ""}, {"t": "Washington Capitals", "w": 31, "l": 26, "otl": 7, "pct": 0.484, "ppg": 3.1, "opp": 3.0, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Philadelphia Flyers", "w": 29, "l": 22, "otl": 11, "pct": 0.468, "ppg": 2.9, "opp": 3.1, "net": -0.2, "l10": "\u2014", "div": ""}, {"t": "Toronto Maple Leafs", "w": 27, "l": 26, "otl": 11, "pct": 0.422, "ppg": 3.2, "opp": 3.5, "net": -0.3, "l10": "\u2014", "div": ""}, {"t": "New York Rangers", "w": 24, "l": 30, "otl": 8, "pct": 0.387, "ppg": 2.7, "opp": 3.2, "net": -0.5, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Colorado Avalanche", "w": 43, "l": 10, "otl": 9, "pct": 0.694, "ppg": 3.8, "opp": 2.5, "net": 1.3, "l10": "\u2014", "div": ""}, {"t": "Dallas Stars", "w": 39, "l": 14, "otl": 10, "pct": 0.619, "ppg": 3.5, "opp": 2.7, "net": 0.8, "l10": "\u2014", "div": ""}, {"t": "Minnesota Wild", "w": 37, "l": 16, "otl": 11, "pct": 0.578, "ppg": 3.4, "opp": 2.9, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "Anaheim Ducks", "w": 35, "l": 25, "otl": 3, "pct": 0.556, "ppg": 3.3, "opp": 3.5, "net": -0.2, "l10": "\u2014", "div": ""}, {"t": "Utah Mammoth", "w": 34, "l": 25, "otl": 4, "pct": 0.54, "ppg": 3.2, "opp": 2.7, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "San Jose Sharks", "w": 30, "l": 25, "otl": 6, "pct": 0.492, "ppg": 3.1, "opp": 3.5, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Edmonton Oilers", "w": 31, "l": 25, "otl": 8, "pct": 0.484, "ppg": 3.5, "opp": 3.4, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Seattle Kraken", "w": 29, "l": 24, "otl": 9, "pct": 0.468, "ppg": 2.9, "opp": 3.0, "net": -0.1, "l10": "\u2014", "div": ""}, {"t": "Vegas Golden Knights", "w": 29, "l": 21, "otl": 14, "pct": 0.453, "ppg": 3.3, "opp": 3.2, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Nashville Predators", "w": 28, "l": 27, "otl": 8, "pct": 0.444, "ppg": 3.0, "opp": 3.4, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Winnipeg Jets", "w": 26, "l": 26, "otl": 10, "pct": 0.419, "ppg": 2.9, "opp": 3.0, "net": -0.1, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Kings", "w": 25, "l": 23, "otl": 14, "pct": 0.403, "ppg": 2.6, "opp": 3.0, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Calgary Flames", "w": 25, "l": 30, "otl": 7, "pct": 0.403, "ppg": 2.5, "opp": 3.0, "net": -0.5, "l10": "\u2014", "div": ""}, {"t": "St. Louis Blues", "w": 25, "l": 29, "otl": 9, "pct": 0.397, "ppg": 2.6, "opp": 3.4, "net": -0.8, "l10": "\u2014", "div": ""}, {"t": "Chicago Blackhawks", "w": 23, "l": 29, "otl": 11, "pct": 0.365, "ppg": 2.7, "opp": 3.3, "net": -0.6, "l10": "\u2014", "div": ""}, {"t": "Vancouver Canucks", "w": 19, "l": 36, "otl": 8, "pct": 0.302, "ppg": 2.6, "opp": 3.7, "net": -1.1, "l10": "\u2014", "div": ""}];const TONIGHT=[{"time": "2:00 PM ET", "home": "Colorado Avalanche", "away": "Minnesota Wild", "h_score": 3, "a_score": 2, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "4:30 PM ET", "home": "Pittsburgh Penguins", "away": "Boston Bruins", "h_score": 5, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Buffalo Sabres", "away": "Tampa Bay Lightning", "h_score": 8, "a_score": 7, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Dallas Stars", "away": "Chicago Blackhawks", "h_score": 4, "a_score": 3, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "7:00 PM ET", "home": "New Jersey Devils", "away": "Detroit Red Wings", "h_score": 0, "a_score": 3, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Anaheim Ducks", "away": "St. Louis Blues", "h_score": 0, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:45 PM ET", "home": "Vegas Golden Knights", "away": "Edmonton Oilers", "h_score": 2, "a_score": 4, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Connor McDavid", "team": "Edmonton Oilers", "line": "Over 1.5 points", "odds": "-130", "conf": "HIGH", "cls": "high", "reason": "McDavid averages 1.8 pts/game. Hits this line in 60%+ of games."}, {"player": "Nathan MacKinnon", "team": "Colorado Avalanche", "line": "Over 0.5 goals", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "MacKinnon leads the Avs in shots and scoring chances every night."}, {"player": "Auston Matthews", "team": "Toronto Maple Leafs", "line": "Over 3.5 shots", "odds": "-120", "conf": "HIGH", "cls": "high", "reason": "Matthews averages 4.2 SOG \u2014 this line is below his season average."}, {"player": "Leon Draisaitl", "team": "Edmonton Oilers", "line": "Over 1.5 points", "odds": "-118", "conf": "HIGH", "cls": "high", "reason": "Draisaitl racks up points in bunches. Power play alone drives this line."}, {"player": "David Pastrnak", "team": "Boston Bruins", "line": "Over 0.5 goals", "odds": "-108", "conf": "MEDIUM", "cls": "medium", "reason": "Pastrnak is Boston's most dangerous scorer with premium power play time."}, {"player": "Cale Makar", "team": "Colorado Avalanche", "line": "Over 1.5 shots", "odds": "-125", "conf": "MEDIUM", "cls": "medium", "reason": "Makar logs 25+ minutes \u2014 elite shot volume for a D-man."}];const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
+const EAST=[{"t": "Carolina Hurricanes", "w": 40, "l": 17, "otl": 6, "pct": 0.635, "ppg": 3.6, "opp": 2.9, "net": 0.7, "l10": "\u2014", "div": ""}, {"t": "Tampa Bay Lightning", "w": 39, "l": 19, "otl": 4, "pct": 0.629, "ppg": 3.6, "opp": 2.8, "net": 0.8, "l10": "\u2014", "div": ""}, {"t": "Buffalo Sabres", "w": 39, "l": 19, "otl": 6, "pct": 0.609, "ppg": 3.5, "opp": 3.0, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "Detroit Red Wings", "w": 36, "l": 21, "otl": 7, "pct": 0.562, "ppg": 3.0, "opp": 3.0, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "New York Islanders", "w": 36, "l": 23, "otl": 5, "pct": 0.562, "ppg": 2.9, "opp": 2.9, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "Boston Bruins", "w": 35, "l": 22, "otl": 6, "pct": 0.556, "ppg": 3.4, "opp": 3.2, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "Montreal Canadiens", "w": 34, "l": 18, "otl": 10, "pct": 0.548, "ppg": 3.6, "opp": 3.4, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "Columbus Blue Jackets", "w": 32, "l": 21, "otl": 9, "pct": 0.516, "ppg": 3.2, "opp": 3.2, "net": 0.0, "l10": "\u2014", "div": ""}, {"t": "Pittsburgh Penguins", "w": 32, "l": 17, "otl": 14, "pct": 0.508, "ppg": 3.4, "opp": 3.0, "net": 0.4, "l10": "\u2014", "div": ""}, {"t": "Ottawa Senators", "w": 31, "l": 22, "otl": 9, "pct": 0.5, "ppg": 3.4, "opp": 3.2, "net": 0.2, "l10": "\u2014", "div": ""}, {"t": "New Jersey Devils", "w": 32, "l": 30, "otl": 2, "pct": 0.5, "ppg": 2.6, "opp": 3.0, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Florida Panthers", "w": 31, "l": 29, "otl": 3, "pct": 0.492, "ppg": 3.0, "opp": 3.3, "net": -0.3, "l10": "\u2014", "div": ""}, {"t": "Washington Capitals", "w": 31, "l": 26, "otl": 7, "pct": 0.484, "ppg": 3.1, "opp": 3.0, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Philadelphia Flyers", "w": 29, "l": 22, "otl": 11, "pct": 0.468, "ppg": 2.9, "opp": 3.1, "net": -0.2, "l10": "\u2014", "div": ""}, {"t": "Toronto Maple Leafs", "w": 27, "l": 26, "otl": 11, "pct": 0.422, "ppg": 3.2, "opp": 3.5, "net": -0.3, "l10": "\u2014", "div": ""}, {"t": "New York Rangers", "w": 24, "l": 30, "otl": 8, "pct": 0.387, "ppg": 2.7, "opp": 3.2, "net": -0.5, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Colorado Avalanche", "w": 43, "l": 10, "otl": 9, "pct": 0.694, "ppg": 3.8, "opp": 2.5, "net": 1.3, "l10": "\u2014", "div": ""}, {"t": "Dallas Stars", "w": 39, "l": 14, "otl": 10, "pct": 0.619, "ppg": 3.5, "opp": 2.7, "net": 0.8, "l10": "\u2014", "div": ""}, {"t": "Minnesota Wild", "w": 37, "l": 16, "otl": 11, "pct": 0.578, "ppg": 3.4, "opp": 2.9, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "Anaheim Ducks", "w": 35, "l": 25, "otl": 3, "pct": 0.556, "ppg": 3.3, "opp": 3.5, "net": -0.2, "l10": "\u2014", "div": ""}, {"t": "Utah Mammoth", "w": 34, "l": 25, "otl": 4, "pct": 0.54, "ppg": 3.2, "opp": 2.7, "net": 0.5, "l10": "\u2014", "div": ""}, {"t": "San Jose Sharks", "w": 30, "l": 25, "otl": 6, "pct": 0.492, "ppg": 3.1, "opp": 3.5, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Edmonton Oilers", "w": 31, "l": 25, "otl": 8, "pct": 0.484, "ppg": 3.5, "opp": 3.4, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Seattle Kraken", "w": 29, "l": 24, "otl": 9, "pct": 0.468, "ppg": 2.9, "opp": 3.0, "net": -0.1, "l10": "\u2014", "div": ""}, {"t": "Vegas Golden Knights", "w": 29, "l": 21, "otl": 14, "pct": 0.453, "ppg": 3.3, "opp": 3.2, "net": 0.1, "l10": "\u2014", "div": ""}, {"t": "Nashville Predators", "w": 28, "l": 27, "otl": 8, "pct": 0.444, "ppg": 3.0, "opp": 3.4, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Winnipeg Jets", "w": 26, "l": 26, "otl": 10, "pct": 0.419, "ppg": 2.9, "opp": 3.0, "net": -0.1, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Kings", "w": 25, "l": 23, "otl": 14, "pct": 0.403, "ppg": 2.6, "opp": 3.0, "net": -0.4, "l10": "\u2014", "div": ""}, {"t": "Calgary Flames", "w": 25, "l": 30, "otl": 7, "pct": 0.403, "ppg": 2.5, "opp": 3.0, "net": -0.5, "l10": "\u2014", "div": ""}, {"t": "St. Louis Blues", "w": 25, "l": 29, "otl": 9, "pct": 0.397, "ppg": 2.6, "opp": 3.4, "net": -0.8, "l10": "\u2014", "div": ""}, {"t": "Chicago Blackhawks", "w": 23, "l": 29, "otl": 11, "pct": 0.365, "ppg": 2.7, "opp": 3.3, "net": -0.6, "l10": "\u2014", "div": ""}, {"t": "Vancouver Canucks", "w": 19, "l": 36, "otl": 8, "pct": 0.302, "ppg": 2.6, "opp": 3.7, "net": -1.1, "l10": "\u2014", "div": ""}];const TONIGHT=[{"time": "4:00 PM ET", "home": "Columbus Blue Jackets", "away": "Los Angeles Kings", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": "CBJ -142", "total": "O/U 6.5", "h_ml": null, "a_ml": null}, {"time": "7:00 PM ET", "home": "Philadelphia Flyers", "away": "New York Rangers", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": "PHI -142", "total": "O/U 5.5", "h_ml": null, "a_ml": null}, {"time": "7:00 PM ET", "home": "Washington Capitals", "away": "Calgary Flames", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": "WSH -192", "total": "O/U 5.5", "h_ml": null, "a_ml": null}, {"time": "8:30 PM ET", "home": "Chicago Blackhawks", "away": "Utah Mammoth", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": "UTAH -205", "total": "O/U 5.5", "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Vancouver Canucks", "away": "Ottawa Senators", "h_score": 0, "a_score": 0, "is_final": false, "is_live": false, "spread": "OTT -230", "total": "O/U 6.5", "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Connor McDavid", "team": "Edmonton Oilers", "line": "Over 1.5 points", "odds": "-130", "conf": "HIGH", "cls": "high", "reason": "McDavid averages 1.8 pts/game. Hits this line in 60%+ of games."}, {"player": "Nathan MacKinnon", "team": "Colorado Avalanche", "line": "Over 0.5 goals", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "MacKinnon leads the Avs in shots and scoring chances every night."}, {"player": "Auston Matthews", "team": "Toronto Maple Leafs", "line": "Over 3.5 shots", "odds": "-120", "conf": "HIGH", "cls": "high", "reason": "Matthews averages 4.2 SOG \u2014 this line is below his season average."}, {"player": "Leon Draisaitl", "team": "Edmonton Oilers", "line": "Over 1.5 points", "odds": "-118", "conf": "HIGH", "cls": "high", "reason": "Draisaitl racks up points in bunches. Power play alone drives this line."}, {"player": "David Pastrnak", "team": "Boston Bruins", "line": "Over 0.5 goals", "odds": "-108", "conf": "MEDIUM", "cls": "medium", "reason": "Pastrnak is Bostons most dangerous scorer with premium power play time."}, {"player": "Cale Makar", "team": "Colorado Avalanche", "line": "Over 1.5 shots", "odds": "-125", "conf": "MEDIUM", "cls": "medium", "reason": "Makar logs 25+ minutes \u2014 elite shot volume for a D-man."}];const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
 </body>
 </html>
