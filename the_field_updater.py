@@ -1207,6 +1207,288 @@ def build_nba_props(today_games):
     )]
     return filtered if filtered else NBA_PROPS_DB[:6]
 
+def nfl_playoff_results_html():
+    def result_card(s1, t1, score1, s2, t2, score2, winner=None):
+        w1 = winner == t1
+        w2 = winner == t2
+        c1 = "color:var(--white);font-weight:700" if w1 else "color:var(--gray)"
+        c2 = "color:var(--white);font-weight:700" if w2 else "color:var(--gray)"
+        sc1 = f'<span style="color:var(--gold);font-weight:800;margin-left:6px">{score1}</span>' if score1 else ""
+        sc2 = f'<span style="color:var(--gold);font-weight:800;margin-left:6px">{score2}</span>' if score2 else ""
+        seed1 = f'<span class="bk-seed">{s1}</span>' if s1 else ""
+        seed2 = f'<span class="bk-seed">{s2}</span>' if s2 else ""
+        return (
+            '<div class="bk-matchup">'
+            f'<div class="bk-team">{seed1}<span class="bk-name" style="{c1}">{t1}</span>{sc1}</div>'
+            f'<div class="bk-team bk-lower">{seed2}<span class="bk-name" style="{c2}">{t2}</span>{sc2}</div>'
+            '</div>'
+        )
+
+    def bye_card(s, team):
+        return (
+            '<div class="bk-matchup">'
+            f'<div class="bk-team"><span class="bk-seed">{s}</span><span class="bk-name">{team}</span></div>'
+            '<div class="bk-team bk-lower"><span class="bk-seed" style="color:var(--gray)">-</span><span class="bk-name" style="color:var(--gray)">First Round Bye</span></div>'
+            '</div>'
+        )
+
+    def champ_card(team, score_a, opponent, score_b, label):
+        return (
+            f'<div class="bk-trophy-box" style="background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25);width:130px">'
+            '<div class="bk-trophy-icon">&#127942;</div>'
+            f'<div class="bk-trophy-title" style="color:var(--gold)">{label}</div>'
+            f'<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">{team} {score_a}</div>'
+            f'<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">{opponent} {score_b}</div>'
+            '</div>'
+        )
+
+    css = (
+        '<style>'
+        '.bk-page{overflow-x:auto;padding-bottom:20px}'
+        '.bk-grid{display:grid;grid-template-columns:1fr 1fr 150px 1fr 1fr;gap:0;align-items:stretch;min-width:900px}'
+        '.bk-col{display:flex;flex-direction:column;justify-content:space-around;padding:0 6px;gap:10px}'
+        '.bk-col-label{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);text-align:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px}'
+        '.bk-conf-title{font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-align:center;padding:8px 0 12px}'
+        '.bk-matchup{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px 12px}'
+        '.bk-team{display:flex;align-items:center;gap:8px;padding:4px 0}'
+        '.bk-team.bk-lower{border-top:1px solid rgba(255,255,255,0.07)}'
+        '.bk-seed{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:800;color:var(--gold);width:16px;text-align:center;flex-shrink:0}'
+        '.bk-name{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;color:var(--white);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+        '.bk-center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 8px}'
+        '.bk-trophy-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 12px;text-align:center;width:110px}'
+        '.bk-trophy-icon{font-size:28px}'
+        '.bk-trophy-title{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-top:4px}'
+        '.bk-col-left .bk-team{flex-direction:row-reverse}'
+        '.bk-col-left .bk-name{text-align:right}'
+        '</style>'
+    )
+
+    # AFC Wild Card — 2025-26 season (from bracket screenshot)
+    afc_wc = (
+        bye_card(1, "Denver Broncos") +
+        result_card(6, "Buffalo Bills", 27, 3, "Jacksonville Jaguars", 24, "Buffalo Bills") +
+        result_card(7, "LA Chargers", 3, 2, "New England Patriots", 16, "New England Patriots") +
+        result_card(5, "Houston Texans", 30, 4, "Pittsburgh Steelers", 6, "Houston Texans")
+    )
+    # AFC Divisional
+    afc_div = (
+        result_card(6, "Buffalo Bills", 30, 1, "Denver Broncos", 33, "Denver Broncos") +
+        result_card(2, "New England Patriots", 28, 5, "Houston Texans", 16, "New England Patriots")
+    )
+    # NFC Wild Card
+    nfc_wc = (
+        bye_card(1, "Seattle Seahawks") +
+        result_card(5, "LA Rams", 34, 4, "Carolina Panthers", 31, "LA Rams") +
+        result_card(7, "Green Bay Packers", 27, 2, "Chicago Bears", 31, "Chicago Bears") +
+        result_card(6, "San Francisco 49ers", 23, 3, "Philadelphia Eagles", 19, "San Francisco 49ers")
+    )
+    # NFC Divisional
+    nfc_div = (
+        result_card(6, "San Francisco 49ers", 6, 1, "Seattle Seahawks", 41, "Seattle Seahawks") +
+        result_card(5, "LA Rams", 27, 2, "Chicago Bears", 20, "LA Rams")
+    )
+
+    # Conf Champ results
+    afc_champ = (
+        '<div class="bk-trophy-box">'
+        '<div class="bk-trophy-icon">&#127944;</div>'
+        '<div class="bk-trophy-title">AFC Champ</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">New England 10</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">Denver Broncos 7</div>'
+        '</div>'
+    )
+    nfc_champ = (
+        '<div class="bk-trophy-box">'
+        '<div class="bk-trophy-icon">&#127944;</div>'
+        '<div class="bk-trophy-title">NFC Champ</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">Seattle 31</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">LA Rams 27</div>'
+        '</div>'
+    )
+    super_bowl = (
+        '<div class="bk-trophy-box" style="background:rgba(253,185,39,0.08);border-color:rgba(253,185,39,0.35);width:130px">'
+        '<div class="bk-trophy-icon">&#127942;</div>'
+        '<div class="bk-trophy-title" style="color:var(--gold)">Super Bowl LX</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:#4ade80;margin-top:8px">Seattle 29</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white)">New England 13</div>'
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;color:var(--gray);margin-top:4px">MVP: K. Walker III</div>'
+        '</div>'
+    )
+
+    center = (
+        '<div class="bk-center-col">'
+        + afc_champ
+        + super_bowl
+        + nfc_champ +
+        '</div>'
+    )
+
+    return (
+        '<div id="page-playoffs" class="page">'
+        '<div class="hero"><div class="hero-inner">'
+        '<div class="live-pill">&#127942; 2025 NFL PLAYOFFS</div>'
+        '<h1 class="hero-title">2025 NFL<br><em>PLAYOFF</em><br>RESULTS</h1>'
+        '<p class="hero-sub">Full bracket results from the 2025-26 NFL season.</p>'
+        '</div></div>'
+        '<div class="section bk-page">'
+        + css +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:4px">'
+        '<div class="bk-conf-title">AFC</div>'
+        '<div class="bk-conf-title">NFC</div>'
+        '</div>'
+        '<div class="bk-grid">'
+        '<div class="bk-col bk-col-left"><div class="bk-col-label">Wild Card</div>' + afc_wc + '</div>'
+        '<div class="bk-col bk-col-left"><div class="bk-col-label">Divisional</div>' + afc_div + '</div>'
+        + center +
+        '<div class="bk-col"><div class="bk-col-label">Divisional</div>' + nfc_div + '</div>'
+        '<div class="bk-col"><div class="bk-col-label">Wild Card</div>' + nfc_wc + '</div>'
+        '</div>'
+        '</div>'
+        '</div>'
+    )
+
+def playoff_page_html(sport, east, west, e_label="Eastern Conference", w_label="Western Conference"):
+    def get_seeds(teams, count):
+        return sorted(teams, key=lambda x: -x.get("pct", 0))[:count]
+
+    def matchup_card(s1, t1, s2, t2, bye=False):
+        n1 = t1["t"] if t1 else "TBD"
+        r1 = f"{t1['w']}-{t1['l']}" if t1 else ""
+        if bye:
+            n2, r2, s2 = "First Round Bye", "", "-"
+            s2_style = "color:var(--gray)"
+            n2_style = "color:var(--gray)"
+        else:
+            n2 = t2["t"] if t2 else "TBD"
+            r2 = f"{t2['w']}-{t2['l']}" if t2 else ""
+            s2_style = ""
+            n2_style = ""
+        return (
+            '<div class="bk-matchup">'
+            f'<div class="bk-team"><span class="bk-seed">{s1}</span><span class="bk-name">{n1}</span><span class="bk-rec">{r1}</span></div>'
+            f'<div class="bk-team bk-lower"><span class="bk-seed" style="{s2_style}">{s2}</span><span class="bk-name" style="{n2_style}">{n2}</span><span class="bk-rec">{r2}</span></div>'
+            '</div>'
+        )
+
+    def tbd_card(label="TBD"):
+        return f'<div class="bk-matchup bk-tbd"><span class="bk-tbd-label">{label}</span></div>'
+
+    css = (
+        '<style>'
+        '.bk-page{overflow-x:auto;padding-bottom:20px}'
+        '.bk-grid{display:grid;grid-template-columns:1fr 1fr 130px 1fr 1fr;gap:0;align-items:stretch;min-width:860px}'
+        '.bk-col{display:flex;flex-direction:column;justify-content:space-around;padding:0 6px;gap:10px}'
+        '.bk-col-label{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);text-align:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px}'
+        '.bk-conf-title{font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-align:center;padding:8px 0 12px}'
+        '.bk-matchup{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px 12px}'
+        '.bk-matchup.bk-tbd{background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;min-height:72px}'
+        '.bk-tbd-label{font-family:"Barlow Condensed",sans-serif;font-size:11px;color:rgba(255,255,255,0.18);letter-spacing:1px;text-transform:uppercase}'
+        '.bk-team{display:flex;align-items:center;gap:8px;padding:4px 0}'
+        '.bk-team.bk-lower{border-top:1px solid rgba(255,255,255,0.07)}'
+        '.bk-seed{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:800;color:var(--gold);width:16px;text-align:center;flex-shrink:0}'
+        '.bk-name{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;color:var(--white);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+        '.bk-rec{font-size:10px;color:var(--gray);flex-shrink:0}'
+        '.bk-center-col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 8px}'
+        '.bk-trophy-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 12px;text-align:center;width:110px}'
+        '.bk-trophy-icon{font-size:32px}'
+        '.bk-trophy-title{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-top:6px}'
+        '.bk-trophy-sub{font-family:"Barlow Condensed",sans-serif;font-size:10px;letter-spacing:1px;color:var(--gray);margin-top:2px}'
+        '.bk-playin{font-size:12px;color:var(--gray);font-style:italic;text-align:center;margin-top:14px}'
+        '.bk-col-left .bk-team{flex-direction:row-reverse}'
+        '.bk-col-left .bk-name{text-align:right}'
+        '</style>'
+    )
+
+    def build_r1(seeds, is_left):
+        col_class = "bk-col bk-col-left" if is_left else "bk-col"
+        s = lambda i: seeds[i] if i < len(seeds) else None
+        cards = ""
+        if sport == "NFL":
+            cards += matchup_card(1, s(0), "-", None, bye=True)
+            cards += matchup_card(2, s(1), 7, s(6))
+            cards += matchup_card(3, s(2), 6, s(5))
+            cards += matchup_card(4, s(3), 5, s(4))
+        elif sport == "MLB":
+            cards += matchup_card(1, s(0), "-", None, bye=True)
+            cards += matchup_card(2, s(1), 3, s(2))
+            cards += matchup_card(4, s(3), 5, s(4))
+            cards += matchup_card("WC", s(2), 6, s(5))
+        else:
+            cards += matchup_card(1, s(0), 8, s(7))
+            cards += matchup_card(4, s(3), 5, s(4))
+            cards += matchup_card(3, s(2), 6, s(5))
+            cards += matchup_card(2, s(1), 7, s(6))
+        return f'<div class="{col_class}"><div class="bk-col-label">{r1_label}</div>{cards}</div>'
+
+    def build_r2(is_left):
+        col_class = "bk-col bk-col-left" if is_left else "bk-col"
+        count = 3 if sport in ("NFL","MLB") else 2
+        cards = "".join(tbd_card(r2_label) for _ in range(count))
+        return f'<div class="{col_class}"><div class="bk-col-label">{r2_label}</div>{cards}</div>'
+
+    if sport == "NBA":
+        e_seeds = get_seeds(east, 10); w_seeds = get_seeds(west, 10)
+        r1_label, r2_label = "First Round", "Conf Semis"
+        cf_label, champ_label, trophy_icon = "Conf Finals", "NBA Finals", "🏀"
+        playin = '<div class="bk-playin">&#9889; Seeds 7-10 compete in Play-In Tournament</div>'
+    elif sport == "NHL":
+        e_seeds = get_seeds(east, 8); w_seeds = get_seeds(west, 8)
+        r1_label, r2_label = "First Round", "Second Round"
+        cf_label, champ_label, trophy_icon = "Conf Finals", "Stanley Cup", "&#127944;"
+        playin = ""
+    elif sport == "MLB":
+        e_seeds = get_seeds(east, 6); w_seeds = get_seeds(west, 6)
+        r1_label, r2_label = "Wild Card", "Div Series"
+        cf_label, champ_label, trophy_icon = "LCS", "World Series", "&#9918;"
+        playin = ""
+    else:
+        e_seeds = get_seeds(east, 7); w_seeds = get_seeds(west, 7)
+        r1_label, r2_label = "Wild Card", "Divisional"
+        cf_label, champ_label, trophy_icon = "Conf Champ", "Super Bowl", "&#127944;"
+        playin = ""
+
+    e_r1 = build_r1(e_seeds, is_left=True)
+    e_r2 = build_r2(is_left=True)
+    w_r1 = build_r1(w_seeds, is_left=False)
+    w_r2 = build_r2(is_left=False)
+
+    center = (
+        '<div class="bk-center-col">'
+        '<div class="bk-trophy-box">'
+        f'<div class="bk-trophy-icon">{trophy_icon}</div>'
+        f'<div class="bk-trophy-title">{cf_label}</div>'
+        '<div class="bk-trophy-sub">CONF FINALS</div>'
+        '</div>'
+        '<div class="bk-trophy-box" style="background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25)">'
+        '<div class="bk-trophy-icon">&#127942;</div>'
+        f'<div class="bk-trophy-title" style="color:var(--gold)">{champ_label}</div>'
+        '<div class="bk-trophy-sub" style="color:var(--gold)">CHAMPIONSHIP</div>'
+        '</div>'
+        '</div>'
+    )
+
+    return (
+        '<div id="page-playoffs" class="page">'
+        '<div class="hero"><div class="hero-inner">'
+        '<div class="live-pill">&#127942; PLAYOFF PICTURE</div>'
+        '<h1 class="hero-title">IF THE<br><em>PLAYOFFS</em><br>STARTED TODAY</h1>'
+        '<p class="hero-sub">Seedings based on current standings &mdash; updated daily.</p>'
+        '</div></div>'
+        '<div class="section bk-page">'
+        + css +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:4px">'
+        f'<div class="bk-conf-title">{e_label}</div>'
+        f'<div class="bk-conf-title">{w_label}</div>'
+        '</div>'
+        '<div class="bk-grid">'
+        + e_r1 + e_r2 + center + w_r2 + w_r1 +
+        '</div>'
+        + playin +
+        '</div>'
+        '</div>'
+    )
+
+
 def generate_nba_html(east, west, yesterday, today_games):
     log("🌐 Generating nba.html...")
     today   = datetime.now().strftime("%B %-d, %Y")
@@ -1237,7 +1519,8 @@ def generate_nba_html(east, west, yesterday, today_games):
       <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
       <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
       <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>"""
+      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+      <button class="nav-link" onclick="showPage('playoffs',this)">🏆 Playoffs</button>"""
 
     nba_sidebar = (
         '<div class="sidebar-card"><div class="sc-title">&#127936; Best Records</div>' + sidebar_rows(all_t) + '</div>'
@@ -1282,6 +1565,7 @@ def generate_nba_html(east, west, yesterday, today_games):
 </div>
 {nba_mag_html}
 {props_page_html("NBA",today)}
+{playoff_page_html("NBA", east, west)}
 """
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NBA","#c8102e","#e8132f","rgba(200,16,46,0.11)",today,tabs,pages)
@@ -1352,7 +1636,8 @@ def generate_nhl_html(east, west, yesterday, today_games):
       <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
       <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
       <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>"""
+      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+      <button class="nav-link" onclick="showPage('playoffs',this)">🏆 Playoffs</button>"""
 
     pages = f"""
 <div id="page-standings" class="page active">
@@ -1398,7 +1683,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
             ("Kaprizov Franchise Record", "Kirill Kaprizov became the Wild all-time leading goal scorer this week with his 35th goal of the season. The Wild are a legitimate Cup contender."),
             ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
         ])
-    ) + props_page_html("NHL", today)
+    ) + props_page_html("NHL", today) + playoff_page_html("NHL", east, west)
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
@@ -1473,7 +1758,8 @@ def generate_mlb_html(al, nl, yesterday, today_games):
       <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
       <button class="nav-link" onclick="showPage('digest',this)">Daily Digest</button>
       <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
-      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>"""
+      <button class="nav-link" onclick="showPage('props',this)">Player Props</button>
+      <button class="nav-link" onclick="showPage('playoffs',this)">🏆 Playoffs</button>"""
 
     pages = f"""
 <div id="page-standings" class="page active">
@@ -1518,7 +1804,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
             ("Judge Power Throne", "Aaron Judge continues to be the most feared power hitter in baseball. He is coming off back-to-back HR crowns and the Yankees have built a rotation around him capable of a World Series run."),
             ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
         ])
-    ) + props_page_html("MLB", today)
+    ) + props_page_html("MLB", today) + playoff_page_html("MLB", al, nl, "American League", "National League")
     init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
@@ -1546,7 +1832,8 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
 
     tabs = """<button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
       <button class="nav-link" onclick="showPage('digest',this)">Season Recap</button>
-      <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>"""
+      <button class="nav-link" onclick="showPage('magazine',this)">Magazine</button>
+      <button class="nav-link" onclick="showPage('playoffs',this)">🏆 Playoffs</button>"""
 
     pages = f"""
 <div id="page-standings" class="page active">
@@ -1627,6 +1914,7 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
     ]
     pj = json.dumps(nfl_props)
     init = f"const EAST={ej};const WEST={wj};const PROPS_DATA={pj};const ESPN_SPORT='americanfootball';const ESPN_LEAGUE='nfl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    pages += nfl_playoff_results_html()
     html = page_shell("NFL","#f97316","#ea6c0a","rgba(249,115,22,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nfl.html", html)
