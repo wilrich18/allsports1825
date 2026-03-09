@@ -353,12 +353,13 @@ def fetch_games(sport, league):
             is_live  = stype.get("name","") in ("STATUS_IN_PROGRESS","STATUS_HALFTIME")
             # Parse time
             try:
-                from datetime import timezone
+                from datetime import timezone, timedelta
                 dt = datetime.fromisoformat(comp.get("date","").replace("Z","+00:00"))
-                h = dt.hour - 5
-                ampm = "AM" if h < 12 else "PM"
-                h = h % 12 or 12
-                t_str = f"{h}:00 {ampm} ET"
+                et = dt - timedelta(hours=4)  # UTC to ET (EDT)
+                h24 = et.hour
+                ampm = "AM" if h24 < 12 else "PM"
+                h12 = h24 % 12 or 12
+                t_str = f"{h12}:{et.strftime('%M')} {ampm} ET"
             except:
                 t_str = "TBD"
             # Parse odds
@@ -520,12 +521,13 @@ def fetch_yesterday(sport, league):
             is_live  = stype.get("name","") in ("STATUS_IN_PROGRESS","STATUS_HALFTIME")
             # Parse time
             try:
-                from datetime import timezone
+                from datetime import timezone, timedelta
                 dt = datetime.fromisoformat(comp.get("date","").replace("Z","+00:00"))
-                h = dt.hour - 5
-                ampm = "AM" if h < 12 else "PM"
-                h = h % 12 or 12
-                t_str = f"{h}:00 {ampm} ET"
+                et = dt - timedelta(hours=4)  # UTC to ET (EDT)
+                h24 = et.hour
+                ampm = "AM" if h24 < 12 else "PM"
+                h12 = h24 % 12 or 12
+                t_str = f"{h12}:{et.strftime('%M')} {ampm} ET"
             except:
                 t_str = "TBD"
             # Parse odds
