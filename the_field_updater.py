@@ -80,6 +80,8 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.
 .div-header-row td{{padding:10px 12px 4px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}}
 .div-label{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);}}
 .games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}}
+.sched-tab{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--gray);cursor:pointer;transition:all 0.2s;}}
+.sched-tab.active,.sched-tab:hover{{background:var(--acc);color:#fff;border-color:var(--acc);}}
 .game-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s;}}
 .game-card:hover{{border-color:rgba(255,255,255,0.15);}}
 .game-card-top{{padding:16px;}}
@@ -225,32 +227,66 @@ function parseESPNGames(events){
     };
   });
 }
-async function fetchLiveGames(){
-  const g=document.getElementById('games-grid');
+function fmtDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function offsetDate(days){
+  const d=new Date();d.setDate(d.getDate()+days);return fmtDate(d);
+}
+function buildBDLCard(g){
+  const ht=g.home_team?.full_name||'TBD',at=g.visitor_team?.full_name||'TBD';
+  const hs=g.home_team_score||0,as=g.visitor_team_score||0;
+  const isFinal=g.status==='Final';
+  const isLive=g.period>0&&!isFinal;
+  const hw=isFinal&&hs>as,aw=isFinal&&as>hs;
+  let lbl=isFinal?'<span style="color:var(--gold)">FINAL</span>':isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':'<span style="color:var(--gray)">Scheduled</span>';
+  let scoreHtml='';
+  if(isFinal||isLive) scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${hs}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${as}</span></div>`;
+  return `<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${ht}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${at}</div></div></div></div>${scoreHtml}</div>`;
+}
+async function fetchBDLGames(dateStr,gridId){
+  const g=document.getElementById(gridId);
   if(!g)return;
+  g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
   try{
-    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard`;
-    const resp=await fetch(url);
-    const data=await resp.json();
-    const games=parseESPNGames(data.events||[]);
-    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled today.</p>';return;}
-    g.innerHTML=games.map(buildGameCard).join('');
-    // Update live pill
-    const hasLive=games.some(gm=>gm.is_live);
-    const pill=document.querySelector('.live-pill');
-    if(pill) pill.innerHTML=hasLive?'🔴 LIVE NOW':'📅 TODAY\'S GAMES';
+    const r=await fetch(`https://api.balldontlie.io/nba/v1/games?dates[]=${dateStr}&per_page=30`,{headers:{"Authorization":BDL_KEY}});
+    const data=await r.json();
+    const games=data.data||[];
+    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games found.</p>';return;}
+    g.innerHTML=games.map(buildBDLCard).join('');
   }catch(e){
-    console.error('Live scores fetch failed:',e);
-    const g2=document.getElementById('games-grid');
-    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
+    g.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
   }
 }
+async function fetchESPNGames(dateStr,gridId){
+  const g=document.getElementById(gridId);
+  if(!g)return;
+  g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
+  try{
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${dateStr.replace(/-/g,'')}`;
+    const r=await fetch(url);
+    const data=await r.json();
+    const games=parseESPNGames(data.events||[]);
+    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games found.</p>';return;}
+    g.innerHTML=games.map(buildGameCard).join('');
+  }catch(e){
+    g.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+  }
+}
+async function fetchGames(dateStr,gridId){
+  if(BDL_KEY&&ESPN_LEAGUE==='nba') return fetchBDLGames(dateStr,gridId);
+  return fetchESPNGames(dateStr,gridId);
+}
 function renderGames(){
-  // Show live indicator
-  const g=document.getElementById('games-grid');
-  if(g) g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading games...</p>';
-  fetchLiveGames();
-  setInterval(fetchLiveGames,30000);
+  fetchGames(offsetDate(0),'games-grid');
+  setInterval(()=>fetchGames(offsetDate(0),'games-grid'),30000);
+}
+function renderYesterday(){
+  fetchGames(offsetDate(-1),'yesterday-grid');
+}
+function renderTomorrow(){
+  fetchGames(offsetDate(1),'tomorrow-grid');
 }
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
@@ -271,6 +307,22 @@ function renderProps(data){
     const bc=p.conf==='HIGH'?'b-high':'b-med';
     g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
   });
+}
+function switchSched(tab,btn){
+  ['today','yesterday','tomorrow'].forEach(t=>{
+    const el=document.getElementById('sched-'+t);
+    if(el) el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.sched-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(tab==='yesterday'&&!document.getElementById('yesterday-grid').dataset.loaded){
+    renderYesterday();
+    document.getElementById('yesterday-grid').dataset.loaded='1';
+  }
+  if(tab==='tomorrow'&&!document.getElementById('tomorrow-grid').dataset.loaded){
+    renderTomorrow();
+    document.getElementById('tomorrow-grid').dataset.loaded='1';
+  }
 }
 """
 
@@ -380,11 +432,17 @@ def tonight_page_html(sport, today):
     <div class="live-pill">🔴 LIVE TONIGHT</div>
     <div class="hero-eyebrow">{today}</div>
     <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
-    <p class="hero-sub">Live scores and tonight's {sport} matchups.</p>
+    <p class="hero-sub">Live scores and {sport} matchups.</p>
   </div></div>
   <div class="section">
-    <div class="section-title">Tonight's Games</div>
-    <div class="games-grid" id="games-grid"></div>
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="sched-tab active" onclick="switchSched('today',this)">🔴 Tonight</button>
+      <button class="sched-tab" onclick="switchSched('yesterday',this)">📋 Yesterday</button>
+      <button class="sched-tab" onclick="switchSched('tomorrow',this)">📅 Tomorrow</button>
+    </div>
+    <div id="sched-today"><div class="games-grid" id="games-grid"></div></div>
+    <div id="sched-yesterday" style="display:none"><div class="games-grid" id="yesterday-grid"></div></div>
+    <div id="sched-tomorrow" style="display:none"><div class="games-grid" id="tomorrow-grid"></div></div>
   </div>
 </div>"""
 
@@ -928,7 +986,7 @@ def generate_nba_html(east, west, yesterday, today_games):
 {nba_mag_html}
 {props_page_html("NBA",today)}
 """
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const BDL_KEY='9b37b045-f189-4ccb-bff2-d8678f51b02d';const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NBA","#c8102e","#e8132f","rgba(200,16,46,0.11)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nba.html", html)
@@ -1018,7 +1076,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
             ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
         ])
     ) + props_page_html("NHL", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const BDL_KEY='';const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nhl.html", html)
@@ -1114,7 +1172,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
             ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
         ])
     ) + props_page_html("MLB", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const BDL_KEY='';const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("mlb.html", html)
