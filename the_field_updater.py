@@ -130,6 +130,7 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.
 .prop-badge{{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}}
 .b-high{{background:rgba(74,222,128,0.15);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.15);color:var(--gold);}}
 .prop-reason{{font-size:12px;color:var(--gray);line-height:1.5;}}
+@keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:0.4}}}}
 .game-lines{{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:rgba(0,0,0,0.15);}}
 .gl-item{{flex:1;min-width:60px;text-align:center;}}
 .gl-lbl{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}}
@@ -149,43 +150,107 @@ function renderStandings(data,id){
     tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
-function renderGames(){
-  const g=document.getElementById('games-grid');
-  if(!g)return;
-  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
-  TONIGHT.forEach(gm=>{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
-    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    // Scores or matchup display
-    let scoreHtml='';
-    if(isFinal||isLive){
-      scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
-    }
-    // Betting lines — always show section, use — if no data
-    const spread=gm.spread||'—';
-    const total=gm.total||'—';
-    const hml=gm.h_ml||'—';
-    const aml=gm.a_ml||'—';
-    const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
-    g.innerHTML+=`<div class="game-card">
-      <div class="game-card-top">
-        <div class="game-time">${lbl}</div>
-        <div class="game-matchup">
-          <div style="flex:1">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
-            <div class="game-team fav">${gm.home}</div>
-          </div>
-          <div class="game-vs">vs</div>
-          <div style="flex:1;text-align:right">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
-            <div class="game-team dog">${gm.away}</div>
-          </div>
+function buildGameCard(gm){
+  const isLive=gm.is_live,isFinal=gm.is_final;
+  const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+  const lbl=isLive?'<span style="color:#4ade80;font-weight:700;animation:pulse 1.2s infinite">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+  let scoreHtml='';
+  if(isFinal||isLive){
+    scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
+  }
+  const spread=gm.spread||'—',total=gm.total||'—',hml=gm.h_ml||'—',aml=gm.a_ml||'—';
+  const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
+  return `<div class="game-card">
+    <div class="game-card-top">
+      <div class="game-time">${lbl}</div>
+      <div class="game-matchup">
+        <div style="flex:1">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+          <div class="game-team fav">${gm.home}</div>
+        </div>
+        <div class="game-vs">vs</div>
+        <div style="flex:1;text-align:right">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+          <div class="game-team dog">${gm.away}</div>
         </div>
       </div>
-      ${linesHtml}${scoreHtml}
-    </div>`;
+    </div>
+    ${linesHtml}${scoreHtml}
+  </div>`;
+}
+function parseESPNGames(events){
+  return events.map(ev=>{
+    const comp=ev.competitions[0];
+    const teams={};comp.competitors.forEach(t=>teams[t.homeAway]=t);
+    const home=teams.home||{},away=teams.away||{};
+    const stype=comp.status?.type||{};
+    const isFinal=stype.completed||false;
+    const isLive=['STATUS_IN_PROGRESS','STATUS_HALFTIME','STATUS_END_PERIOD'].includes(stype.name);
+    let timeStr='TBD';
+    try{
+      const dt=new Date(comp.date);
+      let h24=(dt.getUTCHours()-4+24)%24,m=dt.getUTCMinutes();
+      const ampm=h24<12?'AM':'PM';
+      const h12=h24%12||12;
+      timeStr=`${h12}:${m.toString().padStart(2,'0')} ${ampm} ET`;
+    }catch(e){}
+    let spread=null,total=null,h_ml=null,a_ml=null;
+    try{
+      const o=(comp.odds||[])[0]||{};
+      if(o.details) spread=o.details;
+      if(o.overUnder) total='O/U '+o.overUnder;
+      const hmo=o.homeTeamOdds?.moneyLine;
+      const amo=o.awayTeamOdds?.moneyLine;
+      if(hmo) h_ml=(hmo>0?'+':'')+hmo;
+      if(amo) a_ml=(amo>0?'+':'')+amo;
+    }catch(e){}
+    // Live game period/clock
+    let liveDetail='';
+    try{
+      if(isLive){
+        const period=comp.status?.period||'';
+        const clock=comp.status?.displayClock||'';
+        liveDetail=period&&clock?` · Q${period} ${clock}`:'';
+      }
+    }catch(e){}
+    return {
+      home:home.team?.displayName||'TBD',
+      away:away.team?.displayName||'TBD',
+      h_score:parseInt(home.score||0),
+      a_score:parseInt(away.score||0),
+      is_final:isFinal,is_live:isLive,
+      time:timeStr+liveDetail,
+      spread,total,h_ml,a_ml,
+      gameDate:comp.date||''
+    };
   });
+}
+async function fetchLiveGames(){
+  const g=document.getElementById('games-grid');
+  if(!g)return;
+  try{
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard`;
+    const resp=await fetch(url);
+    const data=await resp.json();
+    const games=parseESPNGames(data.events||[]);
+    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled today.</p>';return;}
+    g.innerHTML=games.map(buildGameCard).join('');
+    // Update live pill
+    const hasLive=games.some(gm=>gm.is_live);
+    const pill=document.querySelector('.live-pill');
+    if(pill) pill.innerHTML=hasLive?'🔴 LIVE NOW':'📅 TODAY\'S GAMES';
+  }catch(e){
+    console.error('Live scores fetch failed:',e);
+    const g2=document.getElementById('games-grid');
+    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
+  }
+}
+function renderGames(){
+  // Show live indicator
+  const g=document.getElementById('games-grid');
+  if(g) g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading games...</p>';
+  fetchLiveGames();
+  setInterval(fetchLiveGames,30000);
 }
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
@@ -215,6 +280,7 @@ def page_shell(sport, acc, acc2, hero_rgba, today, tabs_html, pages_html):
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://site.api.espn.com https://api.balldontlie.io; img-src 'self' data:;">
 <title>THE FIELD — {sport}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -415,24 +481,39 @@ def fallback_recap(home, h_score, away, a_score):
         f"The victory keeps {winner} moving in the right direction while {loser} will look to respond in their next outing."
     )
 
-def fetch_bdl_recap(home, h_score, away, a_score):
-    """Fetch NBA game recap via BallDontLie, write rich recap from score data."""
+_BDL_GAMES_CACHE = None
+
+def _fetch_bdl_games():
+    """Fetch all BallDontLie games for yesterday — cached so we only call once."""
+    global _BDL_GAMES_CACHE
+    if _BDL_GAMES_CACHE is not None:
+        return _BDL_GAMES_CACHE
     try:
         from datetime import timedelta
         ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         hdrs = {"Authorization": BALLDONTLIE_API_KEY}
-
         r = requests.get("https://api.balldontlie.io/nba/v1/games",
                          params={"dates[]": ydate, "per_page": 30},
                          headers=hdrs, timeout=10)
         r.raise_for_status()
-        games = r.json().get("data", [])
+        _BDL_GAMES_CACHE = r.json().get("data", [])
+        log(f"  ✅ BallDontLie: {len(_BDL_GAMES_CACHE)} games cached")
+    except Exception as e:
+        log(f"  ⚠️  BallDontLie fetch failed: {e}")
+        _BDL_GAMES_CACHE = []
+    return _BDL_GAMES_CACHE
+
+def fetch_bdl_recap(home, h_score, away, a_score):
+    """Fetch NBA game recap via BallDontLie, write rich recap from score data."""
+    try:
+        games = _fetch_bdl_games()
 
         ht = at = hs = as_ = None
         for g in games:
-            ht = g.get("home_team", {}).get("full_name", "")
-            at = g.get("visitor_team", {}).get("full_name", "")
-            if (home.lower() in ht.lower() or ht.lower() in home.lower()) and                (away.lower() in at.lower() or at.lower() in away.lower()):
+            _ht = g.get("home_team", {}).get("full_name", "")
+            _at = g.get("visitor_team", {}).get("full_name", "")
+            if (home.lower() in _ht.lower() or _ht.lower() in home.lower()) and                (away.lower() in _at.lower() or _at.lower() in away.lower()):
+                ht, at = _ht, _at
                 hs = g.get("home_team_score", h_score)
                 as_ = g.get("visitor_team_score", a_score)
                 break
@@ -847,7 +928,7 @@ def generate_nba_html(east, west, yesterday, today_games):
 {nba_mag_html}
 {props_page_html("NBA",today)}
 """
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NBA","#c8102e","#e8132f","rgba(200,16,46,0.11)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nba.html", html)
@@ -937,7 +1018,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
             ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
         ])
     ) + props_page_html("NHL", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nhl.html", html)
@@ -1033,7 +1114,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
             ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
         ])
     ) + props_page_html("MLB", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("mlb.html", html)

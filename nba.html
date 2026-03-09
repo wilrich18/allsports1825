@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://site.api.espn.com https://api.balldontlie.io; img-src 'self' data:;">
 <title>THE FIELD — NBA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -94,6 +95,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.9
 .prop-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
 .b-high{background:rgba(74,222,128,0.15);color:#4ade80;}.b-med{background:rgba(253,185,39,0.15);color:var(--gold);}
 .prop-reason{font-size:12px;color:var(--gray);line-height:1.5;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .game-lines{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:rgba(0,0,0,0.15);}
 .gl-item{flex:1;min-width:60px;text-align:center;}
 .gl-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
@@ -115,7 +117,7 @@ footer strong{color:var(--white);}</style>
 
 <div id="page-standings" class="page active">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">2025-26 NBA Season Updated March 8, 2026</div>
+    <div class="hero-eyebrow">2025-26 NBA Season Updated March 9, 2026</div>
     <h1 class="hero-title">NBA<br><em>STANDINGS</em></h1>
     <p class="hero-sub">Full Eastern and Western Conference standings.</p>
   </div></div>
@@ -139,7 +141,7 @@ footer strong{color:var(--white);}</style>
 <div id="page-tonight" class="page">
   <div class="hero"><div class="hero-inner">
     <div class="live-pill">🔴 LIVE TONIGHT</div>
-    <div class="hero-eyebrow">March 8, 2026</div>
+    <div class="hero-eyebrow">March 9, 2026</div>
     <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
     <p class="hero-sub">Live scores and tonight's NBA matchups.</p>
   </div></div>
@@ -151,36 +153,36 @@ footer strong{color:var(--white);}</style>
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
     <div class="digest-lead">
-      <div class="dlabel">Daily Digest March 8, 2026</div>
+      <div class="dlabel">Daily Digest March 9, 2026</div>
       <div class="dhl">Last Night NBA Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="color:var(--gray)">Minnesota Timberwolves 92</span> &mdash; <span style="font-weight:700;color:var(--white)">Orlando Magic 119</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Orlando Magic put on a dominant display against Minnesota Timberwolves last night, winning 119-92 in a blowout. The 27-point margin was a statement — Orlando Magic led comfortably for most of the night and never let Minnesota Timberwolves back into the game. Minnesota Timberwolves will need to regroup quickly after being handled so decisively on the court.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="color:var(--gray)">Detroit Pistons 105</span> &mdash; <span style="font-weight:700;color:var(--white)">Brooklyn Nets 107</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Brooklyn Nets survived a nail-biter against Detroit Pistons, escaping with a 107-105 victory last night. The game came down to the wire, with just 2 points separating the two teams at the final buzzer. Detroit Pistons will feel the sting of this one, but Brooklyn Nets showed the resilience to grind out a crucial win.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Atlanta Hawks 125</span> &mdash; <span style="color:var(--gray)">Philadelphia 76ers 116</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Atlanta Hawks dominated Philadelphia 76ers 125-116 in a convincing performance last night. The 9-point margin told the story as Atlanta Hawks controlled key stretches of the game to secure the win. The victory keeps Atlanta Hawks moving in the right direction while Philadelphia 76ers will look to respond in their next outing.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="color:var(--gray)">Memphis Grizzlies 120</span> &mdash; <span style="font-weight:700;color:var(--white)">LA Clippers 123</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">LA Clippers defeated Memphis Grizzlies 123-120 in a competitive matchup last night. The 3-point margin told the story as LA Clippers controlled key stretches of the game to secure the win. The victory keeps LA Clippers moving in the right direction while Memphis Grizzlies will look to respond in their next outing.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Milwaukee Bucks 113</span> &mdash; <span style="color:var(--gray)">Utah Jazz 99</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Milwaukee Bucks dominated Utah Jazz 113-99 in a convincing performance last night. The 14-point margin told the story as Milwaukee Bucks controlled key stretches of the game to secure the win. The victory keeps Milwaukee Bucks moving in the right direction while Utah Jazz will look to respond in their next outing.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Oklahoma City Thunder 104</span> &mdash; <span style="color:var(--gray)">Golden State Warriors 97</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Oklahoma City Thunder defeated Golden State Warriors 104-97 in a competitive matchup last night. The 7-point margin told the story as Oklahoma City Thunder controlled key stretches of the game to secure the win. The victory keeps Oklahoma City Thunder moving in the right direction while Golden State Warriors will look to respond in their next outing.</div></div>
+    <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="color:var(--gray)">Cleveland Cavaliers 98</span> &mdash; <span style="font-weight:700;color:var(--white)">Boston Celtics 109</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Boston Celtics took care of business against Cleveland Cavaliers last night, winning convincingly 109-98. The 11-point margin tells the story — Boston Celtics controlled the tempo and never let Cleveland Cavaliers get comfortable. It's a quality win for Boston Celtics as they continue to build their case in the standings.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Los Angeles Lakers 110</span> &mdash; <span style="color:var(--gray)">New York Knicks 97</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Los Angeles Lakers took care of business against New York Knicks last night, winning convincingly 110-97. The 13-point margin tells the story — Los Angeles Lakers controlled the tempo and never let New York Knicks get comfortable. It's a quality win for Los Angeles Lakers as they continue to build their case in the standings.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Miami Heat 121</span> &mdash; <span style="color:var(--gray)">Detroit Pistons 110</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Miami Heat took care of business against Detroit Pistons last night, winning convincingly 121-110. The 11-point margin tells the story — Miami Heat controlled the tempo and never let Detroit Pistons get comfortable. It's a quality win for Miami Heat as they continue to build their case in the standings.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Toronto Raptors 122</span> &mdash; <span style="color:var(--gray)">Dallas Mavericks 92</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Toronto Raptors put on a dominant display against Dallas Mavericks last night, winning 122-92 in a blowout. The 30-point margin was a statement — Toronto Raptors led comfortably for most of the night and never let Dallas Mavericks back into the game. Dallas Mavericks will need to regroup quickly after being handled so decisively on the court.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">New Orleans Pelicans 138</span> &mdash; <span style="color:var(--gray)">Washington Wizards 118</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">New Orleans Pelicans put on a dominant display against Washington Wizards last night, winning 138-118 in a blowout. The 20-point margin was a statement — New Orleans Pelicans led comfortably for most of the night and never let Washington Wizards back into the game. Washington Wizards will need to regroup quickly after being handled so decisively on the court.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="color:var(--gray)">Milwaukee Bucks 91</span> &mdash; <span style="font-weight:700;color:var(--white)">Orlando Magic 130</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Orlando Magic put on a dominant display against Milwaukee Bucks last night, winning 130-91 in a blowout. The 39-point margin was a statement — Orlando Magic led comfortably for most of the night and never let Milwaukee Bucks back into the game. Milwaukee Bucks will need to regroup quickly after being handled so decisively on the court.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">San Antonio Spurs 145</span> &mdash; <span style="color:var(--gray)">Houston Rockets 120</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">San Antonio Spurs put on a dominant display against Houston Rockets last night, winning 145-120 in a blowout. The 25-point margin was a statement — San Antonio Spurs led comfortably for most of the night and never let Houston Rockets back into the game. Houston Rockets will need to regroup quickly after being handled so decisively on the court.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score"><span style="font-weight:700;color:var(--white)">Portland Trail Blazers 131</span> &mdash; <span style="color:var(--gray)">Indiana Pacers 111</span></div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">Portland Trail Blazers put on a dominant display against Indiana Pacers last night, winning 131-111 in a blowout. The 20-point margin was a statement — Portland Trail Blazers led comfortably for most of the night and never let Indiana Pacers back into the game. Indiana Pacers will need to regroup quickly after being handled so decisively on the court.</div></div>
   </div>
 </div>
 <div id="page-magazine" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">The Field · March 8, 2026</div>
+    <div class="hero-eyebrow">The Field · March 9, 2026</div>
     <h1 class="hero-title">NBA<br><em>MAGAZINE</em></h1>
     <p class="hero-sub">Power rankings, season storylines and what to watch.</p>
   </div></div>
   <div class="section">
     <div class="mag-layout">
       <div>
-        <div class="section-title">⚡ Power Rankings — March 8, 2026</div>
-        <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Oklahoma City Thunder</div><div class="rank-rec">50-15</div><div class="rank-note">OKC leads the West with elite two-way play and SGA in MVP form.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Cleveland Cavaliers</div><div class="rank-rec">39-25</div><div class="rank-note">Best record in the East — Donovan Mitchell is must-watch.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Boston Celtics</div><div class="rank-rec">43-21</div><div class="rank-note">Defending champs showing why — deep and battle-tested.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Minnesota Timberwolves</div><div class="rank-rec">40-24</div><div class="rank-note">Edwards carrying the load — defense elite as always.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Denver Nuggets</div><div class="rank-rec">39-25</div><div class="rank-note">Jokic doing Jokic things. Watch when the Nuggets get healthy.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">New York Knicks</div><div class="rank-rec">41-24</div><div class="rank-note">Most improved team in the East. Brunson making everyone better.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Golden State Warriors</div><div class="rank-rec">32-31</div><div class="rank-note">Curry still special. Youth movement gaining momentum.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Indiana Pacers</div><div class="rank-rec">15-48</div><div class="rank-note">Tyrese Haliburton leading the most exciting offense in the East.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Memphis Grizzlies</div><div class="rank-rec">23-39</div><div class="rank-note">Ja Morant back and locked in — watch this team surge.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">LA Lakers</div><div class="rank-rec">—-—</div><div class="rank-note">LeBron and AD combo still formidable when healthy.</div><div class="rank-trend td">↓ Sliding</div></div></div>
+        <div class="section-title">⚡ Power Rankings — March 9, 2026</div>
+        <div class="rank-item"><div class="rank-n t3">1</div><div><div class="rank-team">Oklahoma City Thunder</div><div class="rank-rec">50-15</div><div class="rank-note">OKC leads the West with elite two-way play and SGA in MVP form.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">2</div><div><div class="rank-team">Cleveland Cavaliers</div><div class="rank-rec">39-25</div><div class="rank-note">Best record in the East — Donovan Mitchell is must-watch.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n t3">3</div><div><div class="rank-team">Boston Celtics</div><div class="rank-rec">43-21</div><div class="rank-note">Defending champs showing why — deep and battle-tested.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">4</div><div><div class="rank-team">Minnesota Timberwolves</div><div class="rank-rec">40-24</div><div class="rank-note">Edwards carrying the load — defense elite as always.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">5</div><div><div class="rank-team">Denver Nuggets</div><div class="rank-rec">39-25</div><div class="rank-note">Jokic doing Jokic things. Watch when the Nuggets get healthy.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">6</div><div><div class="rank-team">New York Knicks</div><div class="rank-rec">41-24</div><div class="rank-note">Most improved team in the East. Brunson making everyone better.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">7</div><div><div class="rank-team">Golden State Warriors</div><div class="rank-rec">32-31</div><div class="rank-note">Curry still special. Youth movement gaining momentum.</div><div class="rank-trend tf">→ Holding</div></div></div><div class="rank-item"><div class="rank-n ">8</div><div><div class="rank-team">Indiana Pacers</div><div class="rank-rec">15-49</div><div class="rank-note">Tyrese Haliburton leading the most exciting offense in the East.</div><div class="rank-trend td">↓ Sliding</div></div></div><div class="rank-item"><div class="rank-n ">9</div><div><div class="rank-team">Memphis Grizzlies</div><div class="rank-rec">23-39</div><div class="rank-note">Ja Morant back and locked in — watch this team surge.</div><div class="rank-trend tu">↑ Moving Up</div></div></div><div class="rank-item"><div class="rank-n ">10</div><div><div class="rank-team">LA Lakers</div><div class="rank-rec">—-—</div><div class="rank-note">LeBron and AD combo still formidable when healthy.</div><div class="rank-trend td">↓ Sliding</div></div></div>
         <div style="margin-top:36px">
           <div class="section-title">📰 Season Storylines</div>
           <div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">SGA MVP Season</div></div><span class="chev">▼</span></div><div class="art-body">Shai Gilgeous-Alexander is putting together one of the most dominant scoring seasons in NBA history, averaging 32.5 PPG. He is the heavy favorite for MVP and leading OKC to the best record in the West.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">The Cavs Historic Run</div></div><span class="chev">▼</span></div><div class="art-body">Cleveland is on track for one of the best records in franchise history. Donovan Mitchell has elevated his game to true superstar status, and the supporting cast is among the deepest in the league.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Jokic Doing Jokic Things</div></div><span class="chev">▼</span></div><div class="art-body">Nikola Jokic is quietly putting together another MVP-caliber season averaging a triple-double. The question for Denver is whether the supporting cast can stay healthy enough for a deep playoff run.</div></div><div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">Tatum Evolution</div></div><span class="chev">▼</span></div><div class="art-body">Jayson Tatum has taken a leap as a playmaker this season, averaging career highs in assists. The Celtics look ready to defend their title with one of the deepest rosters in the East.</div></div>
         </div>
       </div>
-      <div><div class="sidebar-card"><div class="sc-title">&#127936; Best Records</div><div class="sc-row"><span class="sc-team">Atlanta Hawks</span><span class="sc-val">33-31</span></div><div class="sc-row"><span class="sc-team">Philadelphia 76ers</span><span class="sc-val">34-29</span></div><div class="sc-row"><span class="sc-team">Miami Heat</span><span class="sc-val">36-29</span></div><div class="sc-row"><span class="sc-team">Orlando Magic</span><span class="sc-val">34-28</span></div><div class="sc-row"><span class="sc-team">Toronto Raptors</span><span class="sc-val">36-27</span></div></div><div class="sidebar-card"><div class="sc-title">&#128202; Playoff Picture</div><div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">43-21</span></div><div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">32-31</span></div></div><div class="sidebar-card"><div class="sc-title">&#128293; Scoring Leaders</div><div class="sc-row"><span class="sc-team">SGA</span><span class="sc-val">32.5 PPG</span></div><div class="sc-row"><span class="sc-team">D. Mitchell</span><span class="sc-val">26.8 PPG</span></div><div class="sc-row"><span class="sc-team">G. Antetokounmpo</span><span class="sc-val">26.3 PPG</span></div><div class="sc-row"><span class="sc-team">A. Edwards</span><span class="sc-val">25.9 PPG</span></div><div class="sc-row"><span class="sc-team">J. Tatum</span><span class="sc-val">25.1 PPG</span></div></div></div>
+      <div><div class="sidebar-card"><div class="sc-title">&#127936; Best Records</div><div class="sc-row"><span class="sc-team">Atlanta Hawks</span><span class="sc-val">33-31</span></div><div class="sc-row"><span class="sc-team">Philadelphia 76ers</span><span class="sc-val">34-29</span></div><div class="sc-row"><span class="sc-team">Miami Heat</span><span class="sc-val">36-29</span></div><div class="sc-row"><span class="sc-team">Orlando Magic</span><span class="sc-val">35-28</span></div><div class="sc-row"><span class="sc-team">Toronto Raptors</span><span class="sc-val">36-27</span></div></div><div class="sidebar-card"><div class="sc-title">&#128202; Playoff Picture</div><div class="sc-row"><span class="sc-team">E8 Cutoff</span><span class="sc-val">43-21</span></div><div class="sc-row"><span class="sc-team">W8 Cutoff</span><span class="sc-val">32-31</span></div></div><div class="sidebar-card"><div class="sc-title">&#128293; Scoring Leaders</div><div class="sc-row"><span class="sc-team">SGA</span><span class="sc-val">32.5 PPG</span></div><div class="sc-row"><span class="sc-team">D. Mitchell</span><span class="sc-val">26.8 PPG</span></div><div class="sc-row"><span class="sc-team">G. Antetokounmpo</span><span class="sc-val">26.3 PPG</span></div><div class="sc-row"><span class="sc-team">A. Edwards</span><span class="sc-val">25.9 PPG</span></div><div class="sc-row"><span class="sc-team">J. Tatum</span><span class="sc-val">25.1 PPG</span></div></div></div>
     </div>
   </div>
 </div>
 <div id="page-props" class="page">
   <div class="hero"><div class="hero-inner">
-    <div class="hero-eyebrow">March 8, 2026</div>
+    <div class="hero-eyebrow">March 9, 2026</div>
     <h1 class="hero-title">PLAYER<br><em>PROPS</em></h1>
     <p class="hero-sub">Best prop bets for tonight's NBA games.</p>
   </div></div>
@@ -191,7 +193,7 @@ footer strong{color:var(--white);}</style>
   </div>
 </div>
 
-<footer><strong>THE FIELD — NBA</strong> · Data via ESPN · Updated March 8, 2026 · For entertainment only · 1-800-GAMBLER</footer>
+<footer><strong>THE FIELD — NBA</strong> · Data via ESPN · Updated March 9, 2026 · For entertainment only · 1-800-GAMBLER</footer>
 <script>
 function renderStandings(data,id){
   const tb=document.getElementById(id);
@@ -203,43 +205,107 @@ function renderStandings(data,id){
     tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
-function renderGames(){
-  const g=document.getElementById('games-grid');
-  if(!g)return;
-  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
-  TONIGHT.forEach(gm=>{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
-    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    // Scores or matchup display
-    let scoreHtml='';
-    if(isFinal||isLive){
-      scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
-    }
-    // Betting lines — always show section, use — if no data
-    const spread=gm.spread||'—';
-    const total=gm.total||'—';
-    const hml=gm.h_ml||'—';
-    const aml=gm.a_ml||'—';
-    const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
-    g.innerHTML+=`<div class="game-card">
-      <div class="game-card-top">
-        <div class="game-time">${lbl}</div>
-        <div class="game-matchup">
-          <div style="flex:1">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
-            <div class="game-team fav">${gm.home}</div>
-          </div>
-          <div class="game-vs">vs</div>
-          <div style="flex:1;text-align:right">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
-            <div class="game-team dog">${gm.away}</div>
-          </div>
+function buildGameCard(gm){
+  const isLive=gm.is_live,isFinal=gm.is_final;
+  const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+  const lbl=isLive?'<span style="color:#4ade80;font-weight:700;animation:pulse 1.2s infinite">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+  let scoreHtml='';
+  if(isFinal||isLive){
+    scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
+  }
+  const spread=gm.spread||'—',total=gm.total||'—',hml=gm.h_ml||'—',aml=gm.a_ml||'—';
+  const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
+  return `<div class="game-card">
+    <div class="game-card-top">
+      <div class="game-time">${lbl}</div>
+      <div class="game-matchup">
+        <div style="flex:1">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+          <div class="game-team fav">${gm.home}</div>
+        </div>
+        <div class="game-vs">vs</div>
+        <div style="flex:1;text-align:right">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+          <div class="game-team dog">${gm.away}</div>
         </div>
       </div>
-      ${linesHtml}${scoreHtml}
-    </div>`;
+    </div>
+    ${linesHtml}${scoreHtml}
+  </div>`;
+}
+function parseESPNGames(events){
+  return events.map(ev=>{
+    const comp=ev.competitions[0];
+    const teams={};comp.competitors.forEach(t=>teams[t.homeAway]=t);
+    const home=teams.home||{},away=teams.away||{};
+    const stype=comp.status?.type||{};
+    const isFinal=stype.completed||false;
+    const isLive=['STATUS_IN_PROGRESS','STATUS_HALFTIME','STATUS_END_PERIOD'].includes(stype.name);
+    let timeStr='TBD';
+    try{
+      const dt=new Date(comp.date);
+      let h24=(dt.getUTCHours()-4+24)%24,m=dt.getUTCMinutes();
+      const ampm=h24<12?'AM':'PM';
+      const h12=h24%12||12;
+      timeStr=`${h12}:${m.toString().padStart(2,'0')} ${ampm} ET`;
+    }catch(e){}
+    let spread=null,total=null,h_ml=null,a_ml=null;
+    try{
+      const o=(comp.odds||[])[0]||{};
+      if(o.details) spread=o.details;
+      if(o.overUnder) total='O/U '+o.overUnder;
+      const hmo=o.homeTeamOdds?.moneyLine;
+      const amo=o.awayTeamOdds?.moneyLine;
+      if(hmo) h_ml=(hmo>0?'+':'')+hmo;
+      if(amo) a_ml=(amo>0?'+':'')+amo;
+    }catch(e){}
+    // Live game period/clock
+    let liveDetail='';
+    try{
+      if(isLive){
+        const period=comp.status?.period||'';
+        const clock=comp.status?.displayClock||'';
+        liveDetail=period&&clock?` · Q${period} ${clock}`:'';
+      }
+    }catch(e){}
+    return {
+      home:home.team?.displayName||'TBD',
+      away:away.team?.displayName||'TBD',
+      h_score:parseInt(home.score||0),
+      a_score:parseInt(away.score||0),
+      is_final:isFinal,is_live:isLive,
+      time:timeStr+liveDetail,
+      spread,total,h_ml,a_ml,
+      gameDate:comp.date||''
+    };
   });
+}
+async function fetchLiveGames(){
+  const g=document.getElementById('games-grid');
+  if(!g)return;
+  try{
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard`;
+    const resp=await fetch(url);
+    const data=await resp.json();
+    const games=parseESPNGames(data.events||[]);
+    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled today.</p>';return;}
+    g.innerHTML=games.map(buildGameCard).join('');
+    // Update live pill
+    const hasLive=games.some(gm=>gm.is_live);
+    const pill=document.querySelector('.live-pill');
+    if(pill) pill.innerHTML=hasLive?'🔴 LIVE NOW':'📅 TODAY'S GAMES';
+  }catch(e){
+    console.error('Live scores fetch failed:',e);
+    const g2=document.getElementById('games-grid');
+    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
+  }
+}
+function renderGames(){
+  // Show live indicator
+  const g=document.getElementById('games-grid');
+  if(g) g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading games...</p>';
+  fetchLiveGames();
+  setInterval(fetchLiveGames,30000);
 }
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
@@ -261,6 +327,6 @@ function renderProps(data){
     g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
   });
 }
-const EAST=[{"t": "Atlanta Hawks", "w": 33, "l": 31, "ppg": 117.7, "opp": 117.3, "net": 0.4, "pct": 33.0, "l10": "\u2014", "div": ""}, {"t": "Philadelphia 76ers", "w": 34, "l": 29, "ppg": 115.8, "opp": 116.1, "net": -0.3, "pct": 17.0, "l10": "\u2014", "div": ""}, {"t": "Miami Heat", "w": 36, "l": 29, "ppg": 120.1, "opp": 116.5, "net": 3.6, "pct": 12.0, "l10": "\u2014", "div": ""}, {"t": "Orlando Magic", "w": 34, "l": 28, "ppg": 114.8, "opp": 114.0, "net": 0.8, "pct": 11.333, "l10": "\u2014", "div": ""}, {"t": "Toronto Raptors", "w": 36, "l": 27, "ppg": 113.7, "opp": 111.7, "net": 2.0, "pct": 9.0, "l10": "\u2014", "div": ""}, {"t": "Cleveland Cavaliers", "w": 39, "l": 25, "ppg": 118.8, "opp": 114.8, "net": 4.0, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "New York Knicks", "w": 41, "l": 24, "ppg": 116.9, "opp": 110.6, "net": 6.3, "pct": 5.125, "l10": "\u2014", "div": ""}, {"t": "Boston Celtics", "w": 43, "l": 21, "ppg": 114.5, "opp": 106.9, "net": 7.6, "pct": 3.909, "l10": "\u2014", "div": ""}, {"t": "Detroit Pistons", "w": 45, "l": 18, "ppg": 116.7, "opp": 109.8, "net": 6.9, "pct": 3.462, "l10": "\u2014", "div": ""}, {"t": "Charlotte Hornets", "w": 32, "l": 32, "ppg": 116.2, "opp": 112.5, "net": 3.7, "pct": 0.5, "l10": "\u2014", "div": ""}, {"t": "Indiana Pacers", "w": 15, "l": 48, "ppg": 111.4, "opp": 119.9, "net": -8.5, "pct": -0.938, "l10": "\u2014", "div": ""}, {"t": "Brooklyn Nets", "w": 16, "l": 47, "ppg": 106.9, "opp": 115.6, "net": -8.7, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Washington Wizards", "w": 16, "l": 47, "ppg": 112.3, "opp": 123.3, "net": -11.0, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Chicago Bulls", "w": 26, "l": 37, "ppg": 115.5, "opp": 119.7, "net": -4.2, "pct": -5.2, "l10": "\u2014", "div": ""}, {"t": "Milwaukee Bucks", "w": 27, "l": 35, "ppg": 111.4, "opp": 115.5, "net": -4.1, "pct": -6.75, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Phoenix Suns", "w": 36, "l": 27, "ppg": 112.1, "opp": 111.2, "net": 0.9, "pct": 9.0, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Lakers", "w": 39, "l": 25, "ppg": 115.9, "opp": 115.0, "net": 0.9, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Denver Nuggets", "w": 39, "l": 25, "ppg": 120.2, "opp": 116.4, "net": 3.8, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Minnesota Timberwolves", "w": 40, "l": 24, "ppg": 118.6, "opp": 114.5, "net": 4.1, "pct": 5.0, "l10": "\u2014", "div": ""}, {"t": "Houston Rockets", "w": 39, "l": 23, "ppg": 114.5, "opp": 109.3, "net": 5.2, "pct": 4.875, "l10": "\u2014", "div": ""}, {"t": "San Antonio Spurs", "w": 46, "l": 17, "ppg": 118.2, "opp": 111.4, "net": 6.8, "pct": 3.286, "l10": "\u2014", "div": ""}, {"t": "Oklahoma City Thunder", "w": 50, "l": 15, "ppg": 118.6, "opp": 107.6, "net": 11.0, "pct": 2.941, "l10": "\u2014", "div": ""}, {"t": "Golden State Warriors", "w": 32, "l": 31, "ppg": 115.0, "opp": 113.9, "net": 1.1, "pct": 0.508, "l10": "\u2014", "div": ""}, {"t": "LA Clippers", "w": 31, "l": 32, "ppg": 112.6, "opp": 112.2, "net": 0.4, "pct": 0.492, "l10": "\u2014", "div": ""}, {"t": "Sacramento Kings", "w": 14, "l": 50, "ppg": 110.4, "opp": 121.3, "net": -10.9, "pct": -0.778, "l10": "\u2014", "div": ""}, {"t": "Utah Jazz", "w": 19, "l": 45, "ppg": 117.4, "opp": 125.0, "net": -7.6, "pct": -1.462, "l10": "\u2014", "div": ""}, {"t": "New Orleans Pelicans", "w": 21, "l": 45, "ppg": 115.5, "opp": 120.2, "net": -4.7, "pct": -1.75, "l10": "\u2014", "div": ""}, {"t": "Dallas Mavericks", "w": 21, "l": 43, "ppg": 113.0, "opp": 117.7, "net": -4.7, "pct": -1.909, "l10": "\u2014", "div": ""}, {"t": "Memphis Grizzlies", "w": 23, "l": 39, "ppg": 115.7, "opp": 117.8, "net": -2.1, "pct": -2.875, "l10": "\u2014", "div": ""}, {"t": "Portland Trail Blazers", "w": 30, "l": 34, "ppg": 115.1, "opp": 118.1, "net": -3.0, "pct": -15.0, "l10": "\u2014", "div": ""}];const TONIGHT=[{"time": "1:00 PM ET", "home": "Cleveland Cavaliers", "away": "Boston Celtics", "h_score": 98, "a_score": 109, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "3:30 PM ET", "home": "Los Angeles Lakers", "away": "New York Knicks", "h_score": 110, "a_score": 97, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Miami Heat", "away": "Detroit Pistons", "h_score": 121, "a_score": 110, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Toronto Raptors", "away": "Dallas Mavericks", "h_score": 122, "a_score": 92, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "7:00 PM ET", "home": "New Orleans Pelicans", "away": "Washington Wizards", "h_score": 138, "a_score": 118, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "8:00 PM ET", "home": "Milwaukee Bucks", "away": "Orlando Magic", "h_score": 91, "a_score": 130, "is_final": false, "is_live": true, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "8:00 PM ET", "home": "San Antonio Spurs", "away": "Houston Rockets", "h_score": 120, "a_score": 104, "is_final": false, "is_live": true, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Portland Trail Blazers", "away": "Indiana Pacers", "h_score": 69, "a_score": 52, "is_final": false, "is_live": true, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Sacramento Kings", "away": "Chicago Bulls", "h_score": 65, "a_score": 51, "is_final": false, "is_live": true, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "10:00 PM ET", "home": "Phoenix Suns", "away": "Charlotte Hornets", "h_score": 14, "a_score": 17, "is_final": false, "is_live": true, "spread": null, "total": null, "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Shai Gilgeous-Alexander", "team": "Oklahoma City Thunder", "line": "Over 31.5 points", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "SGA is averaging 32.5 PPG \u2014 the best scorer in the league right now."}, {"player": "Donovan Mitchell", "team": "Cleveland Cavaliers", "line": "Over 26.5 points", "odds": "-118", "conf": "HIGH", "cls": "high", "reason": "Mitchell is locked in as the Cavs' go-to scorer every night."}, {"player": "Nikola Jokic", "team": "Denver Nuggets", "line": "Over 10.5 rebounds", "odds": "-120", "conf": "HIGH", "cls": "high", "reason": "Jokic averages 12.6 RPG \u2014 consistently below his season average."}, {"player": "Anthony Edwards", "team": "Minnesota Timberwolves", "line": "Over 25.5 points", "odds": "-110", "conf": "HIGH", "cls": "high", "reason": "Ant is the engine of the Wolves offense \u2014 hits this in 60%+ of games."}, {"player": "Jayson Tatum", "team": "Boston Celtics", "line": "Over 5.5 assists", "odds": "-105", "conf": "MEDIUM", "cls": "medium", "reason": "Tatum's playmaking has elevated as the Celtics run more through him."}, {"player": "Tyrese Haliburton", "team": "Indiana Pacers", "line": "Over 9.5 assists", "odds": "-112", "conf": "MEDIUM", "cls": "medium", "reason": "Haliburton leads the league in assists \u2014 this line is conservative."}];renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
+const EAST=[{"t": "Atlanta Hawks", "w": 33, "l": 31, "ppg": 117.7, "opp": 117.3, "net": 0.4, "pct": 33.0, "l10": "\u2014", "div": ""}, {"t": "Philadelphia 76ers", "w": 34, "l": 29, "ppg": 115.8, "opp": 116.1, "net": -0.3, "pct": 17.0, "l10": "\u2014", "div": ""}, {"t": "Miami Heat", "w": 36, "l": 29, "ppg": 120.1, "opp": 116.5, "net": 3.6, "pct": 12.0, "l10": "\u2014", "div": ""}, {"t": "Orlando Magic", "w": 35, "l": 28, "ppg": 115.1, "opp": 113.6, "net": 1.5, "pct": 11.667, "l10": "\u2014", "div": ""}, {"t": "Toronto Raptors", "w": 36, "l": 27, "ppg": 113.7, "opp": 111.7, "net": 2.0, "pct": 9.0, "l10": "\u2014", "div": ""}, {"t": "Cleveland Cavaliers", "w": 39, "l": 25, "ppg": 118.8, "opp": 114.8, "net": 4.0, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "New York Knicks", "w": 41, "l": 24, "ppg": 116.9, "opp": 110.6, "net": 6.3, "pct": 5.125, "l10": "\u2014", "div": ""}, {"t": "Boston Celtics", "w": 43, "l": 21, "ppg": 114.5, "opp": 106.9, "net": 7.6, "pct": 3.909, "l10": "\u2014", "div": ""}, {"t": "Detroit Pistons", "w": 45, "l": 18, "ppg": 116.7, "opp": 109.8, "net": 6.9, "pct": 3.462, "l10": "\u2014", "div": ""}, {"t": "Charlotte Hornets", "w": 32, "l": 33, "ppg": 115.9, "opp": 112.5, "net": 3.4, "pct": 0.492, "l10": "\u2014", "div": ""}, {"t": "Indiana Pacers", "w": 15, "l": 49, "ppg": 111.4, "opp": 120.0, "net": -8.6, "pct": -0.882, "l10": "\u2014", "div": ""}, {"t": "Brooklyn Nets", "w": 16, "l": 47, "ppg": 106.9, "opp": 115.6, "net": -8.7, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Washington Wizards", "w": 16, "l": 47, "ppg": 112.3, "opp": 123.3, "net": -11.0, "pct": -1.067, "l10": "\u2014", "div": ""}, {"t": "Chicago Bulls", "w": 26, "l": 38, "ppg": 115.4, "opp": 119.8, "net": -4.4, "pct": -4.333, "l10": "\u2014", "div": ""}, {"t": "Milwaukee Bucks", "w": 27, "l": 36, "ppg": 111.1, "opp": 115.8, "net": -4.7, "pct": -6.75, "l10": "\u2014", "div": ""}];const WEST=[{"t": "Phoenix Suns", "w": 37, "l": 27, "ppg": 112.1, "opp": 111.0, "net": 1.1, "pct": 7.4, "l10": "\u2014", "div": ""}, {"t": "Los Angeles Lakers", "w": 39, "l": 25, "ppg": 115.9, "opp": 115.0, "net": 0.9, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Denver Nuggets", "w": 39, "l": 25, "ppg": 120.2, "opp": 116.4, "net": 3.8, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Houston Rockets", "w": 39, "l": 24, "ppg": 114.6, "opp": 109.9, "net": 4.7, "pct": 5.571, "l10": "\u2014", "div": ""}, {"t": "Minnesota Timberwolves", "w": 40, "l": 24, "ppg": 118.6, "opp": 114.5, "net": 4.1, "pct": 5.0, "l10": "\u2014", "div": ""}, {"t": "San Antonio Spurs", "w": 47, "l": 17, "ppg": 118.6, "opp": 111.5, "net": 7.1, "pct": 3.133, "l10": "\u2014", "div": ""}, {"t": "Oklahoma City Thunder", "w": 50, "l": 15, "ppg": 118.6, "opp": 107.6, "net": 11.0, "pct": 2.941, "l10": "\u2014", "div": ""}, {"t": "Golden State Warriors", "w": 32, "l": 31, "ppg": 115.0, "opp": 113.9, "net": 1.1, "pct": 0.508, "l10": "\u2014", "div": ""}, {"t": "LA Clippers", "w": 31, "l": 32, "ppg": 112.6, "opp": 112.2, "net": 0.4, "pct": 0.492, "l10": "\u2014", "div": ""}, {"t": "Sacramento Kings", "w": 15, "l": 50, "ppg": 110.6, "opp": 121.1, "net": -10.5, "pct": -0.882, "l10": "\u2014", "div": ""}, {"t": "Utah Jazz", "w": 19, "l": 45, "ppg": 117.4, "opp": 125.0, "net": -7.6, "pct": -1.462, "l10": "\u2014", "div": ""}, {"t": "New Orleans Pelicans", "w": 21, "l": 45, "ppg": 115.5, "opp": 120.2, "net": -4.7, "pct": -1.75, "l10": "\u2014", "div": ""}, {"t": "Dallas Mavericks", "w": 21, "l": 43, "ppg": 113.0, "opp": 117.7, "net": -4.7, "pct": -1.909, "l10": "\u2014", "div": ""}, {"t": "Memphis Grizzlies", "w": 23, "l": 39, "ppg": 115.7, "opp": 117.8, "net": -2.1, "pct": -2.875, "l10": "\u2014", "div": ""}, {"t": "Portland Trail Blazers", "w": 31, "l": 34, "ppg": 115.3, "opp": 118.0, "net": -2.7, "pct": -31.0, "l10": "\u2014", "div": ""}];const TONIGHT=[{"time": "1:00 PM ET", "home": "Cleveland Cavaliers", "away": "Boston Celtics", "h_score": 98, "a_score": 109, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "3:30 PM ET", "home": "Los Angeles Lakers", "away": "New York Knicks", "h_score": 110, "a_score": 97, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Miami Heat", "away": "Detroit Pistons", "h_score": 121, "a_score": 110, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "6:00 PM ET", "home": "Toronto Raptors", "away": "Dallas Mavericks", "h_score": 122, "a_score": 92, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "7:00 PM ET", "home": "New Orleans Pelicans", "away": "Washington Wizards", "h_score": 138, "a_score": 118, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "8:00 PM ET", "home": "Milwaukee Bucks", "away": "Orlando Magic", "h_score": 91, "a_score": 130, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "8:00 PM ET", "home": "San Antonio Spurs", "away": "Houston Rockets", "h_score": 145, "a_score": 120, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Portland Trail Blazers", "away": "Indiana Pacers", "h_score": 131, "a_score": 111, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "9:00 PM ET", "home": "Sacramento Kings", "away": "Chicago Bulls", "h_score": 126, "a_score": 110, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}, {"time": "10:00 PM ET", "home": "Phoenix Suns", "away": "Charlotte Hornets", "h_score": 111, "a_score": 99, "is_final": true, "is_live": false, "spread": null, "total": null, "h_ml": null, "a_ml": null}];const PROPS_DATA=[{"player": "Shai Gilgeous-Alexander", "team": "Oklahoma City Thunder", "line": "Over 31.5 points", "odds": "-115", "conf": "HIGH", "cls": "high", "reason": "SGA is averaging 32.5 PPG \u2014 the best scorer in the league right now."}, {"player": "Donovan Mitchell", "team": "Cleveland Cavaliers", "line": "Over 26.5 points", "odds": "-118", "conf": "HIGH", "cls": "high", "reason": "Mitchell is locked in as the Cavs' go-to scorer every night."}, {"player": "Nikola Jokic", "team": "Denver Nuggets", "line": "Over 10.5 rebounds", "odds": "-120", "conf": "HIGH", "cls": "high", "reason": "Jokic averages 12.6 RPG \u2014 consistently below his season average."}, {"player": "Anthony Edwards", "team": "Minnesota Timberwolves", "line": "Over 25.5 points", "odds": "-110", "conf": "HIGH", "cls": "high", "reason": "Ant is the engine of the Wolves offense \u2014 hits this in 60%+ of games."}, {"player": "Jayson Tatum", "team": "Boston Celtics", "line": "Over 5.5 assists", "odds": "-105", "conf": "MEDIUM", "cls": "medium", "reason": "Tatum's playmaking has elevated as the Celtics run more through him."}, {"player": "Tyrese Haliburton", "team": "Indiana Pacers", "line": "Over 9.5 assists", "odds": "-112", "conf": "MEDIUM", "cls": "medium", "reason": "Haliburton leads the league in assists \u2014 this line is conservative."}];const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);</script>
 </body>
 </html>
