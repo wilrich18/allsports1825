@@ -1235,8 +1235,7 @@ def nfl_playoff_results_html():
     def champ_card(team, score_a, opponent, score_b, label):
         return (
             f'<div class="bk-trophy-box" style="background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25);width:130px">'
-            '<div class="bk-trophy-icon">&#127942;</div>'
-            f'<div class="bk-trophy-title" style="color:var(--gold)">{label}</div>'
+                f'<div class="bk-trophy-title" style="color:var(--gold)">{label}</div>'
             f'<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">{team} {score_a}</div>'
             f'<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">{opponent} {score_b}</div>'
             '</div>'
@@ -1291,7 +1290,6 @@ def nfl_playoff_results_html():
     # Conf Champ results
     afc_champ = (
         '<div class="bk-trophy-box">'
-        '<div class="bk-trophy-icon">&#127944;</div>'
         '<div class="bk-trophy-title">AFC Champ</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">New England 10</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">Denver Broncos 7</div>'
@@ -1299,7 +1297,6 @@ def nfl_playoff_results_html():
     )
     nfc_champ = (
         '<div class="bk-trophy-box">'
-        '<div class="bk-trophy-icon">&#127944;</div>'
         '<div class="bk-trophy-title">NFC Champ</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-top:8px">Seattle 31</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:var(--gray)">LA Rams 27</div>'
@@ -1307,7 +1304,6 @@ def nfl_playoff_results_html():
     )
     super_bowl = (
         '<div class="bk-trophy-box" style="background:rgba(253,185,39,0.08);border-color:rgba(253,185,39,0.35);width:130px">'
-        '<div class="bk-trophy-icon">&#127942;</div>'
         '<div class="bk-trophy-title" style="color:var(--gold)">Super Bowl LX</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:800;color:#4ade80;margin-top:8px">Seattle 29</div>'
         '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;font-weight:700;color:var(--white)">New England 13</div>'
@@ -1392,10 +1388,14 @@ def playoff_page_html(sport, east, west, e_label="Eastern Conference", w_label="
         '.bk-trophy-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 12px;text-align:center;width:110px}'
         '.bk-trophy-icon{font-size:32px}'
         '.bk-trophy-title{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-top:6px}'
-        '.bk-trophy-sub{font-family:"Barlow Condensed",sans-serif;font-size:10px;letter-spacing:1px;color:var(--gray);margin-top:2px}'
         '.bk-playin{font-size:12px;color:var(--gray);font-style:italic;text-align:center;margin-top:14px}'
         '.bk-col-left .bk-team{flex-direction:row-reverse}'
         '.bk-col-left .bk-name{text-align:right}'
+        '.bk-center-col{display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:0 8px;gap:10px}'
+        '.bk-ctr-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:14px 10px;text-align:center;width:120px}'
+        '.bk-ctr-champ{background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25)}'
+        '.bk-ctr-title{font-family:"Barlow Condensed",sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white)}'
+        '.bk-ctr-sub{font-family:"Barlow Condensed",sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-top:4px}'
         '</style>'
     )
 
@@ -1454,20 +1454,17 @@ def playoff_page_html(sport, east, west, e_label="Eastern Conference", w_label="
 
     center = (
         '<div class="bk-center-col">'
-        '<div class="bk-trophy-box">'
-        f'<div class="bk-trophy-icon">{trophy_icon}</div>'
-        f'<div class="bk-trophy-title">{e_label[:3] if len(e_label)>3 else e_label} {cf_label}</div>'
-        '<div class="bk-trophy-sub">CONF FINALS</div>'
+        '<div class="bk-ctr-box">'
+        f'<div class="bk-ctr-title">{e_label}</div>'
+        '<div class="bk-ctr-sub">CONF FINALS</div>'
         '</div>'
-        '<div class="bk-trophy-box" style="background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25)">'
-        '<div class="bk-trophy-icon">&#127942;</div>'
-        f'<div class="bk-trophy-title" style="color:var(--gold)">{champ_label}</div>'
-        '<div class="bk-trophy-sub" style="color:var(--gold)">CHAMPIONSHIP</div>'
+        '<div class="bk-ctr-box bk-ctr-champ">'
+        f'<div class="bk-ctr-title" style="color:var(--gold)">{champ_label}</div>'
+        '<div class="bk-ctr-sub" style="color:var(--gold)">CHAMPIONSHIP</div>'
         '</div>'
-        '<div class="bk-trophy-box">'
-        f'<div class="bk-trophy-icon">{trophy_icon}</div>'
-        f'<div class="bk-trophy-title">{w_label[:3] if len(w_label)>3 else w_label} {cf_label}</div>'
-        '<div class="bk-trophy-sub">CONF FINALS</div>'
+        '<div class="bk-ctr-box">'
+        f'<div class="bk-ctr-title">{w_label}</div>'
+        '<div class="bk-ctr-sub">CONF FINALS</div>'
         '</div>'
         '</div>'
     )
