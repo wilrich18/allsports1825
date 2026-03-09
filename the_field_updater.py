@@ -295,10 +295,36 @@ function renderProps(allProps){
   const g=document.getElementById('props-grid');
   const note=document.getElementById('props-tonight-note');
   if(!g)return;
-  allProps.forEach(p=>{
-    const bc=p.conf==='HIGH'?'b-high':'b-med';
-    g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
-  });
+  function doRender(){
+    const todayStr=offsetDate(0);
+    const cached=_gameCache[todayStr];
+    if(cached===undefined){setTimeout(doRender,600);return;}
+    const tonightTeams=new Set();
+    cached.forEach(gm=>{
+      tonightTeams.add(gm.home.toLowerCase());
+      tonightTeams.add(gm.away.toLowerCase());
+    });
+    const filtered=tonightTeams.size>0
+      ?allProps.filter(p=>[...tonightTeams].some(t=>
+          p.team.toLowerCase().includes(t.split(' ').pop().toLowerCase())||
+          t.includes(p.team.toLowerCase().split(' ').pop())
+        ))
+      :allProps;
+    if(note){
+      note.textContent=filtered.length>0
+        ?`${filtered.length} props for tonight (${cached.length} games)`
+        :`No props for tonight`;
+    }
+    if(!filtered.length){
+      g.innerHTML=`<p style="color:var(--gray)">No props available for tonight.</p>`;
+      return;
+    }
+    filtered.forEach(p=>{
+      const bc=p.conf==='HIGH'?'b-high':'b-med';
+      g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+    });
+  }
+  doRender();
 }
 
 function switchSched(tab,btn){
@@ -1199,12 +1225,38 @@ def generate_nhl_html(east, west, yesterday, today_games):
     all_t  = sorted(east+west, key=lambda x:-x["pct"])
 
     props = [
-        {"player":"Connor McDavid","team":"Edmonton Oilers","line":"Over 1.5 points","odds":"-130","conf":"HIGH","cls":"high","reason":"McDavid averages 1.8 pts/game. Hits this line in 60%+ of games."},
+        {"player":"Connor McDavid","team":"Edmonton Oilers","line":"Over 1.5 points","odds":"-130","conf":"HIGH","cls":"high","reason":"McDavid averages 1.8 pts/game and hits this line in 60%+ of games."},
+        {"player":"Leon Draisaitl","team":"Edmonton Oilers","line":"Over 1.5 points","odds":"-118","conf":"HIGH","cls":"high","reason":"Draisaitl racks up points in bunches — power play alone drives this line."},
         {"player":"Nathan MacKinnon","team":"Colorado Avalanche","line":"Over 0.5 goals","odds":"-115","conf":"HIGH","cls":"high","reason":"MacKinnon leads the Avs in shots and scoring chances every night."},
+        {"player":"Mikko Rantanen","team":"Colorado Avalanche","line":"Over 1.5 points","odds":"-115","conf":"HIGH","cls":"high","reason":"Rantanen is one of the most consistent point producers in the West."},
+        {"player":"Cale Makar","team":"Colorado Avalanche","line":"Over 1.5 shots","odds":"-125","conf":"MEDIUM","cls":"medium","reason":"Makar logs 25+ minutes — elite shot volume for a defenseman."},
         {"player":"Auston Matthews","team":"Toronto Maple Leafs","line":"Over 3.5 shots","odds":"-120","conf":"HIGH","cls":"high","reason":"Matthews averages 4.2 SOG — this line is below his season average."},
-        {"player":"Leon Draisaitl","team":"Edmonton Oilers","line":"Over 1.5 points","odds":"-118","conf":"HIGH","cls":"high","reason":"Draisaitl racks up points in bunches. Power play alone drives this line."},
-        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Pastrnak is Bostons most dangerous scorer with premium power play time."},
-        {"player":"Cale Makar","team":"Colorado Avalanche","line":"Over 1.5 shots","odds":"-125","conf":"MEDIUM","cls":"medium","reason":"Makar logs 25+ minutes — elite shot volume for a D-man."},
+        {"player":"Mitch Marner","team":"Toronto Maple Leafs","line":"Over 1.5 points","odds":"-112","conf":"HIGH","cls":"high","reason":"Marner is one of the best playmakers in the league and drives Toronto power play."},
+        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Pastrnak is Boston most dangerous scorer with premium power play time."},
+        {"player":"Brad Marchand","team":"Boston Bruins","line":"Over 0.5 points","odds":"-130","conf":"HIGH","cls":"high","reason":"Marchand racks up points at an elite rate and dominates on the power play."},
+        {"player":"Nikita Kucherov","team":"Tampa Bay Lightning","line":"Over 1.5 points","odds":"-112","conf":"HIGH","cls":"high","reason":"Kucherov leads the league in points and is the engine of Tampa offense."},
+        {"player":"Brayden Point","team":"Tampa Bay Lightning","line":"Over 0.5 goals","odds":"-115","conf":"HIGH","cls":"high","reason":"Point is one of the most reliable goal scorers in the NHL — hits this consistently."},
+        {"player":"Matthew Tkachuk","team":"Florida Panthers","line":"Over 0.5 goals","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Tkachuk thrives in big moments and gets premium offensive zone time."},
+        {"player":"Sam Reinhart","team":"Florida Panthers","line":"Over 0.5 goals","odds":"-115","conf":"HIGH","cls":"high","reason":"Reinhart has been one of the most reliable goal scorers in the NHL this season."},
+        {"player":"Sebastian Aho","team":"Carolina Hurricanes","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Aho leads Carolina in goals and gets heavy offensive zone deployment."},
+        {"player":"Andrei Svechnikov","team":"Carolina Hurricanes","line":"Over 2.5 shots","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Svechnikov generates high shot volume from his off-wing position every night."},
+        {"player":"Jason Robertson","team":"Dallas Stars","line":"Over 1.5 shots","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Robertson generates volume from the perimeter and drives Dallas offense."},
+        {"player":"Roope Hintz","team":"Dallas Stars","line":"Over 0.5 goals","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Hintz is Dallas top center and finishes with regularity in front of the net."},
+        {"player":"Jack Hughes","team":"New Jersey Devils","line":"Over 1.5 points","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Hughes is the engine of the Devils offense and racks up points consistently."},
+        {"player":"Nico Hischier","team":"New Jersey Devils","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Hischier leads New Jersey in goals and gets top line minutes every night."},
+        {"player":"Elias Pettersson","team":"Vancouver Canucks","line":"Over 1.5 shots","odds":"-120","conf":"MEDIUM","cls":"medium","reason":"Pettersson generates elite shot volume and drives the Canucks power play."},
+        {"player":"J.T. Miller","team":"Vancouver Canucks","line":"Over 1.5 points","odds":"-112","conf":"HIGH","cls":"high","reason":"Miller racks up assists at an elite rate playing center on the top line."},
+        {"player":"Mark Scheifele","team":"Winnipeg Jets","line":"Over 0.5 goals","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Scheifele leads Winnipeg in goals and plays heavy minutes as top center."},
+        {"player":"Kyle Connor","team":"Winnipeg Jets","line":"Over 2.5 shots","odds":"-115","conf":"MEDIUM","cls":"medium","reason":"Connor generates consistent shot volume from the left wing position."},
+        {"player":"Kirill Kaprizov","team":"Minnesota Wild","line":"Over 0.5 goals","odds":"-118","conf":"HIGH","cls":"high","reason":"Kaprizov is one of the most dangerous scorers in the West — elite shot volume."},
+        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 3.5 shots","odds":"-115","conf":"HIGH","cls":"high","reason":"Pastrnak shoots the puck at an elite rate — one of the best in the NHL."},
+        {"player":"Brady Tkachuk","team":"Ottawa Senators","line":"Over 2.5 shots","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Tkachuk plays a physical power game and generates shots from the front of the net."},
+        {"player":"Tim Stutzle","team":"Ottawa Senators","line":"Over 1.5 points","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Stutzle is Ottawa top playmaker and records points in most games he plays."},
+        {"player":"Tage Thompson","team":"Buffalo Sabres","line":"Over 0.5 goals","odds":"-120","conf":"HIGH","cls":"high","reason":"Thompson is one of the most dominant power forwards in the league right now."},
+        {"player":"Alex Ovechkin","team":"Washington Capitals","line":"Over 2.5 shots","odds":"-125","conf":"HIGH","cls":"high","reason":"Ovechkin shoots the puck more than almost anyone — this line is very reliable."},
+        {"player":"Dylan Larkin","team":"Detroit Red Wings","line":"Over 0.5 points","odds":"-115","conf":"MEDIUM","cls":"medium","reason":"Larkin leads Detroit in scoring and logs heavy minutes as top center."},
+        {"player":"Evan Bouchard","team":"Edmonton Oilers","line":"Over 1.5 shots","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Bouchard shoots frequently from the point and quarterbacking the power play."},
+        {"player":"Roman Josi","team":"Nashville Predators","line":"Over 1.5 shots","odds":"-120","conf":"MEDIUM","cls":"medium","reason":"Josi logs 25+ minutes every night and generates elite shot volume from the blue line."},
     ]
     pj = json.dumps(props)
 
@@ -1289,12 +1341,36 @@ def generate_mlb_html(al, nl, yesterday, today_games):
     all_t  = sorted(al+nl, key=lambda x:-x["pct"])
 
     props = [
-        {"player":"Shohei Ohtani","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-125","conf":"HIGH","cls":"high","reason":"Ohtani barrels the ball at an elite rate. Achievable in a single hit."},
-        {"player":"Aaron Judge","team":"New York Yankees","line":"Over 0.5 home runs","odds":"+185","conf":"HIGH","cls":"high","reason":"Judge leads MLB in HR. Great value for the best power hitter in baseball."},
-        {"player":"Freddie Freeman","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Freeman is the Dodgers most consistent contact hitter."},
-        {"player":"Juan Soto","team":"New York Yankees","line":"Over 0.5 walks","odds":"-130","conf":"HIGH","cls":"high","reason":"Soto has an elite eye and draws walks in the majority of his games."},
-        {"player":"Mookie Betts","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"One of the most consistent performers in baseball."},
-        {"player":"Ronald Acuña Jr.","team":"Atlanta Braves","line":"Over 0.5 stolen bases","odds":"+110","conf":"MEDIUM","cls":"medium","reason":"Most dangerous baserunner in baseball. Plus money is great value."},
+        {"player":"Shohei Ohtani","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-125","conf":"HIGH","cls":"high","reason":"Ohtani barrels the ball at an elite rate — achievable in a single extra-base hit."},
+        {"player":"Freddie Freeman","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Freeman is the Dodgers most consistent contact hitter and hits the ball hard."},
+        {"player":"Mookie Betts","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"One of the most consistent performers in baseball — hits this in most games."},
+        {"player":"Aaron Judge","team":"New York Yankees","line":"Over 0.5 home runs","odds":"+185","conf":"HIGH","cls":"high","reason":"Judge leads MLB in HR — great value for the best power hitter in baseball."},
+        {"player":"Juan Soto","team":"New York Yankees","line":"Over 0.5 walks","odds":"-130","conf":"HIGH","cls":"high","reason":"Soto has an elite eye at the plate and draws walks in the majority of his games."},
+        {"player":"Gerrit Cole","team":"New York Yankees","line":"Over 6.5 strikeouts","odds":"-115","conf":"HIGH","cls":"high","reason":"Cole averages 8+ K per 9 innings — one of the most reliable strikeout props in MLB."},
+        {"player":"Ronald Acuna Jr.","team":"Atlanta Braves","line":"Over 0.5 stolen bases","odds":"+110","conf":"MEDIUM","cls":"medium","reason":"Most dangerous baserunner in baseball — plus money is great value."},
+        {"player":"Matt Olson","team":"Atlanta Braves","line":"Over 1.5 total bases","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Olson hits for power and makes hard contact consistently at first base."},
+        {"player":"Spencer Strider","team":"Atlanta Braves","line":"Over 7.5 strikeouts","odds":"-110","conf":"HIGH","cls":"high","reason":"Strider is one of the best strikeout pitchers alive — elite velocity and stuff."},
+        {"player":"Paul Goldschmidt","team":"St. Louis Cardinals","line":"Over 1.5 total bases","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Goldschmidt is a premium contact hitter who reaches base at a high clip."},
+        {"player":"Nolan Arenado","team":"St. Louis Cardinals","line":"Over 0.5 RBI","odds":"-115","conf":"MEDIUM","cls":"medium","reason":"Arenado bats in the heart of the order and drives in runs consistently."},
+        {"player":"Jose Ramirez","team":"Cleveland Guardians","line":"Over 1.5 total bases","odds":"-118","conf":"HIGH","cls":"high","reason":"Ramirez is one of the most well-rounded hitters in the AL — hits this regularly."},
+        {"player":"Yordan Alvarez","team":"Houston Astros","line":"Over 1.5 total bases","odds":"-120","conf":"HIGH","cls":"high","reason":"Alvarez does damage every time he is at the plate — elite barrel rate."},
+        {"player":"Alex Bregman","team":"Houston Astros","line":"Over 0.5 RBI","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Bregman bats in the middle of a deep Astros lineup — RBIs come regularly."},
+        {"player":"Julio Rodriguez","team":"Seattle Mariners","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"J-Rod has elite athleticism and speed — hits for power and steals bases."},
+        {"player":"Gunnar Henderson","team":"Baltimore Orioles","line":"Over 1.5 total bases","odds":"-112","conf":"HIGH","cls":"high","reason":"Henderson is the cornerstone of a powerful Baltimore lineup — hits for power."},
+        {"player":"Adley Rutschman","team":"Baltimore Orioles","line":"Over 0.5 walks","odds":"-118","conf":"MEDIUM","cls":"medium","reason":"Rutschman has one of the best eyes in baseball and draws walks consistently."},
+        {"player":"Bo Bichette","team":"Toronto Blue Jays","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Bichette makes hard contact from the leadoff spot and hits for average."},
+        {"player":"Vladimir Guerrero Jr.","team":"Toronto Blue Jays","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Vladdy Jr. barrels the ball at an elite rate — one of the best pure hitters in baseball."},
+        {"player":"Rafael Devers","team":"Boston Red Sox","line":"Over 1.5 total bases","odds":"-112","conf":"HIGH","cls":"high","reason":"Devers is an elite power hitter batting third in a potent Boston lineup."},
+        {"player":"Fernando Tatis Jr.","team":"San Diego Padres","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Tatis is a five-tool superstar who impacts every aspect of the game."},
+        {"player":"Manny Machado","team":"San Diego Padres","line":"Over 0.5 RBI","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Machado bats in the heart of the Padres order — RBIs come at a solid rate."},
+        {"player":"Corbin Carroll","team":"Arizona Diamondbacks","line":"Over 0.5 stolen bases","odds":"+105","conf":"MEDIUM","cls":"medium","reason":"Carroll is one of the fastest players in baseball and runs at every opportunity."},
+        {"player":"Ketel Marte","team":"Arizona Diamondbacks","line":"Over 1.5 total bases","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Marte is Arizona best hitter — makes consistent hard contact from the leadoff spot."},
+        {"player":"Pete Alonso","team":"New York Mets","line":"Over 0.5 home runs","odds":"+170","conf":"MEDIUM","cls":"medium","reason":"Polar Bear has elite power — plus money is great value for a middle-of-the-order bat."},
+        {"player":"Francisco Lindor","team":"New York Mets","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Lindor leads off and sets the table — hits for average and gets on base."},
+        {"player":"Kyle Tucker","team":"Chicago Cubs","line":"Over 1.5 total bases","odds":"-112","conf":"HIGH","cls":"high","reason":"Tucker is one of the most well-rounded hitters in baseball — hits everywhere."},
+        {"player":"Elly De La Cruz","team":"Cincinnati Reds","line":"Over 0.5 stolen bases","odds":"-110","conf":"HIGH","cls":"high","reason":"De La Cruz is a generational athlete — one of the fastest baserunners in MLB."},
+        {"player":"Bobby Witt Jr.","team":"Kansas City Royals","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Witt is one of the most exciting young players in baseball — five-tool talent."},
+        {"player":"CJ Abrams","team":"Washington Nationals","line":"Over 0.5 stolen bases","odds":"+105","conf":"MEDIUM","cls":"medium","reason":"Abrams is Washington fastest player and looks to run every time he reaches base."},
     ]
     pj = json.dumps(props)
 
@@ -1445,7 +1521,40 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
         ("The Josh Allen Question", "Josh Allen won the AP MVP in 2025 before this season started — his regular season dominance is unquestioned. But Allen and the Bills still haven't broken through in the playoffs, and that narrative will define his legacy heading into 2026."),
     ])
     pages += magazine_page_html("NFL", today, rnks, nfl_sidebar, nfl_stories)
-    init = f"const EAST={ej};const WEST={wj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');"
+    nfl_props = [
+        {"player":"Patrick Mahomes","team":"Kansas City Chiefs","line":"Over 249.5 pass yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Mahomes averages 275+ pass yards per game — this line is below his season average."},
+        {"player":"Travis Kelce","team":"Kansas City Chiefs","line":"Over 55.5 rec yards","odds":"-112","conf":"HIGH","cls":"high","reason":"Kelce is still the most reliable tight end target in football — hits this regularly."},
+        {"player":"Josh Allen","team":"Buffalo Bills","line":"Over 24.5 rush yards","odds":"-118","conf":"HIGH","cls":"high","reason":"Allen scrambles for big gains consistently — one of the best dual-threat QBs ever."},
+        {"player":"Stefon Diggs","team":"Buffalo Bills","line":"Over 64.5 rec yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Diggs runs crisp routes and is Allen first read — targets are always there."},
+        {"player":"Lamar Jackson","team":"Baltimore Ravens","line":"Over 34.5 rush yards","odds":"-120","conf":"HIGH","cls":"high","reason":"Lamar is the most dangerous rushing QB in NFL history — hits this in almost every game."},
+        {"player":"Derrick Henry","team":"Baltimore Ravens","line":"Over 74.5 rush yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Henry is a workhorse back who dominates between the tackles — volume is always there."},
+        {"player":"Tyreek Hill","team":"Miami Dolphins","line":"Over 74.5 rec yards","odds":"-112","conf":"HIGH","cls":"high","reason":"Hill is the fastest player in the NFL and the focal point of the Miami offense."},
+        {"player":"Jaylen Waddle","team":"Miami Dolphins","line":"Over 59.5 rec yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Waddle is a dynamic slot receiver who complements Hill perfectly in Miami."},
+        {"player":"Justin Jefferson","team":"Minnesota Vikings","line":"Over 74.5 rec yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Jefferson is the best wide receiver in football — elite route runner with huge targets."},
+        {"player":"Sam Darnold","team":"Minnesota Vikings","line":"Over 219.5 pass yards","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Darnold has played well this season with elite weapons around him."},
+        {"player":"Jalen Hurts","team":"Philadelphia Eagles","line":"Over 24.5 rush yards","odds":"-118","conf":"HIGH","cls":"high","reason":"Hurts is a top-5 fantasy QB because of his legs — hits this rushing line consistently."},
+        {"player":"A.J. Brown","team":"Philadelphia Eagles","line":"Over 69.5 rec yards","odds":"-110","conf":"HIGH","cls":"high","reason":"AJ Brown is Hurts favorite target and a physical mismatch — targets are always high."},
+        {"player":"CeeDee Lamb","team":"Dallas Cowboys","line":"Over 79.5 rec yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Lamb is the focal point of the Dallas offense and gets double-digit targets most games."},
+        {"player":"Dak Prescott","team":"Dallas Cowboys","line":"Over 229.5 pass yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Prescott distributes the ball well across the Dallas receiving corps every week."},
+        {"player":"Amon-Ra St. Brown","team":"Detroit Lions","line":"Over 64.5 rec yards","odds":"-112","conf":"HIGH","cls":"high","reason":"St. Brown runs the most routes and gets the most targets in the Detroit offense."},
+        {"player":"Sam LaPorta","team":"Detroit Lions","line":"Over 44.5 rec yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"LaPorta is a reliable safety valve in the Detroit passing game — targets are consistent."},
+        {"player":"Christian McCaffrey","team":"San Francisco 49ers","line":"Over 74.5 scrimmage yards","odds":"-120","conf":"HIGH","cls":"high","reason":"CMC is the most versatile offensive weapon in football — touches come in waves."},
+        {"player":"Deebo Samuel","team":"San Francisco 49ers","line":"Over 54.5 rec yards","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Deebo lines up everywhere and creates yards after the catch at an elite rate."},
+        {"player":"DK Metcalf","team":"Seattle Seahawks","line":"Over 64.5 rec yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Metcalf is a physical freak who wins contested catches and takes the top off defenses."},
+        {"player":"Kenneth Walker III","team":"Seattle Seahawks","line":"Over 74.5 rush yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Walker is Seattle workhorse back and Super Bowl LX MVP — volume and talent are elite."},
+        {"player":"Cooper Kupp","team":"Los Angeles Rams","line":"Over 59.5 rec yards","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Kupp runs the slot at an elite level — when healthy, targets and yards always follow."},
+        {"player":"Puka Nacua","team":"Los Angeles Rams","line":"Over 54.5 rec yards","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Nacua is one of the best young slot receivers in the NFL — tons of targets every week."},
+        {"player":"Bijan Robinson","team":"Atlanta Falcons","line":"Over 74.5 rush yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Bijan is one of the most talented backs in football — volume and efficiency are both elite."},
+        {"player":"Drake London","team":"Atlanta Falcons","line":"Over 54.5 rec yards","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"London is Atlanta top receiver and draws tough coverage — yards come in chunks."},
+        {"player":"Garrett Wilson","team":"New York Jets","line":"Over 59.5 rec yards","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Wilson is the Jets number one receiver and his route running is elite."},
+        {"player":"Davante Adams","team":"Las Vegas Raiders","line":"Over 59.5 rec yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Adams remains one of the best route runners in the NFL — runs crisp routes every snap."},
+        {"player":"Joe Burrow","team":"Cincinnati Bengals","line":"Over 249.5 pass yards","odds":"-112","conf":"HIGH","cls":"high","reason":"Burrow is an elite passer with a cannon arm and pushes the ball down the field."},
+        {"player":"Ja Marr Chase","team":"Cincinnati Bengals","line":"Over 74.5 rec yards","odds":"-115","conf":"HIGH","cls":"high","reason":"Chase is one of the most explosive receivers in football — big plays come in bunches."},
+        {"player":"Tua Tagovailoa","team":"Miami Dolphins","line":"Over 239.5 pass yards","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Tua operates a fast-paced offense with elite weapons — yards pile up quickly."},
+        {"player":"Breece Hall","team":"New York Jets","line":"Over 69.5 rush yards","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Hall is a dynamic back who can make plays in space — volume is consistent when healthy."},
+    ]
+    pj = json.dumps(nfl_props)
+    init = f"const EAST={ej};const WEST={wj};const PROPS_DATA={pj};const ESPN_SPORT='americanfootball';const ESPN_LEAGUE='nfl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NFL","#f97316","#ea6c0a","rgba(249,115,22,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nfl.html", html)
