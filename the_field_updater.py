@@ -80,6 +80,8 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.
 .div-header-row td{{padding:10px 12px 4px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}}
 .div-label{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc);}}
 .games-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}}
+.sched-tab{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--gray);cursor:pointer;transition:all 0.2s;}}
+.sched-tab.active,.sched-tab:hover{{background:var(--acc);color:#fff;border-color:var(--acc);}}
 .game-card{{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s;}}
 .game-card:hover{{border-color:rgba(255,255,255,0.15);}}
 .game-card-top{{padding:16px;}}
@@ -130,6 +132,7 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,22,40,0.
 .prop-badge{{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:4px;margin-bottom:8px;}}
 .b-high{{background:rgba(74,222,128,0.15);color:#4ade80;}}.b-med{{background:rgba(253,185,39,0.15);color:var(--gold);}}
 .prop-reason{{font-size:12px;color:var(--gray);line-height:1.5;}}
+@keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:0.4}}}}
 .game-lines{{display:flex;gap:6px;padding:8px 16px;border-top:1px solid var(--border);flex-wrap:wrap;background:rgba(0,0,0,0.15);}}
 .gl-item{{flex:1;min-width:60px;text-align:center;}}
 .gl-lbl{{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}}
@@ -142,51 +145,140 @@ SHARED_JS = """
 function renderStandings(data,id){
   const tb=document.getElementById(id);
   if(!tb)return;
+  const tbl=tb.closest('table');
+  const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
   const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
   sorted.forEach((t,i)=>{
     const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
     const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
+    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
-function renderGames(){
-  const g=document.getElementById('games-grid');
-  if(!g)return;
-  if(!TONIGHT.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled tonight.</p>';return;}
-  TONIGHT.forEach(gm=>{
-    const isLive=gm.is_live,isFinal=gm.is_final;
-    const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
-    const lbl=isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
-    // Scores or matchup display
-    let scoreHtml='';
-    if(isFinal||isLive){
-      scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
-    }
-    // Betting lines — always show section, use — if no data
-    const spread=gm.spread||'—';
-    const total=gm.total||'—';
-    const hml=gm.h_ml||'—';
-    const aml=gm.a_ml||'—';
-    const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
-    g.innerHTML+=`<div class="game-card">
-      <div class="game-card-top">
-        <div class="game-time">${lbl}</div>
-        <div class="game-matchup">
-          <div style="flex:1">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
-            <div class="game-team fav">${gm.home}</div>
-          </div>
-          <div class="game-vs">vs</div>
-          <div style="flex:1;text-align:right">
-            <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
-            <div class="game-team dog">${gm.away}</div>
-          </div>
+function buildGameCard(gm){
+  const isLive=gm.is_live,isFinal=gm.is_final;
+  const hw=isFinal&&gm.h_score>gm.a_score,aw=isFinal&&gm.a_score>gm.h_score;
+  const lbl=isLive?'<span style="color:#4ade80;font-weight:700;animation:pulse 1.2s infinite">● LIVE</span>':isFinal?'<span style="color:var(--gold)">FINAL</span>':gm.time;
+  let scoreHtml='';
+  if(isFinal||isLive){
+    scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${gm.h_score}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${gm.a_score}</span></div>`;
+  }
+  const spread=gm.spread||'—',total=gm.total||'—',hml=gm.h_ml||'—',aml=gm.a_ml||'—';
+  const linesHtml=(!isFinal&&!isLive)?`<div class="game-lines"><div class="gl-item"><div class="gl-lbl">SPREAD</div><div class="gl-val">${spread}</div></div><div class="gl-item"><div class="gl-lbl">O/U</div><div class="gl-val">${total}</div></div><div class="gl-item"><div class="gl-lbl">HOME ML</div><div class="gl-val">${hml}</div></div><div class="gl-item"><div class="gl-lbl">AWAY ML</div><div class="gl-val">${aml}</div></div></div>`:'';
+  return `<div class="game-card">
+    <div class="game-card-top">
+      <div class="game-time">${lbl}</div>
+      <div class="game-matchup">
+        <div style="flex:1">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div>
+          <div class="game-team fav">${gm.home}</div>
+        </div>
+        <div class="game-vs">vs</div>
+        <div style="flex:1;text-align:right">
+          <div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div>
+          <div class="game-team dog">${gm.away}</div>
         </div>
       </div>
-      ${linesHtml}${scoreHtml}
-    </div>`;
+    </div>
+    ${linesHtml}${scoreHtml}
+  </div>`;
+}
+function parseESPNGames(events){
+  return events.map(ev=>{
+    const comp=ev.competitions[0];
+    const teams={};comp.competitors.forEach(t=>teams[t.homeAway]=t);
+    const home=teams.home||{},away=teams.away||{};
+    const stype=comp.status?.type||{};
+    const isFinal=stype.completed||false;
+    const isLive=['STATUS_IN_PROGRESS','STATUS_HALFTIME','STATUS_END_PERIOD'].includes(stype.name);
+    let timeStr='TBD';
+    try{
+      const dt=new Date(comp.date);
+      const h24=(dt.getUTCHours()-5+24)%24,m=dt.getUTCMinutes();
+      timeStr=`${h24%12||12}:${m.toString().padStart(2,'0')} ${h24<12?'AM':'PM'} CT`;
+    }catch(e){}
+    let spread=null,total=null,h_ml=null,a_ml=null;
+    try{
+      const o=(comp.odds||[])[0]||{};
+      if(o.details) spread=o.details;
+      if(o.overUnder) total='O/U '+o.overUnder;
+      const hmo=o.homeTeamOdds?.moneyLine;
+      const amo=o.awayTeamOdds?.moneyLine;
+      if(hmo) h_ml=(hmo>0?'+':'')+hmo;
+      if(amo) a_ml=(amo>0?'+':'')+amo;
+    }catch(e){}
+    let liveDetail='';
+    try{
+      if(isLive){
+        const period=comp.status?.period||'';
+        const clock=comp.status?.displayClock||'';
+        liveDetail=period&&clock?` · Q${period} ${clock}`:'';
+      }
+    }catch(e){}
+    return {
+      home:home.team?.displayName||'TBD',
+      away:away.team?.displayName||'TBD',
+      h_score:parseInt(home.score||0),
+      a_score:parseInt(away.score||0),
+      is_final:isFinal,is_live:isLive,
+      time:timeStr+liveDetail,
+      spread,total,h_ml,a_ml,
+      gameDate:comp.date||''
+    };
   });
 }
+function fmtDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function offsetDate(days){
+  // Use CT (UTC-6 CST / UTC-5 CDT) — just use UTC-5 as a safe middle ground
+  const now=new Date();
+  const ct=new Date(now.getTime()+(-5*3600000));
+  ct.setUTCDate(ct.getUTCDate()+days);
+  const y=ct.getUTCFullYear(),m=String(ct.getUTCMonth()+1).padStart(2,'0'),d=String(ct.getUTCDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+// ── ESPN game fetching ────────────────────────────────────────────
+const _gameCache={};
+
+async function fetchGames(dateStr,gridId){
+  const g=document.getElementById(gridId);
+  if(!g)return;
+  if(_gameCache[dateStr]!==undefined){renderGrid(dateStr,gridId);return;}
+  g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
+  try{
+    const ds=dateStr.replace(/-/g,'');
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${ds}`;
+    const r=await fetch(url);
+    const data=await r.json();
+    _gameCache[dateStr]=parseESPNGames(data.events||[]);
+  }catch(e){
+    _gameCache[dateStr]=[];
+    const g2=document.getElementById(gridId);
+    if(g2)g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error loading games: ${e.message}</p>`;
+    return;
+  }
+  renderGrid(dateStr,gridId);
+}
+
+function renderGrid(dateStr,gridId){
+  const g=document.getElementById(gridId);
+  if(!g)return;
+  const games=_gameCache[dateStr]||[];
+  if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled.</p>';return;}
+  g.innerHTML=games.map(buildGameCard).join('');
+}
+
+function renderGames(){
+  fetchGames(offsetDate(0),'games-grid');
+  setTimeout(()=>fetchGames(offsetDate(-1),'yesterday-grid'),2000);
+  setTimeout(()=>fetchGames(offsetDate(1),'tomorrow-grid'),4000);
+  setInterval(()=>{delete _gameCache[offsetDate(0)];fetchGames(offsetDate(0),'games-grid');},60000);
+}
+function renderYesterday(){renderGrid(offsetDate(-1),'yesterday-grid');}
+function renderTomorrow(){renderGrid(offsetDate(1),'tomorrow-grid');}
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
   body.classList.toggle('open');chev.classList.toggle('open');
@@ -199,13 +291,31 @@ function showPage(name,btn){
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function renderProps(data){
+function renderProps(allProps){
   const g=document.getElementById('props-grid');
+  const note=document.getElementById('props-tonight-note');
   if(!g)return;
-  data.forEach(p=>{
+  allProps.forEach(p=>{
     const bc=p.conf==='HIGH'?'b-high':'b-med';
     g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
   });
+}
+
+function switchSched(tab,btn){
+  ['today','yesterday','tomorrow'].forEach(t=>{
+    const el=document.getElementById('sched-'+t);
+    if(el) el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.sched-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(tab==='yesterday'&&!document.getElementById('yesterday-grid').dataset.loaded){
+    renderYesterday();
+    document.getElementById('yesterday-grid').dataset.loaded='1';
+  }
+  if(tab==='tomorrow'&&!document.getElementById('tomorrow-grid').dataset.loaded){
+    renderTomorrow();
+    document.getElementById('tomorrow-grid').dataset.loaded='1';
+  }
 }
 """
 
@@ -215,6 +325,7 @@ def page_shell(sport, acc, acc2, hero_rgba, today, tabs_html, pages_html):
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src https://fonts.gstatic.com; connect-src https://site.api.espn.com https://api.balldontlie.io; img-src 'self' data:;">
 <title>THE FIELD — {sport}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -233,19 +344,20 @@ def page_shell(sport, acc, acc2, hero_rgba, today, tabs_html, pages_html):
 </body>
 </html>"""
 
-def standings_block(el, wl, e_label, w_label, c1="PPG", c2="OPP"):
+def standings_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=False):
+    otl_th = "<th>OTL</th>" if show_otl else ""
     return f"""<div class="two-col">
   <div>
     <div class="section-title">{e_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}<th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">{w_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}<th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
   </div>
@@ -271,18 +383,59 @@ def storyline_articles(items):
         html += f'''<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{h}</div></div><span class="chev">▼</span></div><div class="art-body">{b}</div></div>'''
     return html
 
-def digest_articles(games, sport=""):
+def digest_articles(games, sport="", standings_east=None, standings_west=None):
     if not games:
         return '<p style="color:var(--gray)">No games yesterday.</p>'
+    # Build a standings lookup for context
+    all_teams = {}
+    for t in (standings_east or []) + (standings_west or []):
+        all_teams[t['t'].lower()] = t
     html = ""
     for g in games[:8]:
         hw = g['h_score'] > g['a_score']
         aw = g['a_score'] > g['h_score']
         h_style = "font-weight:700;color:var(--white)" if hw else "color:var(--gray)"
         a_style = "font-weight:700;color:var(--white)" if aw else "color:var(--gray)"
+        winner = g["home"] if hw else g["away"]
+        loser  = g["away"] if hw else g["home"]
+        w_score = max(g["h_score"], g["a_score"])
+        l_score = min(g["h_score"], g["a_score"])
         score_display = f'<span style="{h_style}">{g["home"]} {g["h_score"]}</span> &mdash; <span style="{a_style}">{g["away"]} {g["a_score"]}</span>'
-        recap = generate_recap(sport, g["home"], g["h_score"], g["away"], g["a_score"])
-        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{score_display}</div><div class="art-teams">Final</div></div><span class="chev">▼</span></div><div class="art-body">{recap}</div></div>"""
+        # Get standings context
+        w_team = all_teams.get(winner.lower(), {})
+        l_team = all_teams.get(loser.lower(), {})
+        w_rec = f"{w_team.get('w','??')}-{w_team.get('l','??')}" if w_team else ""
+        l_rec = f"{l_team.get('w','??')}-{l_team.get('l','??')}" if l_team else ""
+        rec_note = f" ({w_rec})" if w_rec else ""
+        opp_note = f" ({l_rec})" if l_rec else ""
+        # Build rich metadata strip
+        margin = abs(g["h_score"] - g["a_score"])
+        if margin <= 3:
+            game_type = "🔥 Nail-biter"
+        elif margin <= 8:
+            game_type = "⚔️ Competitive"
+        elif margin <= 18:
+            game_type = "✅ Convincing Win"
+        else:
+            game_type = "💥 Blowout"
+        # Build richer standings context
+        w_pos = ""
+        l_pos = ""
+        if w_team:
+            all_sorted = sorted((standings_east or []) + (standings_west or []), key=lambda x: -x.get('pct', 0))
+            try:
+                w_rank = next(i+1 for i,t in enumerate(all_sorted) if t['t'] == winner)
+                w_pos = f"#{w_rank} overall"
+            except StopIteration:
+                pass
+        meta = f'<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">'
+        meta += f'<span style="font-size:11px;font-family:Barlow Condensed,sans-serif;font-weight:700;letter-spacing:1px;color:var(--gold)">{game_type}</span>'
+        meta += f'<span style="font-size:11px;color:var(--gray)">Final: {g["h_score"]}-{g["a_score"]}</span>'
+        if w_rec: meta += f'<span style="font-size:11px;color:#4ade80">✓ {winner} {w_rec}{" · "+w_pos if w_pos else ""}</span>'
+        if l_rec: meta += f'<span style="font-size:11px;color:var(--gray)">✗ {loser} {l_rec}</span>'
+        meta += '</div>'
+        recap = generate_recap(sport, g["home"], g["h_score"], g["away"], g["a_score"], w_team=w_team, l_team=l_team)
+        html += f"""<div class="article"><div class="art-hdr" onclick="tog(this)"><div><div class="art-score">{score_display}</div><div class="art-teams">Final · {game_type}</div></div><span class="chev">▼</span></div><div class="art-body">{meta}{recap}</div></div>"""
     return html
 
 def magazine_page_html(sport, today, rnks, sidebar_html, storylines_html):
@@ -314,11 +467,17 @@ def tonight_page_html(sport, today):
     <div class="live-pill">🔴 LIVE TONIGHT</div>
     <div class="hero-eyebrow">{today}</div>
     <h1 class="hero-title">TONIGHT'S<br><em>GAMES</em></h1>
-    <p class="hero-sub">Live scores and tonight's {sport} matchups.</p>
+    <p class="hero-sub">Live scores and {sport} matchups.</p>
   </div></div>
   <div class="section">
-    <div class="section-title">Tonight's Games</div>
-    <div class="games-grid" id="games-grid"></div>
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="sched-tab active" onclick="switchSched('today',this)">🔴 Tonight</button>
+      <button class="sched-tab" onclick="switchSched('yesterday',this)">📋 Yesterday</button>
+      <button class="sched-tab" onclick="switchSched('tomorrow',this)">📅 Tomorrow</button>
+    </div>
+    <div id="sched-today"><div class="games-grid" id="games-grid"></div></div>
+    <div id="sched-yesterday" style="display:none"><div class="games-grid" id="yesterday-grid"></div></div>
+    <div id="sched-tomorrow" style="display:none"><div class="games-grid" id="tomorrow-grid"></div></div>
   </div>
 </div>"""
 
@@ -331,6 +490,7 @@ def props_page_html(sport, today):
   </div></div>
   <div class="section">
     <div class="section-title">Tonight's Best Props</div>
+    <div id="props-tonight-note" style="color:var(--gray);font-size:13px;margin-bottom:16px">Loading tonight's matchups...</div>
     <div class="props-grid" id="props-grid"></div>
     <p style="font-size:11px;color:var(--gray);margin-top:16px;text-align:center">For entertainment only. Not gambling advice. 1-800-GAMBLER.</p>
   </div>
@@ -393,52 +553,98 @@ def fetch_games(sport, league):
         return []
 
 
-def fallback_recap(home, h_score, away, a_score):
-    """Auto-generate a basic recap when no API data is available."""
+def fallback_recap(home, h_score, away, a_score, sport="", w_team=None, l_team=None):
+    """Auto-generate a rich recap with standings context."""
     winner = home if h_score > a_score else away
     loser  = away if h_score > a_score else home
     w_score = max(h_score, a_score)
     l_score = min(h_score, a_score)
     margin = abs(h_score - a_score)
-    if margin <= 2:
-        tone = "edged out"
-        nature = "a closely contested battle"
-    elif margin <= 8:
-        tone = "defeated"
-        nature = "a competitive matchup"
-    else:
-        tone = "dominated"
-        nature = "a convincing performance"
-    return (
-        f"{winner} {tone} {loser} {w_score}-{l_score} in {nature} last night. "
-        f"The {margin}-point margin told the story as {winner} controlled key stretches of the game to secure the win. "
-        f"The victory keeps {winner} moving in the right direction while {loser} will look to respond in their next outing."
-    )
+    home_won = h_score > a_score
 
-def fetch_bdl_recap(home, h_score, away, a_score):
-    """Fetch NBA game recap via BallDontLie, write rich recap from score data."""
+    # Standings context
+    w_rec = f"{w_team['w']}-{w_team['l']}" if w_team else None
+    l_rec = f"{l_team['w']}-{l_team['l']}" if l_team else None
+    w_pct = w_team.get('pct', 0) if w_team else 0
+    l_pct = l_team.get('pct', 0) if l_team else 0
+
+    # Sport-specific score language
+    if sport == "NHL":
+        unit = "goals"
+        close, comp, conv, blow = 1, 2, 3, 4
+    elif sport == "MLB":
+        unit = "runs"
+        close, comp, conv, blow = 1, 2, 4, 6
+    else:
+        unit = "points"
+        close, comp, conv, blow = 3, 8, 18, 999
+
+    rec_note = f", now {w_rec}," if w_rec else ""
+    opp_note = f", falling to {l_rec}," if l_rec else ""
+    playoff_note = ""
+    if w_team and w_pct >= 0.550:
+        playoff_note = f" {winner} remains firmly in playoff position."
+    elif l_team and l_pct <= 0.420:
+        playoff_note = f" {loser} continues to struggle in the standings."
+
+    if margin <= close:
+        s1 = f"{winner} edged {loser} {w_score}-{l_score} in a thrilling finish last night."
+        s2 = f"Just {margin} {unit} decided it — the kind of game that could have gone either way until the final moments."
+        s3 = f"{winner}{rec_note} will take the close win.{opp_note and f' {loser}{opp_note} will feel this one.'}{playoff_note}"
+    elif margin <= comp:
+        s1 = f"{winner} defeated {loser} {w_score}-{l_score} in a competitive contest last night."
+        s2 = f"{'Playing at home,' if home_won else 'On the road,'} {winner} found a way to pull ahead and held on for the {margin}-{unit} victory."
+        s3 = f"{winner}{rec_note} picks up a solid win.{opp_note and f' {loser}{opp_note} will look to bounce back.'}{playoff_note}"
+    elif margin <= conv:
+        s1 = f"{winner} took care of business against {loser} last night, winning {w_score}-{l_score}."
+        s2 = f"The {margin}-{unit} margin reflected {winner}'s control of the game — they set the tempo and never let {loser} dictate the action."
+        s3 = f"A quality win for {winner}{rec_note} as they strengthen their standing.{playoff_note}"
+    else:
+        s1 = f"{winner} put on a dominant display against {loser}, winning {w_score}-{l_score} in a lopsided affair."
+        s2 = f"The {margin}-{unit} gap was never in doubt — {winner} took over early and cruised to the comfortable victory."
+        s3 = f"{loser}{opp_note} will need to regroup after being handled so decisively.{playoff_note}"
+
+    return f"{s1} {s2} {s3}"
+
+_BDL_GAMES_CACHE = None
+
+def _fetch_bdl_games():
+    """Fetch all BallDontLie games for yesterday — cached so we only call once."""
+    global _BDL_GAMES_CACHE
+    if _BDL_GAMES_CACHE is not None:
+        return _BDL_GAMES_CACHE
     try:
         from datetime import timedelta
         ydate = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
         hdrs = {"Authorization": BALLDONTLIE_API_KEY}
-
         r = requests.get("https://api.balldontlie.io/nba/v1/games",
                          params={"dates[]": ydate, "per_page": 30},
                          headers=hdrs, timeout=10)
         r.raise_for_status()
-        games = r.json().get("data", [])
+        _BDL_GAMES_CACHE = r.json().get("data", [])
+        log(f"  ✅ BallDontLie: {len(_BDL_GAMES_CACHE)} games cached")
+    except Exception as e:
+        log(f"  ⚠️  BallDontLie fetch failed: {e}")
+        _BDL_GAMES_CACHE = []
+    return _BDL_GAMES_CACHE
+
+def fetch_bdl_recap(home, h_score, away, a_score, sport="NBA", w_team=None, l_team=None):
+    """Fetch NBA game recap via BallDontLie, write rich recap from score data."""
+    try:
+        games = _fetch_bdl_games()
 
         ht = at = hs = as_ = None
         for g in games:
-            ht = g.get("home_team", {}).get("full_name", "")
-            at = g.get("visitor_team", {}).get("full_name", "")
-            if (home.lower() in ht.lower() or ht.lower() in home.lower()) and                (away.lower() in at.lower() or at.lower() in away.lower()):
+            _ht = g.get("home_team", {}).get("full_name", "")
+            _at = g.get("visitor_team", {}).get("full_name", "")
+            if (home.lower() in _ht.lower() or _ht.lower() in home.lower()) and                (away.lower() in _at.lower() or _at.lower() in away.lower()):
+                ht, at = _ht, _at
                 hs = g.get("home_team_score", h_score)
                 as_ = g.get("visitor_team_score", a_score)
                 break
 
         if ht is None:
-            return fallback_recap(home, h_score, away, a_score)
+            return fallback_recap(home, h_score, away, a_score, sport=sport, w_team=w_team, l_team=l_team)
 
         winner = ht if hs > as_ else at
         loser  = at if hs > as_ else ht
@@ -463,17 +669,24 @@ def fetch_bdl_recap(home, h_score, away, a_score):
             s2 = f"The {margin}-point margin was a statement — {winner} led comfortably for most of the night and never let {loser} back into the game."
             s3 = f"{loser} will need to regroup quickly after being handled so decisively on the court."
 
+        # Add standings context if available
+        playoff_note = ""
+        if w_team and w_team.get('pct',0) >= 0.550:
+            playoff_note = f" {winner} stays firmly in playoff position at {w_team.get('w','?')}-{w_team.get('l','?')}."
+        elif l_team and l_team.get('pct',0) <= 0.420:
+            playoff_note = f" {loser} drops to {l_team.get('w','?')}-{l_team.get('l','?')} and continues to struggle."
+        if playoff_note:
+            s3 = s3 + playoff_note
+
         return f"{s1} {s2} {s3}"
 
     except Exception as e:
         log(f"  ⚠️  BallDontLie recap failed: {e}")
         return fallback_recap(home, h_score, away, a_score)
 
-def generate_recap(sport, home, h_score, away, a_score):
-    """Get a game recap — BallDontLie for NBA, fallback for others."""
-    if sport == "NBA":
-        return fetch_bdl_recap(home, h_score, away, a_score)
-    return fallback_recap(home, h_score, away, a_score)
+def generate_recap(sport, home, h_score, away, a_score, w_team=None, l_team=None):
+    """Get a game recap — fallback for all sports."""
+    return fallback_recap(home, h_score, away, a_score, sport=sport, w_team=w_team, l_team=l_team)
 
 def fetch_yesterday(sport, league):
     """Fetch completed games from yesterday via ESPN scoreboard dates param."""
@@ -630,11 +843,12 @@ def fetch_nhl_standings():
                             vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
                             w   = int(float(vals.get("wins",0) or 0))
                             l   = int(float(vals.get("losses",0) or 0))
-                            gp  = w+l or 1
+                            otl = int(float(vals.get("otLosses", vals.get("overtimeLosses",0)) or 0))
+                            gp  = w+l+otl or 1
                             ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                             net = round(ppg-opp, 1)
-                            t = dict(t=name, w=w, l=l, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=div_name)
+                            t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=div_name)
                             if is_west: west.append(t)
                             else: east.append(t)
                         except: continue
@@ -645,11 +859,12 @@ def fetch_nhl_standings():
                         vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
                         w   = int(float(vals.get("wins",0) or 0))
                         l   = int(float(vals.get("losses",0) or 0))
-                        gp  = w+l or 1
+                        otl = int(float(vals.get("otLosses", vals.get("overtimeLosses",0)) or 0))
+                        gp  = w+l+otl or 1
                         ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                         opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                         net = round(ppg-opp, 1)
-                        t = dict(t=name, w=w, l=l, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div="")
+                        t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div="")
                         if is_west: west.append(t)
                         else: east.append(t)
                     except: continue
@@ -764,6 +979,44 @@ def fetch_nfl_standings():
 # HTML GENERATORS
 # ════════════════════════════════════════════════════════════════
 
+# Master player prop database — only shown when their team plays tonight
+NBA_PROPS_DB = [
+    {"player":"Shai Gilgeous-Alexander","team":"Oklahoma City Thunder","line":"Over 31.5 Pts","odds":"-115","conf":"HIGH","cls":"high","reason":"SGA leads the league at 32.5 PPG and has hit this in 8 of his last 10."},
+    {"player":"Nikola Jokic","team":"Denver Nuggets","line":"Over 10.5 Reb","odds":"-120","conf":"HIGH","cls":"high","reason":"Jokic averages 12.6 RPG - consistently clears this line at home and away."},
+    {"player":"Donovan Mitchell","team":"Cleveland Cavaliers","line":"Over 26.5 Pts","odds":"-118","conf":"HIGH","cls":"high","reason":"Mitchell is the Cavs engine - hits this in 65%+ of games this season."},
+    {"player":"Anthony Edwards","team":"Minnesota Timberwolves","line":"Over 25.5 Pts","odds":"-110","conf":"HIGH","cls":"high","reason":"Ant is the Wolves primary scorer and hits this line at an elite rate."},
+    {"player":"Jayson Tatum","team":"Boston Celtics","line":"Over 26.5 Pts","odds":"-112","conf":"HIGH","cls":"high","reason":"Tatum is Boston go-to option every night - volume is always there."},
+    {"player":"Tyrese Haliburton","team":"Indiana Pacers","line":"Over 9.5 Ast","odds":"-112","conf":"HIGH","cls":"high","reason":"Haliburton leads the league in assists - this line is conservative."},
+    {"player":"Luka Doncic","team":"Dallas Mavericks","line":"Over 28.5 Pts","odds":"-114","conf":"HIGH","cls":"high","reason":"Luka averaging 29+ PPG — dominant usage rate in Dallas."},
+    {"player":"Giannis Antetokounmpo","team":"Milwaukee Bucks","line":"Over 11.5 Reb","odds":"-118","conf":"HIGH","cls":"high","reason":"The Greek Freak is a rebounding machine — hits this in 70% of games."},
+    {"player":"Ja Morant","team":"Memphis Grizzlies","line":"Over 22.5 Pts","odds":"-108","conf":"HIGH","cls":"high","reason":"Morant back in full swing — Grizzlies offense flows through him."},
+    {"player":"LeBron James","team":"Los Angeles Lakers","line":"Over 7.5 Ast","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"LeBrons playmaking is elite — dishes at a high rate every game."},
+    {"player":"Stephen Curry","team":"Golden State Warriors","line":"Over 4.5 Threes","odds":"-105","conf":"MEDIUM","cls":"medium","reason":"Currys volume from deep makes this line beatable on most nights."},
+    {"player":"Devin Booker","team":"Phoenix Suns","line":"Over 27.5 Pts","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Book is the Suns primary scorer — consistent output all season."},
+    {"player":"Kevin Durant","team":"Phoenix Suns","line":"Over 26.5 Pts","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"KDs efficiency is elite — hits this line in most games this year."},
+    {"player":"Zion Williamson","team":"New Orleans Pelicans","line":"Over 24.5 Pts","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"When healthy, Zion dominates inside and posts big scoring nights."},
+    {"player":"Trae Young","team":"Atlanta Hawks","line":"Over 9.5 Ast","odds":"-115","conf":"MEDIUM","cls":"medium","reason":"Trae is the Hawks offense — his assists number is consistent."},
+    {"player":"Darius Garland","team":"Cleveland Cavaliers","line":"Over 22.5 Pts","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Garland is Cavs second option — hits this when Mitchell is on."},
+    {"player":"Paolo Banchero","team":"Orlando Magic","line":"Over 22.5 Pts","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"Banchero is Orlandos cornerstone scorer — reliable prop target."},
+    {"player":"Bam Adebayo","team":"Miami Heat","line":"Over 9.5 Reb","odds":"-114","conf":"MEDIUM","cls":"medium","reason":"Bam is a rebounding anchor for Miami — consistently hits this."},
+    {"player":"Cade Cunningham","team":"Detroit Pistons","line":"Over 23.5 Pts","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Cunningham carrying Detroit — big usage and scoring every night."},
+    {"player":"Jalen Brunson","team":"New York Knicks","line":"Over 25.5 Pts","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Brunson is NYCs star — hits this mark consistently at MSG and away."},
+]
+
+def build_nba_props(today_games):
+    """Return props only for players whose teams are playing tonight."""
+    if not today_games:
+        return NBA_PROPS_DB[:6]
+    playing_teams = set()
+    for g in today_games:
+        playing_teams.add(g.get("home","").lower())
+        playing_teams.add(g.get("away","").lower())
+    filtered = [p for p in NBA_PROPS_DB if any(
+        pt in p["team"].lower() or p["team"].lower() in pt
+        for pt in playing_teams
+    )]
+    return filtered if filtered else NBA_PROPS_DB[:6]
+
 def generate_nba_html(east, west, yesterday, today_games):
     log("🌐 Generating nba.html...")
     today   = datetime.now().strftime("%B %-d, %Y")
@@ -771,14 +1024,7 @@ def generate_nba_html(east, west, yesterday, today_games):
     tj      = json.dumps(today_games)
     all_t   = sorted(east+west, key=lambda x:-x["pct"])
 
-    props = [
-        {"player":"Shai Gilgeous-Alexander","team":"Oklahoma City Thunder","line":"Over 31.5 points","odds":"-115","conf":"HIGH","cls":"high","reason":"SGA is averaging 32.5 PPG — the best scorer in the league right now."},
-        {"player":"Donovan Mitchell","team":"Cleveland Cavaliers","line":"Over 26.5 points","odds":"-118","conf":"HIGH","cls":"high","reason":"Mitchell is locked in as the Cavs' go-to scorer every night."},
-        {"player":"Nikola Jokic","team":"Denver Nuggets","line":"Over 10.5 rebounds","odds":"-120","conf":"HIGH","cls":"high","reason":"Jokic averages 12.6 RPG — consistently below his season average."},
-        {"player":"Anthony Edwards","team":"Minnesota Timberwolves","line":"Over 25.5 points","odds":"-110","conf":"HIGH","cls":"high","reason":"Ant is the engine of the Wolves offense — hits this in 60%+ of games."},
-        {"player":"Jayson Tatum","team":"Boston Celtics","line":"Over 5.5 assists","odds":"-105","conf":"MEDIUM","cls":"medium","reason":"Tatum's playmaking has elevated as the Celtics run more through him."},
-        {"player":"Tyrese Haliburton","team":"Indiana Pacers","line":"Over 9.5 assists","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Haliburton leads the league in assists — this line is conservative."},
-    ]
+    props = build_nba_props(today_games)
     pj = json.dumps(props)
 
     rnks = rankings_html(all_t, [
@@ -841,13 +1087,13 @@ def generate_nba_html(east, west, yesterday, today_games):
       <div class="dhl">Last Night NBA Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    {digest_articles(yesterday,"NBA")}
+    {digest_articles(yesterday,"NBA",east,west)}
   </div>
 </div>
 {nba_mag_html}
 {props_page_html("NBA",today)}
 """
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NBA","#c8102e","#e8132f","rgba(200,16,46,0.11)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nba.html", html)
@@ -865,7 +1111,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
         {"player":"Nathan MacKinnon","team":"Colorado Avalanche","line":"Over 0.5 goals","odds":"-115","conf":"HIGH","cls":"high","reason":"MacKinnon leads the Avs in shots and scoring chances every night."},
         {"player":"Auston Matthews","team":"Toronto Maple Leafs","line":"Over 3.5 shots","odds":"-120","conf":"HIGH","cls":"high","reason":"Matthews averages 4.2 SOG — this line is below his season average."},
         {"player":"Leon Draisaitl","team":"Edmonton Oilers","line":"Over 1.5 points","odds":"-118","conf":"HIGH","cls":"high","reason":"Draisaitl racks up points in bunches. Power play alone drives this line."},
-        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Pastrnak is Boston's most dangerous scorer with premium power play time."},
+        {"player":"David Pastrnak","team":"Boston Bruins","line":"Over 0.5 goals","odds":"-108","conf":"MEDIUM","cls":"medium","reason":"Pastrnak is Bostons most dangerous scorer with premium power play time."},
         {"player":"Cale Makar","team":"Colorado Avalanche","line":"Over 1.5 shots","odds":"-125","conf":"MEDIUM","cls":"medium","reason":"Makar logs 25+ minutes — elite shot volume for a D-man."},
     ]
     pj = json.dumps(props)
@@ -899,7 +1145,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
     <h1 class="hero-title">NHL<br><em>STANDINGS</em></h1>
     <p class="hero-sub">Eastern and Western Conference standings.</p>
   </div></div>
-  <div class="section">{standings_block(ej,wj,"Eastern Conference","Western Conference","GF/G","GA/G")}</div>
+  <div class="section">{standings_block(ej,wj,"Eastern Conference","Western Conference","GF/G","GA/G",show_otl=True)}</div>
 </div>
 {tonight_page_html("NHL",today)}
 <div id="page-digest" class="page">
@@ -909,7 +1155,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
       <div class="dhl">Last Night NHL Action</div>
       <div class="ddeck">Scores and recaps from yesterday's games.</div>
     </div>
-    {digest_articles(yesterday,"NHL")}
+    {digest_articles(yesterday,"NHL",east,west)}
   </div>
 </div>
 """ + magazine_page_html("NHL", today, rnks,
@@ -937,7 +1183,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
             ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
         ])
     ) + props_page_html("NHL", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nhl.html", html)
@@ -953,7 +1199,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
     props = [
         {"player":"Shohei Ohtani","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-125","conf":"HIGH","cls":"high","reason":"Ohtani barrels the ball at an elite rate. Achievable in a single hit."},
         {"player":"Aaron Judge","team":"New York Yankees","line":"Over 0.5 home runs","odds":"+185","conf":"HIGH","cls":"high","reason":"Judge leads MLB in HR. Great value for the best power hitter in baseball."},
-        {"player":"Freddie Freeman","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Freeman is the Dodgers' most consistent contact hitter."},
+        {"player":"Freddie Freeman","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-115","conf":"HIGH","cls":"high","reason":"Freeman is the Dodgers most consistent contact hitter."},
         {"player":"Juan Soto","team":"New York Yankees","line":"Over 0.5 walks","odds":"-130","conf":"HIGH","cls":"high","reason":"Soto has an elite eye and draws walks in the majority of his games."},
         {"player":"Mookie Betts","team":"Los Angeles Dodgers","line":"Over 1.5 total bases","odds":"-110","conf":"MEDIUM","cls":"medium","reason":"One of the most consistent performers in baseball."},
         {"player":"Ronald Acuña Jr.","team":"Atlanta Braves","line":"Over 0.5 stolen bases","odds":"+110","conf":"MEDIUM","cls":"medium","reason":"Most dangerous baserunner in baseball. Plus money is great value."},
@@ -981,7 +1227,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
     alwc = f"{al[5]['w']}-{al[5]['l']}" if len(al)>5 else "—"
     nlwc = f"{nl[5]['w']}-{nl[5]['l']}" if len(nl)>5 else "—"
     digest_note = yesterday if yesterday else []
-    digest_fallback = digest_articles(digest_note,"MLB") if digest_note else '<p style="color:var(--gray)">Spring training underway — regular season starts April 1.</p>'
+    digest_fallback = digest_articles(digest_note,"MLB",al,nl) if digest_note else '<p style="color:var(--gray)">Spring training underway — regular season starts April 1.</p>'
 
     tabs = """<button class="nav-link active" onclick="showPage('standings',this)">Standings</button>
       <button class="nav-link" onclick="showPage('tonight',this)">Tonight</button>
@@ -1033,7 +1279,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
             ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
         ])
     ) + props_page_html("MLB", today)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("mlb.html", html)
