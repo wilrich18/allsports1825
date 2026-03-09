@@ -174,11 +174,14 @@ footer strong{color:var(--white);}</style>
 function renderStandings(data,id){
   const tb=document.getElementById(id);
   if(!tb)return;
+  const tbl=tb.closest('table');
+  const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
   const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
   sorted.forEach((t,i)=>{
     const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
     const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td><td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
+    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
   });
 }
 function buildGameCard(gm){
@@ -263,59 +266,55 @@ function fmtDate(d){
 function offsetDate(days){
   const d=new Date();d.setDate(d.getDate()+days);return fmtDate(d);
 }
-function buildBDLCard(g){
-  const ht=g.home_team?.full_name||'TBD',at=g.visitor_team?.full_name||'TBD';
-  const hs=g.home_team_score||0,as=g.visitor_team_score||0;
-  const isFinal=g.status==='Final';
-  const isLive=g.period>0&&!isFinal;
-  const hw=isFinal&&hs>as,aw=isFinal&&as>hs;
-  let lbl=isFinal?'<span style="color:var(--gold)">FINAL</span>':isLive?'<span style="color:#4ade80;font-weight:700">● LIVE</span>':'<span style="color:var(--gray)">Scheduled</span>';
-  let scoreHtml='';
-  if(isFinal||isLive) scoreHtml=`<div class="game-score"><span class="gscore ${hw?'w':'l'}">${hs}</span><span class="gfinal">${isFinal?'FINAL':'LIVE'}</span><span class="gscore ${aw?'w':'l'}">${as}</span></div>`;
-  return `<div class="game-card"><div class="game-card-top"><div class="game-time">${lbl}</div><div class="game-matchup"><div style="flex:1"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#4ade80;margin-bottom:2px">HOME</div><div class="game-team fav">${ht}</div></div><div class="game-vs">vs</div><div style="flex:1;text-align:right"><div style="font-size:10px;letter-spacing:1px;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--gray);margin-bottom:2px">AWAY</div><div class="game-team dog">${at}</div></div></div></div>${scoreHtml}</div>`;
-}
-async function fetchBDLGames(dateStr,gridId){
+// ── ESPN game fetching for all sports ───────────────────────────
+const _espnCache={};
+
+async function fetchESPNGames(dateStr, gridId){
   const g=document.getElementById(gridId);
   if(!g)return;
-  g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
-  try{
-    const r=await fetch(`https://api.balldontlie.io/nba/v1/games?dates[]=${dateStr}&per_page=30`,{headers:{"Authorization":BDL_KEY}});
-    const data=await r.json();
-    const games=data.data||[];
-    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games found.</p>';return;}
-    g.innerHTML=games.map(buildBDLCard).join('');
-  }catch(e){
-    g.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+  if(_espnCache[dateStr]!==undefined){
+    _renderESPNGrid(dateStr,gridId);
+    return;
   }
-}
-async function fetchESPNGames(dateStr,gridId){
-  const g=document.getElementById(gridId);
-  if(!g)return;
   g.innerHTML='<p style="color:var(--gray);padding:20px 0">Loading...</p>';
   try{
     const url=`https://site.api.espn.com/apis/site/v2/sports/${ESPN_SPORT}/${ESPN_LEAGUE}/scoreboard?dates=${dateStr.replace(/-/g,'')}`;
     const r=await fetch(url);
     const data=await r.json();
-    const games=parseESPNGames(data.events||[]);
-    if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games found.</p>';return;}
-    g.innerHTML=games.map(buildGameCard).join('');
+    _espnCache[dateStr]=parseESPNGames(data.events||[]);
   }catch(e){
-    g.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+    _espnCache[dateStr]=[];
+    const g2=document.getElementById(gridId);
+    if(g2) g2.innerHTML=`<p style="color:#f87171;padding:20px 0">Error: ${e.message}</p>`;
+    return;
   }
+  _renderESPNGrid(dateStr,gridId);
 }
-async function fetchGames(dateStr,gridId){
-  if(BDL_KEY&&ESPN_LEAGUE==='nba') return fetchBDLGames(dateStr,gridId);
-  return fetchESPNGames(dateStr,gridId);
+
+function _renderESPNGrid(dateStr,gridId){
+  const g=document.getElementById(gridId);
+  if(!g)return;
+  const games=_espnCache[dateStr]||[];
+  if(!games.length){g.innerHTML='<p style="color:var(--gray);padding:20px 0">No games scheduled.</p>';return;}
+  g.innerHTML=games.map(buildGameCard).join('');
 }
+
 function renderGames(){
-  fetchGames(offsetDate(0),'games-grid');
-  setInterval(()=>fetchGames(offsetDate(0),'games-grid'),30000);
+  // Fetch tonight immediately, stagger yesterday and tomorrow
+  fetchESPNGames(offsetDate(0),'games-grid');
+  setTimeout(()=>fetchESPNGames(offsetDate(-1),'yesterday-grid'),2000);
+  setTimeout(()=>fetchESPNGames(offsetDate(1),'tomorrow-grid'),4000);
+  // Refresh tonight every 60s
+  setInterval(()=>{
+    delete _espnCache[offsetDate(0)];
+    fetchESPNGames(offsetDate(0),'games-grid');
+  },60000);
 }
 function renderYesterday(){
-  fetchGames(offsetDate(-1),'yesterday-grid');
+  _renderESPNGrid(offsetDate(-1),'yesterday-grid');
 }
 function renderTomorrow(){
-  fetchGames(offsetDate(1),'tomorrow-grid');
+  _renderESPNGrid(offsetDate(1),'tomorrow-grid');
 }
 function tog(hdr){
   const body=hdr.nextElementSibling,chev=hdr.querySelector('.chev');
@@ -329,13 +328,41 @@ function showPage(name,btn){
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function renderProps(data){
+function renderProps(allProps){
   const g=document.getElementById('props-grid');
+  const note=document.getElementById('props-tonight-note');
   if(!g)return;
-  data.forEach(p=>{
-    const bc=p.conf==='HIGH'?'b-high':'b-med';
-    g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
-  });
+  // Wait for tonight's games to load, then filter props to only playing teams
+  function doRender(){
+    const todayStr=offsetDate(0);
+    const cached=_espnCache[todayStr];
+    if(!cached){
+      setTimeout(doRender,800);
+      return;
+    }
+    const tonightTeams=new Set();
+    cached.forEach(gm=>{
+      tonightTeams.add(gm.home.toLowerCase());
+      tonightTeams.add(gm.away.toLowerCase());
+    });
+    const filtered=tonightTeams.size>0
+      ? allProps.filter(p=>tonightTeams.has(p.team.toLowerCase())||[...tonightTeams].some(t=>p.team.toLowerCase().includes(t.split(' ').pop().toLowerCase())))
+      : allProps;
+    if(note){
+      note.textContent=tonightTeams.size>0
+        ? `Showing props for tonight's ${cached.length} game${cached.length!==1?'s':''} · ${filtered.length} props`
+        : 'Could not load tonight's schedule';
+    }
+    if(!filtered.length){
+      g.innerHTML='<p style="color:var(--gray)">No props available for tonight's games.</p>';
+      return;
+    }
+    filtered.forEach(p=>{
+      const bc=p.conf==='HIGH'?'b-high':'b-med';
+      g.innerHTML+=`<div class="prop-card ${p.cls}"><div class="prop-player">${p.player}</div><div class="prop-team">${p.team}</div><div class="prop-line">${p.line}</div><div class="prop-odds">${p.odds}</div><div class="prop-badge ${bc}">${p.conf}</div><div class="prop-reason">${p.reason}</div></div>`;
+    });
+  }
+  doRender();
 }
 function switchSched(tab,btn){
   ['today','yesterday','tomorrow'].forEach(t=>{

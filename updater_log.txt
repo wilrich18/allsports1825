@@ -1350,3 +1350,489 @@
 [2026-03-09 09:28:14] 🎉  All done! 5 files updated in:
 [2026-03-09 09:28:14]     /Users/williamrichter/Desktop/ALLSPORTS/
 [2026-03-09 09:28:14] =======================================================
+[2026-03-09 09:29:36] =======================================================
+[2026-03-09 09:29:36] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:29:36] =======================================================
+[2026-03-09 09:29:36] 
+[1/4] NBA
+[2026-03-09 09:29:36] 🏀 Fetching NBA standings...
+[2026-03-09 09:29:36]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:29:37]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:29:37] 🌐 Generating nba.html...
+[2026-03-09 09:29:37]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:29:37]   ✅ nba.html saved (43,418 chars)
+[2026-03-09 09:29:37] 
+[2/4] NHL
+[2026-03-09 09:29:37] 🏒 Fetching NHL standings...
+[2026-03-09 09:29:37]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:29:38]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:29:38] 🌐 Generating nhl.html...
+[2026-03-09 09:29:38]   ✅ nhl.html saved (42,621 chars)
+[2026-03-09 09:29:38] 
+[3/4] MLB
+[2026-03-09 09:29:38] ⚾ Fetching MLB standings...
+[2026-03-09 09:29:38]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:29:38]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:29:38] 🌐 Generating mlb.html...
+[2026-03-09 09:29:38]   ✅ mlb.html saved (40,797 chars)
+[2026-03-09 09:29:38] 
+[4/4] NFL
+[2026-03-09 09:29:38] 🏈 Fetching NFL standings...
+[2026-03-09 09:29:38]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:29:38] 🌐 Generating nfl.html...
+[2026-03-09 09:29:38]   ✅ nfl.html saved (34,163 chars)
+[2026-03-09 09:29:38] 
+[5/5] Hub
+[2026-03-09 09:29:38] 🌐 Generating index.html...
+[2026-03-09 09:29:38]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:29:38] 
+=======================================================
+[2026-03-09 09:29:38] 🎉  All done! 5 files updated in:
+[2026-03-09 09:29:38]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:29:38] =======================================================
+[2026-03-09 09:32:15] =======================================================
+[2026-03-09 09:32:15] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:32:15] =======================================================
+[2026-03-09 09:32:15] 
+[1/4] NBA
+[2026-03-09 09:32:15] 🏀 Fetching NBA standings...
+[2026-03-09 09:32:16]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:32:16]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:32:16] 🌐 Generating nba.html...
+[2026-03-09 09:32:16]   ⚠️  BallDontLie fetch failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:32:16]   ✅ nba.html saved (43,928 chars)
+[2026-03-09 09:32:16] 
+[2/4] NHL
+[2026-03-09 09:32:16] 🏒 Fetching NHL standings...
+[2026-03-09 09:32:16]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:32:17]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:32:17] 🌐 Generating nhl.html...
+[2026-03-09 09:32:17]   ✅ nhl.html saved (43,165 chars)
+[2026-03-09 09:32:17] 
+[3/4] MLB
+[2026-03-09 09:32:17] ⚾ Fetching MLB standings...
+[2026-03-09 09:32:17]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:32:17]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:32:17] 🌐 Generating mlb.html...
+[2026-03-09 09:32:17]   ✅ mlb.html saved (41,341 chars)
+[2026-03-09 09:32:17] 
+[4/4] NFL
+[2026-03-09 09:32:17] 🏈 Fetching NFL standings...
+[2026-03-09 09:32:18]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:32:18] 🌐 Generating nfl.html...
+[2026-03-09 09:32:18]   ✅ nfl.html saved (34,707 chars)
+[2026-03-09 09:32:18] 
+[5/5] Hub
+[2026-03-09 09:32:18] 🌐 Generating index.html...
+[2026-03-09 09:32:18]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:32:18] 
+=======================================================
+[2026-03-09 09:32:18] 🎉  All done! 5 files updated in:
+[2026-03-09 09:32:18]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:32:18] =======================================================
+[2026-03-09 09:33:58] =======================================================
+[2026-03-09 09:33:58] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:33:58] =======================================================
+[2026-03-09 09:33:58] 
+[1/4] NBA
+[2026-03-09 09:33:58] 🏀 Fetching NBA standings...
+[2026-03-09 09:33:58]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:33:58]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:33:58] 🌐 Generating nba.html...
+[2026-03-09 09:33:59]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:33:59]   ✅ nba.html saved (45,125 chars)
+[2026-03-09 09:33:59] 
+[2/4] NHL
+[2026-03-09 09:33:59] 🏒 Fetching NHL standings...
+[2026-03-09 09:33:59]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:33:59]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:33:59] 🌐 Generating nhl.html...
+[2026-03-09 09:33:59]   ✅ nhl.html saved (44,328 chars)
+[2026-03-09 09:33:59] 
+[3/4] MLB
+[2026-03-09 09:33:59] ⚾ Fetching MLB standings...
+[2026-03-09 09:33:59]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:34:00]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:34:00] 🌐 Generating mlb.html...
+[2026-03-09 09:34:00]   ✅ mlb.html saved (42,504 chars)
+[2026-03-09 09:34:00] 
+[4/4] NFL
+[2026-03-09 09:34:00] 🏈 Fetching NFL standings...
+[2026-03-09 09:34:00]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:34:00] 🌐 Generating nfl.html...
+[2026-03-09 09:34:00]   ✅ nfl.html saved (35,870 chars)
+[2026-03-09 09:34:00] 
+[5/5] Hub
+[2026-03-09 09:34:00] 🌐 Generating index.html...
+[2026-03-09 09:34:00]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:34:00] 
+=======================================================
+[2026-03-09 09:34:00] 🎉  All done! 5 files updated in:
+[2026-03-09 09:34:00]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:34:00] =======================================================
+[2026-03-09 09:36:57] =======================================================
+[2026-03-09 09:36:57] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:36:57] =======================================================
+[2026-03-09 09:36:57] 
+[1/4] NBA
+[2026-03-09 09:36:57] 🏀 Fetching NBA standings...
+[2026-03-09 09:36:58]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:36:58]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:36:58] 🌐 Generating nba.html...
+[2026-03-09 09:36:58]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:36:58]   ✅ nba.html saved (41,985 chars)
+[2026-03-09 09:36:58] 
+[2/4] NHL
+[2026-03-09 09:36:58] 🏒 Fetching NHL standings...
+[2026-03-09 09:36:59]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:36:59]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:36:59] 🌐 Generating nhl.html...
+[2026-03-09 09:36:59]   ✅ nhl.html saved (41,224 chars)
+[2026-03-09 09:36:59] 
+[3/4] MLB
+[2026-03-09 09:36:59] ⚾ Fetching MLB standings...
+[2026-03-09 09:36:59]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:37:00]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:37:00] 🌐 Generating mlb.html...
+[2026-03-09 09:37:00]   ✅ mlb.html saved (39,400 chars)
+[2026-03-09 09:37:00] 
+[4/4] NFL
+[2026-03-09 09:37:00] 🏈 Fetching NFL standings...
+[2026-03-09 09:37:00]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:37:00] 🌐 Generating nfl.html...
+[2026-03-09 09:37:00]   ✅ nfl.html saved (32,783 chars)
+[2026-03-09 09:37:00] 
+[5/5] Hub
+[2026-03-09 09:37:00] 🌐 Generating index.html...
+[2026-03-09 09:37:00]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:37:00] 
+=======================================================
+[2026-03-09 09:37:00] 🎉  All done! 5 files updated in:
+[2026-03-09 09:37:00]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:37:00] =======================================================
+[2026-03-09 09:40:03] =======================================================
+[2026-03-09 09:40:03] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:40:03] =======================================================
+[2026-03-09 09:40:03] 
+[1/4] NBA
+[2026-03-09 09:40:03] 🏀 Fetching NBA standings...
+[2026-03-09 09:40:03]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:40:04]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:40:04] 🌐 Generating nba.html...
+[2026-03-09 09:40:04]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:40:04]   ✅ nba.html saved (42,175 chars)
+[2026-03-09 09:40:04] 
+[2/4] NHL
+[2026-03-09 09:40:04] 🏒 Fetching NHL standings...
+[2026-03-09 09:40:04]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:40:04]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:40:04] 🌐 Generating nhl.html...
+[2026-03-09 09:40:04]   ✅ nhl.html saved (41,772 chars)
+[2026-03-09 09:40:04] 
+[3/4] MLB
+[2026-03-09 09:40:05] ⚾ Fetching MLB standings...
+[2026-03-09 09:40:05]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:40:05]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:40:05] 🌐 Generating mlb.html...
+[2026-03-09 09:40:05]   ✅ mlb.html saved (39,590 chars)
+[2026-03-09 09:40:05] 
+[4/4] NFL
+[2026-03-09 09:40:05] 🏈 Fetching NFL standings...
+[2026-03-09 09:40:05]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:40:05] 🌐 Generating nfl.html...
+[2026-03-09 09:40:05]   ✅ nfl.html saved (32,973 chars)
+[2026-03-09 09:40:05] 
+[5/5] Hub
+[2026-03-09 09:40:05] 🌐 Generating index.html...
+[2026-03-09 09:40:05]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:40:05] 
+=======================================================
+[2026-03-09 09:40:05] 🎉  All done! 5 files updated in:
+[2026-03-09 09:40:05]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:40:05] =======================================================
+[2026-03-09 09:50:43] =======================================================
+[2026-03-09 09:50:43] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:50:43] =======================================================
+[2026-03-09 09:50:43] 
+[1/4] NBA
+[2026-03-09 09:50:43] 🏀 Fetching NBA standings...
+[2026-03-09 09:50:43]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:50:44]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:50:44] 🌐 Generating nba.html...
+[2026-03-09 09:50:45]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:50:45]   ✅ nba.html saved (49,242 chars)
+[2026-03-09 09:50:45] 
+[2/4] NHL
+[2026-03-09 09:50:45] 🏒 Fetching NHL standings...
+[2026-03-09 09:50:45]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:50:45]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:50:45] 🌐 Generating nhl.html...
+[2026-03-09 09:50:45]   ✅ nhl.html saved (46,173 chars)
+[2026-03-09 09:50:45] 
+[3/4] MLB
+[2026-03-09 09:50:46] ⚾ Fetching MLB standings...
+[2026-03-09 09:50:46]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:50:46]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:50:46] 🌐 Generating mlb.html...
+[2026-03-09 09:50:47]   ✅ mlb.html saved (42,421 chars)
+[2026-03-09 09:50:47] 
+[4/4] NFL
+[2026-03-09 09:50:47] 🏈 Fetching NFL standings...
+[2026-03-09 09:50:47]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:50:47] 🌐 Generating nfl.html...
+[2026-03-09 09:50:47]   ✅ nfl.html saved (34,054 chars)
+[2026-03-09 09:50:47] 
+[5/5] Hub
+[2026-03-09 09:50:47] 🌐 Generating index.html...
+[2026-03-09 09:50:47]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:50:47] 
+=======================================================
+[2026-03-09 09:50:47] 🎉  All done! 5 files updated in:
+[2026-03-09 09:50:47]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:50:47] =======================================================
+[2026-03-09 09:51:06] =======================================================
+[2026-03-09 09:51:06] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:51:06] =======================================================
+[2026-03-09 09:51:06] 
+[1/4] NBA
+[2026-03-09 09:51:06] 🏀 Fetching NBA standings...
+[2026-03-09 09:51:06]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:51:07]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:51:07] 🌐 Generating nba.html...
+[2026-03-09 09:51:07]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:51:07]   ✅ nba.html saved (49,242 chars)
+[2026-03-09 09:51:07] 
+[2/4] NHL
+[2026-03-09 09:51:07] 🏒 Fetching NHL standings...
+[2026-03-09 09:51:08]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:51:08]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:51:08] 🌐 Generating nhl.html...
+[2026-03-09 09:51:08]   ✅ nhl.html saved (46,173 chars)
+[2026-03-09 09:51:08] 
+[3/4] MLB
+[2026-03-09 09:51:08] ⚾ Fetching MLB standings...
+[2026-03-09 09:51:08]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:51:08]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:51:08] 🌐 Generating mlb.html...
+[2026-03-09 09:51:08]   ✅ mlb.html saved (42,421 chars)
+[2026-03-09 09:51:08] 
+[4/4] NFL
+[2026-03-09 09:51:08] 🏈 Fetching NFL standings...
+[2026-03-09 09:51:09]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:51:09] 🌐 Generating nfl.html...
+[2026-03-09 09:51:09]   ✅ nfl.html saved (34,054 chars)
+[2026-03-09 09:51:09] 
+[5/5] Hub
+[2026-03-09 09:51:09] 🌐 Generating index.html...
+[2026-03-09 09:51:09]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:51:09] 
+=======================================================
+[2026-03-09 09:51:09] 🎉  All done! 5 files updated in:
+[2026-03-09 09:51:09]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:51:09] =======================================================
+[2026-03-09 09:52:50] =======================================================
+[2026-03-09 09:52:50] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:52:50] =======================================================
+[2026-03-09 09:52:50] 
+[1/4] NBA
+[2026-03-09 09:52:50] 🏀 Fetching NBA standings...
+[2026-03-09 09:52:51]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:52:51]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:52:51] 🌐 Generating nba.html...
+[2026-03-09 09:52:51]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:52:51]   ✅ nba.html saved (43,418 chars)
+[2026-03-09 09:52:51] 
+[2/4] NHL
+[2026-03-09 09:52:51] 🏒 Fetching NHL standings...
+[2026-03-09 09:52:51]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:52:52]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:52:52] 🌐 Generating nhl.html...
+[2026-03-09 09:52:52]   ✅ nhl.html saved (42,621 chars)
+[2026-03-09 09:52:52] 
+[3/4] MLB
+[2026-03-09 09:52:52] ⚾ Fetching MLB standings...
+[2026-03-09 09:52:52]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:52:52]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:52:52] 🌐 Generating mlb.html...
+[2026-03-09 09:52:52]   ✅ mlb.html saved (40,797 chars)
+[2026-03-09 09:52:52] 
+[4/4] NFL
+[2026-03-09 09:52:52] 🏈 Fetching NFL standings...
+[2026-03-09 09:52:52]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:52:52] 🌐 Generating nfl.html...
+[2026-03-09 09:52:52]   ✅ nfl.html saved (34,163 chars)
+[2026-03-09 09:52:52] 
+[5/5] Hub
+[2026-03-09 09:52:52] 🌐 Generating index.html...
+[2026-03-09 09:52:52]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:52:52] 
+=======================================================
+[2026-03-09 09:52:52] 🎉  All done! 5 files updated in:
+[2026-03-09 09:52:52]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:52:52] =======================================================
+[2026-03-09 09:54:13] =======================================================
+[2026-03-09 09:54:13] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:54:13] =======================================================
+[2026-03-09 09:54:13] 
+[1/4] NBA
+[2026-03-09 09:54:13] 🏀 Fetching NBA standings...
+[2026-03-09 09:54:13]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:54:14]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:54:14] 🌐 Generating nba.html...
+[2026-03-09 09:54:14]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:54:14]   ✅ nba.html saved (43,418 chars)
+[2026-03-09 09:54:14] 
+[2/4] NHL
+[2026-03-09 09:54:14] 🏒 Fetching NHL standings...
+[2026-03-09 09:54:15]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:54:15]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:54:15] 🌐 Generating nhl.html...
+[2026-03-09 09:54:15]   ✅ nhl.html saved (42,621 chars)
+[2026-03-09 09:54:15] 
+[3/4] MLB
+[2026-03-09 09:54:15] ⚾ Fetching MLB standings...
+[2026-03-09 09:54:15]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:54:15]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:54:15] 🌐 Generating mlb.html...
+[2026-03-09 09:54:15]   ✅ mlb.html saved (40,797 chars)
+[2026-03-09 09:54:15] 
+[4/4] NFL
+[2026-03-09 09:54:15] 🏈 Fetching NFL standings...
+[2026-03-09 09:54:15]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:54:15] 🌐 Generating nfl.html...
+[2026-03-09 09:54:15]   ✅ nfl.html saved (34,163 chars)
+[2026-03-09 09:54:15] 
+[5/5] Hub
+[2026-03-09 09:54:15] 🌐 Generating index.html...
+[2026-03-09 09:54:15]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:54:15] 
+=======================================================
+[2026-03-09 09:54:15] 🎉  All done! 5 files updated in:
+[2026-03-09 09:54:15]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:54:15] =======================================================
+[2026-03-09 09:55:43] =======================================================
+[2026-03-09 09:55:43] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:55:43] =======================================================
+[2026-03-09 09:55:43] 
+[1/4] NBA
+[2026-03-09 09:55:43] 🏀 Fetching NBA standings...
+[2026-03-09 09:55:43]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:55:43]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:55:43] 🌐 Generating nba.html...
+[2026-03-09 09:55:43]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:55:43]   ✅ nba.html saved (49,257 chars)
+[2026-03-09 09:55:43] 
+[2/4] NHL
+[2026-03-09 09:55:43] 🏒 Fetching NHL standings...
+[2026-03-09 09:55:44]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:55:44]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:55:44] 🌐 Generating nhl.html...
+[2026-03-09 09:55:44]   ✅ nhl.html saved (46,188 chars)
+[2026-03-09 09:55:44] 
+[3/4] MLB
+[2026-03-09 09:55:44] ⚾ Fetching MLB standings...
+[2026-03-09 09:55:44]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:55:45]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:55:45] 🌐 Generating mlb.html...
+[2026-03-09 09:55:45]   ✅ mlb.html saved (42,436 chars)
+[2026-03-09 09:55:45] 
+[4/4] NFL
+[2026-03-09 09:55:45] 🏈 Fetching NFL standings...
+[2026-03-09 09:55:45]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:55:45] 🌐 Generating nfl.html...
+[2026-03-09 09:55:45]   ✅ nfl.html saved (34,069 chars)
+[2026-03-09 09:55:45] 
+[5/5] Hub
+[2026-03-09 09:55:45] 🌐 Generating index.html...
+[2026-03-09 09:55:45]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:55:45] 
+=======================================================
+[2026-03-09 09:55:45] 🎉  All done! 5 files updated in:
+[2026-03-09 09:55:45]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:55:45] =======================================================
+[2026-03-09 09:56:22] =======================================================
+[2026-03-09 09:56:22] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:56:22] =======================================================
+[2026-03-09 09:56:22] 
+[1/4] NBA
+[2026-03-09 09:56:22] 🏀 Fetching NBA standings...
+[2026-03-09 09:56:23]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:56:23]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:56:23] 🌐 Generating nba.html...
+[2026-03-09 09:56:23]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:24]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:24]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:24]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:24]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:25]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:25]   ⚠️  BallDontLie recap failed: 429 Client Error: Too Many Requests for url: https://api.balldontlie.io/nba/v1/games?dates%5B%5D=2026-03-08&per_page=30
+[2026-03-09 09:56:25]   ✅ nba.html saved (36,653 chars)
+[2026-03-09 09:56:25] 
+[2/4] NHL
+[2026-03-09 09:56:25] 🏒 Fetching NHL standings...
+[2026-03-09 09:56:25]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:56:26]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:56:26] 🌐 Generating nhl.html...
+[2026-03-09 09:56:26]   ✅ nhl.html saved (35,939 chars)
+[2026-03-09 09:56:26] 
+[3/4] MLB
+[2026-03-09 09:56:26] ⚾ Fetching MLB standings...
+[2026-03-09 09:56:26]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:56:27]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:56:27] 🌐 Generating mlb.html...
+[2026-03-09 09:56:27]   ✅ mlb.html saved (34,113 chars)
+[2026-03-09 09:56:27] 
+[4/4] NFL
+[2026-03-09 09:56:27] 🏈 Fetching NFL standings...
+[2026-03-09 09:56:27]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:56:27] 🌐 Generating nfl.html...
+[2026-03-09 09:56:27]   ✅ nfl.html saved (28,090 chars)
+[2026-03-09 09:56:27] 
+[5/5] Hub
+[2026-03-09 09:56:27] 🌐 Generating index.html...
+[2026-03-09 09:56:27]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:56:27] 
+=======================================================
+[2026-03-09 09:56:27] 🎉  All done! 5 files updated in:
+[2026-03-09 09:56:27]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:56:27] =======================================================
+[2026-03-09 09:57:32] =======================================================
+[2026-03-09 09:57:32] 🏟️   THE FIELD — MULTI-SPORT AUTO UPDATER
+[2026-03-09 09:57:32] =======================================================
+[2026-03-09 09:57:32] 
+[1/4] NBA
+[2026-03-09 09:57:32] 🏀 Fetching NBA standings...
+[2026-03-09 09:57:32]   ✅ NBA: 15 East + 15 West teams
+[2026-03-09 09:57:32]   📰 Yesterday (20260308): 10 final games for nba
+[2026-03-09 09:57:32] 🌐 Generating nba.html...
+[2026-03-09 09:57:32]   ✅ BallDontLie: 10 games cached
+[2026-03-09 09:57:32]   ✅ nba.html saved (49,257 chars)
+[2026-03-09 09:57:32] 
+[2/4] NHL
+[2026-03-09 09:57:32] 🏒 Fetching NHL standings...
+[2026-03-09 09:57:33]   ✅ NHL: 16 East + 16 West
+[2026-03-09 09:57:33]   📰 Yesterday (20260308): 7 final games for nhl
+[2026-03-09 09:57:33] 🌐 Generating nhl.html...
+[2026-03-09 09:57:33]   ✅ nhl.html saved (46,188 chars)
+[2026-03-09 09:57:33] 
+[3/4] MLB
+[2026-03-09 09:57:33] ⚾ Fetching MLB standings...
+[2026-03-09 09:57:33]   ℹ️  MLB spring training — regular season starts April 1
+[2026-03-09 09:57:34]   📰 Yesterday (20260308): 17 final games for mlb
+[2026-03-09 09:57:34] 🌐 Generating mlb.html...
+[2026-03-09 09:57:34]   ✅ mlb.html saved (42,436 chars)
+[2026-03-09 09:57:34] 
+[4/4] NFL
+[2026-03-09 09:57:34] 🏈 Fetching NFL standings...
+[2026-03-09 09:57:34]   ✅ NFL: 16 AFC + 16 NFC teams
+[2026-03-09 09:57:34] 🌐 Generating nfl.html...
+[2026-03-09 09:57:34]   ✅ nfl.html saved (34,069 chars)
+[2026-03-09 09:57:34] 
+[5/5] Hub
+[2026-03-09 09:57:34] 🌐 Generating index.html...
+[2026-03-09 09:57:34]   ✅ index.html saved (10,285 chars)
+[2026-03-09 09:57:34] 
+=======================================================
+[2026-03-09 09:57:34] 🎉  All done! 5 files updated in:
+[2026-03-09 09:57:34]     /Users/williamrichter/Desktop/ALLSPORTS/
+[2026-03-09 09:57:34] =======================================================
