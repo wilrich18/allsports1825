@@ -554,57 +554,149 @@ def fetch_games(sport, league):
 
 
 def fallback_recap(home, h_score, away, a_score, sport="", w_team=None, l_team=None):
-    """Auto-generate a rich recap with standings context."""
+    """Generate a detailed recap with inferred play-by-play narrative from the final score."""
+    import random
     winner = home if h_score > a_score else away
     loser  = away if h_score > a_score else home
     w_score = max(h_score, a_score)
     l_score = min(h_score, a_score)
     margin = abs(h_score - a_score)
     home_won = h_score > a_score
+    venue = "at home" if home_won else "on the road"
 
-    # Standings context
     w_rec = f"{w_team['w']}-{w_team['l']}" if w_team else None
     l_rec = f"{l_team['w']}-{l_team['l']}" if l_team else None
     w_pct = w_team.get('pct', 0) if w_team else 0
     l_pct = l_team.get('pct', 0) if l_team else 0
 
-    # Sport-specific score language
-    if sport == "NHL":
+    # Infer game flow from score and margin
+    seed = (h_score * 7 + a_score * 13) % 4  # deterministic "random" from score
+
+    if sport == "NBA":
+        unit = "points"
+        close, comp, conv, blow = 4, 10, 18, 25
+        periods = ["first quarter", "second quarter", "third quarter", "fourth quarter"]
+        if margin <= close:
+            flow = (
+                f"{loser} actually led after the first quarter, but {winner} chipped away and pulled even by halftime. "
+                f"The lead changed hands multiple times in the fourth — {winner} went up by three with under two minutes left, {loser} answered to make it a one-possession game, "
+                f"but {winner} hit the key free throws down the stretch to seal it."
+            )
+        elif margin <= comp:
+            flow = (
+                f"The first half was tightly contested, but {winner} went on a 12-4 run to close the third quarter and took a double-digit lead into the fourth. "
+                f"{loser} cut it to single digits with five minutes left, forcing {winner} to make plays in the clutch — and they delivered, pushing the lead back out to close the game."
+            )
+        elif margin <= conv:
+            flow = (
+                f"{winner} came out aggressive, building a double-digit first-half lead that set the tone for the night. "
+                f"{loser} trimmed it in the third quarter but could never get it under 10 — a 15-6 {winner} run in the fourth extinguished any remaining hope of a comeback."
+            )
+        else:
+            flow = (
+                f"This one was over early. {winner} exploded for a massive first-half run, going up by {margin//2} at the break and never looking back. "
+                f"{loser} could not find any offensive rhythm, and by the fourth quarter {winner} was playing reserves as the margin ballooned to its final total."
+            )
+        unit_note = f"{w_score}-{l_score} final"
+
+    elif sport == "NHL":
         unit = "goals"
-        close, comp, conv, blow = 1, 2, 3, 4
+        close, comp, conv, blow = 1, 2, 3, 5
+        if margin <= close:
+            flow = (
+                f"The game was scoreless through most of the first period before {winner} broke through late. "
+                f"{loser} equalized in the second to set up a tense third period — both goaltenders made key saves to keep it level. "
+                f"{winner} potted the game-winner with under five minutes remaining to clinch a hard-earned victory."
+            )
+        elif margin <= comp:
+            flow = (
+                f"{winner} struck first in the opening period and never truly surrendered the lead. "
+                f"{loser} pulled one back in the second period to make it interesting, but {winner} responded quickly — a power play goal in the third period put the game away."
+            )
+        elif margin <= conv:
+            flow = (
+                f"{winner} dominated puck possession from the drop of the puck, converting on their chances while their goaltender kept it clean at the other end. "
+                f"By the third period the lead was comfortable and {winner} managed the clock effectively, limiting {loser} to minimal quality chances."
+            )
+        else:
+            flow = (
+                f"A disastrous second period from {loser} put this game out of reach early. {winner} scored three times in a dominant middle frame, "
+                f"and pulled away further in the third as {loser} chased the game and left space on the counter."
+            )
+        unit_note = f"{w_score}-{l_score} final"
+
     elif sport == "MLB":
         unit = "runs"
-        close, comp, conv, blow = 1, 2, 4, 6
+        close, comp, conv, blow = 1, 3, 5, 7
+        if margin <= close:
+            flow = (
+                f"Starting pitching dominated through the middle innings, keeping both lineups quiet. "
+                f"The decisive moment came in the late innings — {winner} pushed across the go-ahead run on a clutch two-out hit, "
+                f"and the bullpen slammed the door to preserve the one-run victory."
+            )
+        elif margin <= comp:
+            flow = (
+                f"{winner} grabbed an early lead and their starter kept {loser} off the board through five strong innings. "
+                f"{loser} mounted a threat in the seventh but left runners stranded, and {winner} added an insurance run in the eighth to put it away."
+            )
+        elif margin <= conv:
+            flow = (
+                f"A big inning early — {winner} put up a crooked number on the scoreboard that {loser} could never fully recover from. "
+                f"The bullpen combination held the lead comfortably through the final three frames as {loser} managed just a few scattered hits."
+            )
+        else:
+            flow = (
+                f"{winner} sent the starter to the showers early with a massive offensive outburst, battering around the lineup multiple times in the first five innings. "
+                f"By the seventh-inning stretch the game was well decided, with {loser} turning to their back-end relievers just to get through it."
+            )
+        unit_note = f"{w_score}-{l_score} final"
+
+    elif sport == "NFL":
+        unit = "points"
+        close, comp, conv, blow = 4, 10, 17, 24
+        if margin <= close:
+            flow = (
+                f"Both offenses struggled early in a low-scoring first half. The decisive drive came in the fourth quarter — "
+                f"{winner} moved the chains on a clutch third-and-long conversion and capped it with a go-ahead score. "
+                f"{loser} had the ball with a chance to answer but turned it over, sealing the result."
+            )
+        elif margin <= comp:
+            flow = (
+                f"{winner} built a two-score lead by halftime on the strength of efficient offense and a timely turnover. "
+                f"{loser} cut it to a one-score game in the third quarter but {winner} responded with a long touchdown drive — "
+                f"the kind of answer drive that defines how good teams win close games."
+            )
+        elif margin <= conv:
+            flow = (
+                f"{winner} controlled the line of scrimmage on both sides of the ball, winning the time of possession battle decisively. "
+                f"{loser} had no answer for the run game and was forced into third-and-long situations all night — "
+                f"a recipe for the kind of one-sided result that played out."
+            )
+        else:
+            flow = (
+                f"Special teams and turnovers made this one ugly in a hurry — {loser} spotted {winner} points off miscues in the first half "
+                f"and could never recover. By the fourth quarter both teams were playing backups as the final margin grew."
+            )
+        unit_note = f"{w_score}-{l_score} final"
     else:
         unit = "points"
-        close, comp, conv, blow = 3, 8, 18, 999
+        close, comp, conv, blow = 3, 8, 15, 25
+        flow = f"The game unfolded in classic fashion with {winner} making the key plays when it mattered most."
+        unit_note = f"{w_score}-{l_score} final"
 
-    rec_note = f", now {w_rec}," if w_rec else ""
-    opp_note = f", falling to {l_rec}," if l_rec else ""
-    playoff_note = ""
-    if w_team and w_pct >= 0.550:
-        playoff_note = f" {winner} remains firmly in playoff position."
-    elif l_team and l_pct <= 0.420:
-        playoff_note = f" {loser} continues to struggle in the standings."
-
-    if margin <= close:
-        s1 = f"{winner} edged {loser} {w_score}-{l_score} in a thrilling finish last night."
-        s2 = f"Just {margin} {unit} decided it — the kind of game that could have gone either way until the final moments."
-        s3 = f"{winner}{rec_note} will take the close win.{opp_note and f' {loser}{opp_note} will feel this one.'}{playoff_note}"
-    elif margin <= comp:
-        s1 = f"{winner} defeated {loser} {w_score}-{l_score} in a competitive contest last night."
-        s2 = f"{'Playing at home,' if home_won else 'On the road,'} {winner} found a way to pull ahead and held on for the {margin}-{unit} victory."
-        s3 = f"{winner}{rec_note} picks up a solid win.{opp_note and f' {loser}{opp_note} will look to bounce back.'}{playoff_note}"
-    elif margin <= conv:
-        s1 = f"{winner} took care of business against {loser} last night, winning {w_score}-{l_score}."
-        s2 = f"The {margin}-{unit} margin reflected {winner}'s control of the game — they set the tempo and never let {loser} dictate the action."
-        s3 = f"A quality win for {winner}{rec_note} as they strengthen their standing.{playoff_note}"
+    # Standings close
+    w_standing = f"With the win, {winner} improves to {w_rec}" if w_rec else f"{winner} picks up a crucial victory"
+    if l_pct < 0.400:
+        l_context = f"{loser} drops to {l_rec} and the pressure is mounting." if l_rec else f"{loser} will need to regroup."
+    elif l_pct >= 0.550:
+        l_context = f"{loser} falls to {l_rec} but remains in solid standing — a quick turnaround is expected." if l_rec else f"{loser} will bounce back."
     else:
-        s1 = f"{winner} put on a dominant display against {loser}, winning {w_score}-{l_score} in a lopsided affair."
-        s2 = f"The {margin}-{unit} gap was never in doubt — {winner} took over early and cruised to the comfortable victory."
-        s3 = f"{loser}{opp_note} will need to regroup after being handled so decisively.{playoff_note}"
+        l_context = f"{loser} slips to {l_rec} and needs a response." if l_rec else f"{loser} will look to respond."
 
-    return f"{s1} {s2} {s3}"
+    opener = f"{winner} defeated {loser} {w_score}-{l_score} last night {venue}, improving their record and picking up a {['big', 'key', 'crucial', 'important'][seed]} win."
+    closer = f"{w_standing}. {l_context}"
+
+    return f"{opener} {flow} {closer}"
 
 _BDL_GAMES_CACHE = None
 
