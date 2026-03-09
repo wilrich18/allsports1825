@@ -147,12 +147,39 @@ function renderStandings(data,id){
   if(!tb)return;
   const tbl=tb.closest('table');
   const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
-  const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
-  sorted.forEach((t,i)=>{
-    const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
-    const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
-    const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
-    tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+  const hasDivs=data.some(t=>t.div&&t.div!=='');
+  if(!hasDivs){
+    // No division data — flat sort by win pct
+    const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+    sorted.forEach((t,i)=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
+      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
+    return;
+  }
+  // Group by division, sort divisions alphabetically, sort teams within div by win pct
+  const divMap={};
+  data.forEach(t=>{
+    const d=t.div||'Other';
+    if(!divMap[d])divMap[d]=[];
+    divMap[d].push(t);
+  });
+  // Build overall rank map by conference win pct for rank badge
+  const confSorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+  const rankMap={};confSorted.forEach((t,i)=>rankMap[t.t]=i+1);
+  Object.keys(divMap).sort().forEach(divName=>{
+    // Division header row
+    tb.innerHTML+=`<tr class="div-header-row"><td colspan="9" style="padding:10px 8px 4px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)"><span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">${divName}</span></td></tr>`;
+    const teams=divMap[divName].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
+    teams.forEach((t,di)=>{
+      const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
+      const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
+      const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
+      const confRank=rankMap[t.t]||'';
+      tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+    });
   });
 }
 function buildGameCard(gm){
@@ -892,45 +919,51 @@ def fetch_yesterday(sport, league):
         return []
 
 
+# NBA division assignments (ESPN flat API doesn't return div grouping)
+NBA_DIVISIONS = {
+    "Atlantic": ["Boston Celtics","Brooklyn Nets","New York Knicks","Philadelphia 76ers","Toronto Raptors"],
+    "Central":  ["Chicago Bulls","Cleveland Cavaliers","Detroit Pistons","Indiana Pacers","Milwaukee Bucks"],
+    "Southeast":["Atlanta Hawks","Charlotte Hornets","Miami Heat","Orlando Magic","Washington Wizards"],
+    "Northwest":["Denver Nuggets","Minnesota Timberwolves","Oklahoma City Thunder","Portland Trail Blazers","Utah Jazz"],
+    "Pacific":  ["Golden State Warriors","Los Angeles Clippers","LA Clippers","Los Angeles Lakers","LA Lakers","Phoenix Suns","Sacramento Kings"],
+    "Southwest":["Dallas Mavericks","Houston Rockets","Memphis Grizzlies","New Orleans Pelicans","San Antonio Spurs"],
+}
+NBA_DIV_LOOKUP = {team: div for div, teams in NBA_DIVISIONS.items() for team in teams}
+
 def fetch_nba_standings():
     log("🏀 Fetching NBA standings...")
     try:
         r = safe_get("https://site.api.espn.com/apis/v2/sports/basketball/nba/standings", {"season": "2026"})
         east, west = [], []
+        east_divs = {"Atlantic","Central","Southeast"}
         for conf in r.json().get("children", []):
             is_west = "WESTERN" in conf.get("name","").upper()
             top_entries = conf.get("standings",{}).get("entries",[])
-            divs_list = conf.get("children",[]) if not top_entries else []
-            def parse_nba_entry(entry, div_name=""):
-                name = entry["team"]["displayName"]
-                vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
-                l   = int(float(vals.get("losses",0) or 0))
-                gp  = int(float(vals.get("gamesPlayed", vals.get("points", 0)) or 0))
-                w   = int(float(vals.get("wins", max(0, gp-l)) or 0))
-                if gp == 0: gp = w + l
-                gp  = gp or 1
-                ppg = round(float(vals.get("avgPointsFor", vals.get("pointsFor",0)) or 0), 1)
-                opp = round(float(vals.get("avgPointsAgainst", vals.get("pointsAgainst",0)) or 0), 1)
-                if ppg > 200: ppg = round(ppg/gp,1); opp = round(opp/gp,1)
-                net = round(ppg-opp, 1)
-                pct = round(w/gp, 3)
-                return dict(t=name, w=w, l=l, ppg=ppg, opp=opp, net=net, pct=pct, l10="—", div=div_name)
-            if divs_list:
-                for div in divs_list:
-                    div_name = div.get("name","")
-                    for entry in div.get("standings",{}).get("entries",[]):
-                        try:
-                            t = parse_nba_entry(entry, div_name)
-                            if is_west: west.append(t)
-                            else: east.append(t)
-                        except: continue
-            else:
-                for entry in top_entries:
-                    try:
-                        t = parse_nba_entry(entry, "")
-                        if is_west: west.append(t)
-                        else: east.append(t)
-                    except: continue
+            all_entries = top_entries or []
+            if not all_entries:
+                for div in conf.get("children",[]):
+                    all_entries += div.get("standings",{}).get("entries",[])
+            for entry in all_entries:
+                try:
+                    name = entry["team"]["displayName"]
+                    vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
+                    l   = int(float(vals.get("losses",0) or 0))
+                    gp  = int(float(vals.get("gamesPlayed", vals.get("points", 0)) or 0))
+                    w   = int(float(vals.get("wins", max(0, gp-l)) or 0))
+                    if gp == 0: gp = w + l
+                    gp  = gp or 1
+                    ppg = round(float(vals.get("avgPointsFor", vals.get("pointsFor",0)) or 0), 1)
+                    opp = round(float(vals.get("avgPointsAgainst", vals.get("pointsAgainst",0)) or 0), 1)
+                    if ppg > 200: ppg = round(ppg/gp,1); opp = round(opp/gp,1)
+                    net = round(ppg-opp, 1)
+                    pct = round(w/gp, 3)
+                    div_name = NBA_DIV_LOOKUP.get(name, "Other")
+                    t = dict(t=name, w=w, l=l, ppg=ppg, opp=opp, net=net, pct=pct, l10="—", div=div_name)
+                    if NBA_DIV_LOOKUP.get(name, "") in east_divs:
+                        east.append(t)
+                    else:
+                        west.append(t)
+                except: continue
         east.sort(key=lambda x:-x["pct"]); west.sort(key=lambda x:-x["pct"])
         log(f"  ✅ NBA: {len(east)} East + {len(west)} West teams")
         return east, west
@@ -938,6 +971,42 @@ def fetch_nba_standings():
         log(f"  ⚠️  NBA standings failed: {e}")
         return [], []
 
+
+# NHL division assignments
+NHL_DIVISIONS = {
+    "Atlantic":    ["Boston Bruins","Buffalo Sabres","Detroit Red Wings","Florida Panthers","Montreal Canadiens","Ottawa Senators","Tampa Bay Lightning","Toronto Maple Leafs"],
+    "Metropolitan":["Carolina Hurricanes","Columbus Blue Jackets","New Jersey Devils","New York Islanders","New York Rangers","Philadelphia Flyers","Pittsburgh Penguins","Washington Capitals"],
+    "Central":     ["Chicago Blackhawks","Colorado Avalanche","Dallas Stars","Minnesota Wild","Nashville Predators","St. Louis Blues","Winnipeg Jets","Arizona Coyotes","Utah Hockey Club","Utah HC","Utah","Utah Mammoth"],
+    "Pacific":     ["Anaheim Ducks","Calgary Flames","Edmonton Oilers","Los Angeles Kings","San Jose Sharks","Seattle Kraken","Vancouver Canucks","Vegas Golden Knights","Vegas","Las Vegas Golden Knights"],
+}
+NHL_DIV_LOOKUP = {team: div for div, teams in NHL_DIVISIONS.items() for team in teams}
+NHL_EAST_DIVS  = {"Atlantic","Metropolitan"}
+
+# MLB division assignments
+MLB_DIVISIONS = {
+    "AL East":   ["Baltimore Orioles","Boston Red Sox","New York Yankees","Tampa Bay Rays","Toronto Blue Jays"],
+    "AL Central":["Chicago White Sox","Cleveland Guardians","Detroit Tigers","Kansas City Royals","Minnesota Twins"],
+    "AL West":   ["Houston Astros","Los Angeles Angels","LA Angels","Oakland Athletics","Athletics","Sacramento River Cats","Seattle Mariners","Texas Rangers"],
+    "NL East":   ["Atlanta Braves","Miami Marlins","New York Mets","Philadelphia Phillies","Washington Nationals"],
+    "NL Central":["Chicago Cubs","Cincinnati Reds","Milwaukee Brewers","Pittsburgh Pirates","St. Louis Cardinals"],
+    "NL West":   ["Arizona Diamondbacks","Colorado Rockies","Los Angeles Dodgers","San Diego Padres","San Francisco Giants"],
+}
+MLB_DIV_LOOKUP = {team: div for div, teams in MLB_DIVISIONS.items() for team in teams}
+MLB_AL_DIVS    = {"AL East","AL Central","AL West"}
+
+# NFL division assignments
+NFL_DIVISIONS = {
+    "AFC East":  ["Buffalo Bills","Miami Dolphins","New England Patriots","New York Jets"],
+    "AFC North": ["Baltimore Ravens","Cincinnati Bengals","Cleveland Browns","Pittsburgh Steelers"],
+    "AFC South": ["Houston Texans","Indianapolis Colts","Jacksonville Jaguars","Tennessee Titans"],
+    "AFC West":  ["Denver Broncos","Kansas City Chiefs","Las Vegas Raiders","Los Angeles Chargers","LA Chargers"],
+    "NFC East":  ["Dallas Cowboys","New York Giants","Philadelphia Eagles","Washington Commanders","Washington Football Team"],
+    "NFC North": ["Chicago Bears","Detroit Lions","Green Bay Packers","Minnesota Vikings"],
+    "NFC South": ["Atlanta Falcons","Carolina Panthers","New Orleans Saints","Tampa Bay Buccaneers"],
+    "NFC West":  ["Arizona Cardinals","Los Angeles Rams","LA Rams","San Francisco 49ers","Seattle Seahawks"],
+}
+NFL_DIV_LOOKUP = {team: div for div, teams in NFL_DIVISIONS.items() for team in teams}
+NFL_AFC_DIVS   = {"AFC East","AFC North","AFC South","AFC West"}
 
 def fetch_nhl_standings():
     log("🏒 Fetching NHL standings...")
@@ -954,10 +1023,10 @@ def fetch_nhl_standings():
             # Process each division separately to capture div name
             if divs_list:
                 for div in divs_list:
-                    div_name = div.get("name","")
                     for entry in div.get("standings",{}).get("entries",[]):
                         try:
                             name = entry["team"]["displayName"]
+                            div_name = NHL_DIV_LOOKUP.get(name, "Other")
                             vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
                             w   = int(float(vals.get("wins",0) or 0))
                             l   = int(float(vals.get("losses",0) or 0))
@@ -966,7 +1035,7 @@ def fetch_nhl_standings():
                             ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                             net = round(ppg-opp, 1)
-                            t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=div_name)
+                            t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
                             if is_west: west.append(t)
                             else: east.append(t)
                         except: continue
@@ -982,7 +1051,7 @@ def fetch_nhl_standings():
                         ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                         opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                         net = round(ppg-opp, 1)
-                        t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div="")
+                        t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
                         if is_west: west.append(t)
                         else: east.append(t)
                     except: continue
@@ -1009,6 +1078,7 @@ def fetch_mlb_standings():
                 for div in conf.get("children",[]):
                     dname = div.get("name","").upper()
                     div_al = is_al or "AMERICAN" in dname or dname.startswith("AL")
+                    div_label = div.get("name","")
                     for entry in div.get("standings",{}).get("entries",[]):
                         try:
                             name = entry["team"]["displayName"]
@@ -1018,8 +1088,9 @@ def fetch_mlb_standings():
                             gp = w+l or 1
                             ppg = round(float(vals.get("runs", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst",0)) or 0)/gp, 1)
-                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—")
-                            if div_al: al.append(t)
+                            div_name = MLB_DIV_LOOKUP.get(name, div_label or "Other")
+                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
+                            if MLB_DIV_LOOKUP.get(name,"") in MLB_AL_DIVS: al.append(t)
                             else: nl.append(t)
                         except: continue
             else:
@@ -1032,7 +1103,7 @@ def fetch_mlb_standings():
                         gp = w+l or 1
                         ppg = round(float(vals.get("runs", vals.get("pointsFor",0)) or 0)/gp, 1)
                         opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst",0)) or 0)/gp, 1)
-                        t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—")
+                        t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
                         if is_al: al.append(t)
                         else: nl.append(t)
                     except: continue
@@ -1058,18 +1129,19 @@ def fetch_nfl_standings():
             divs_list = conf.get("children",[]) if not top_entries else []
             if divs_list:
                 for div in divs_list:
-                    div_name = div.get("name","")
                     for entry in div.get("standings",{}).get("entries",[]):
                         try:
                             name = entry["team"]["displayName"]
+                            div_name = NHL_DIV_LOOKUP.get(name, "Other")
                             vals = {s["name"]: s.get("value",0) for s in entry.get("stats",[])}
                             w = int(float(vals.get("wins",0) or 0))
                             l = int(float(vals.get("losses",0) or 0))
                             gp = w+l or 1
                             ppg = round(float(vals.get("pointsFor",0) or 0)/gp, 1)
                             opp = round(float(vals.get("pointsAgainst",0) or 0)/gp, 1)
-                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=div_name)
-                            if is_afc: afc.append(t)
+                            div_name = NFL_DIV_LOOKUP.get(name, div_name or "Other")
+                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
+                            if NFL_DIV_LOOKUP.get(name,"") in NFL_AFC_DIVS: afc.append(t)
                             else: nfc.append(t)
                         except: continue
             else:
@@ -1082,7 +1154,7 @@ def fetch_nfl_standings():
                         gp = w+l or 1
                         ppg = round(float(vals.get("pointsFor",0) or 0)/gp, 1)
                         opp = round(float(vals.get("pointsAgainst",0) or 0)/gp, 1)
-                        t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div="")
+                        t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
                         if is_afc: afc.append(t)
                         else: nfc.append(t)
                     except: continue
