@@ -1434,7 +1434,7 @@ def playoff_page_html(sport, east, west, e_label="Eastern Conference", w_label="
     elif sport == "NHL":
         e_seeds = get_seeds(east, 8); w_seeds = get_seeds(west, 8)
         r1_label, r2_label = "First Round", "Second Round"
-        cf_label, champ_label, trophy_icon = "Conf Finals", "Stanley Cup", "&#127944;"
+        cf_label, champ_label, trophy_icon = "Conf Finals", "Stanley Cup", "&#127954;"
         playin = ""
     elif sport == "MLB":
         e_seeds = get_seeds(east, 6); w_seeds = get_seeds(west, 6)
@@ -1456,13 +1456,18 @@ def playoff_page_html(sport, east, west, e_label="Eastern Conference", w_label="
         '<div class="bk-center-col">'
         '<div class="bk-trophy-box">'
         f'<div class="bk-trophy-icon">{trophy_icon}</div>'
-        f'<div class="bk-trophy-title">{cf_label}</div>'
+        f'<div class="bk-trophy-title">{e_label[:3] if len(e_label)>3 else e_label} {cf_label}</div>'
         '<div class="bk-trophy-sub">CONF FINALS</div>'
         '</div>'
         '<div class="bk-trophy-box" style="background:rgba(253,185,39,0.06);border-color:rgba(253,185,39,0.25)">'
         '<div class="bk-trophy-icon">&#127942;</div>'
         f'<div class="bk-trophy-title" style="color:var(--gold)">{champ_label}</div>'
         '<div class="bk-trophy-sub" style="color:var(--gold)">CHAMPIONSHIP</div>'
+        '</div>'
+        '<div class="bk-trophy-box">'
+        f'<div class="bk-trophy-icon">{trophy_icon}</div>'
+        f'<div class="bk-trophy-title">{w_label[:3] if len(w_label)>3 else w_label} {cf_label}</div>'
+        '<div class="bk-trophy-sub">CONF FINALS</div>'
         '</div>'
         '</div>'
     )
