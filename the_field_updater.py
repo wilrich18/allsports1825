@@ -147,7 +147,9 @@ function renderStandings(data,id){
   if(!tb)return;
   const tbl=tb.closest('table');
   const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
-  const hasDivs=data.some(t=>t.div&&t.div!=='');
+  const hasPTS=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PTS');
+  const hasPCT=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PCT');
+  const hasDivs=data.some(t=>t.div&&t.div!=='') && !id.includes('conf-body');
   if(!hasDivs){
     // No division data — flat sort by win pct
     const sorted=[...data].sort((a,b)=>(b.w/(b.w+b.l||1))-(a.w/(a.w+a.l||1)));
@@ -155,7 +157,7 @@ function renderStandings(data,id){
       const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
-      tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd}${ptsTd}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
     });
     return;
   }
@@ -178,7 +180,7 @@ function renderStandings(data,id){
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
       const confRank=rankMap[t.t]||'';
-      tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}<td>${pct}</td><td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd2=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd2=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd2}${ptsTd2}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
     });
   });
 }
@@ -397,20 +399,43 @@ def page_shell(sport, acc, acc2, hero_rgba, today, tabs_html, pages_html):
 </body>
 </html>"""
 
-def standings_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=False):
+def conference_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=False, show_pts=False, show_pct=True):
     otl_th = "<th>OTL</th>" if show_otl else ""
+    pts_th = "<th>PTS</th>" if show_pts else ""
+    pct_th = "<th>PCT</th>" if show_pct else ""
     return f"""<div class="two-col">
   <div>
     <div class="section-title">{e_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}<th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="east-conf-body"></tbody>
+    </table></div>
+  </div>
+  <div>
+    <div class="section-title">{w_label}</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <tbody id="west-conf-body"></tbody>
+    </table></div>
+  </div>
+</div>"""
+
+def standings_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=False, show_pts=False, show_pct=True):
+    otl_th = "<th>OTL</th>" if show_otl else ""
+    pts_th = "<th>PTS</th>" if show_pts else ""
+    pct_th = "<th>PCT</th>" if show_pct else ""
+    return f"""<div class="two-col">
+  <div>
+    <div class="section-title">{e_label}</div>
+    <div class="standings-wrap"><table class="standings-table">
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">{w_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}<th>PCT</th><th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
   </div>
@@ -1037,7 +1062,7 @@ def fetch_nhl_standings():
                             ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                             net = round(ppg-opp, 1)
-                            t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
+                            t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
                             if is_west: west.append(t)
                             else: east.append(t)
                         except: continue
@@ -1053,11 +1078,11 @@ def fetch_nhl_standings():
                         ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                         opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                         net = round(ppg-opp, 1)
-                        t = dict(t=name, w=w, l=l, otl=otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
+                        t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
                         if is_west: west.append(t)
                         else: east.append(t)
                     except: continue
-        east.sort(key=lambda x:-x["pct"]); west.sort(key=lambda x:-x["pct"])
+        east.sort(key=lambda x:-x.get("pts",0)); west.sort(key=lambda x:-x.get("pts",0))
         log(f"  ✅ NHL: {len(east)} East + {len(west)} West")
         return east, west
     except Exception as e:
@@ -1555,6 +1580,7 @@ def generate_nba_html(east, west, yesterday, today_games):
     <p class="hero-sub">Full Eastern and Western Conference standings.</p>
   </div></div>
   <div class="section">{standings_block(ej,wj,"Eastern Conference","Western Conference")}</div>
+  <div class="section">{conference_block(ej,wj,"Eastern Conference","Western Conference")}</div>
 </div>
 {tonight_page_html("NBA",today)}
 <div id="page-digest" class="page">
@@ -1571,7 +1597,7 @@ def generate_nba_html(east, west, yesterday, today_games):
 {props_page_html("NBA",today)}
 {playoff_page_html("NBA", east, west)}
 """
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='basketball';const ESPN_LEAGUE='nba';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderStandings(EAST,'east-conf-body');renderStandings(WEST,'west-conf-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NBA","#c8102e","#e8132f","rgba(200,16,46,0.11)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nba.html", html)
@@ -1650,7 +1676,8 @@ def generate_nhl_html(east, west, yesterday, today_games):
     <h1 class="hero-title">NHL<br><em>STANDINGS</em></h1>
     <p class="hero-sub">Eastern and Western Conference standings.</p>
   </div></div>
-  <div class="section">{standings_block(ej,wj,"Eastern Conference","Western Conference","GF/G","GA/G",show_otl=True)}</div>
+  <div class="section">{standings_block(ej,wj,"Eastern Conference","Western Conference","GF/G","GA/G",show_otl=True,show_pts=True,show_pct=False)}</div>
+  <div class="section">{conference_block(ej,wj,"Eastern Conference","Western Conference","GF/G","GA/G",show_otl=True,show_pts=True,show_pct=False)}</div>
 </div>
 {tonight_page_html("NHL",today)}
 <div id="page-digest" class="page">
@@ -1688,7 +1715,7 @@ def generate_nhl_html(east, west, yesterday, today_games):
             ("Trade Deadline Fallout", "The 2026 NHL trade deadline has reshaped multiple contenders. Several top teams upgraded, making the stretch run and playoff picture even more compelling."),
         ])
     ) + props_page_html("NHL", today) + playoff_page_html("NHL", east, west)
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='hockey';const ESPN_LEAGUE='nhl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderStandings(EAST,'east-conf-body');renderStandings(WEST,'west-conf-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("NHL","#4ab3ff","#2d9de8","rgba(74,179,255,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("nhl.html", html)
@@ -1773,6 +1800,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
     <p class="hero-sub">American League and National League standings.</p>
   </div></div>
   <div class="section">{spring}{standings_block(ej,wj,"American League","National League","R/G","RA/G")}</div>
+  <div class="section">{conference_block(ej,wj,"American League","National League","R/G","RA/G")}</div>
 </div>
 {tonight_page_html("MLB",today)}
 <div id="page-digest" class="page">
@@ -1809,7 +1837,7 @@ def generate_mlb_html(al, nl, yesterday, today_games):
             ("Acuna Comeback", "Ronald Acuna Jr. returns from injury for Atlanta fully healthy. When Acuna is right, the Braves are a different team and a genuine NL pennant contender."),
         ])
     ) + props_page_html("MLB", today) + playoff_page_html("MLB", al, nl, "American League", "National League")
-    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const TONIGHT={tj};const PROPS_DATA={pj};const ESPN_SPORT='baseball';const ESPN_LEAGUE='mlb';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderStandings(EAST,'east-conf-body');renderStandings(WEST,'west-conf-body');renderGames();renderProps(PROPS_DATA);"
     html = page_shell("MLB","#22c55e","#16a34a","rgba(34,197,94,0.08)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
     save("mlb.html", html)
@@ -1847,6 +1875,7 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
     <p class="hero-sub">Final AFC and NFC standings from the 2025 season.</p>
   </div></div>
   <div class="section">{standings_block(ej,wj,"AFC","NFC")}</div>
+  <div class="section">{conference_block(ej,wj,"AFC","NFC")}</div>
 </div>
 <div id="page-digest" class="page">
   <div class="section" style="padding-top:30px">
@@ -1917,7 +1946,7 @@ def generate_nfl_html(afc, nfc, yesterday=None, today_games=None):
         {"player":"Breece Hall","team":"New York Jets","line":"Over 69.5 rush yards","odds":"-112","conf":"MEDIUM","cls":"medium","reason":"Hall is a dynamic back who can make plays in space — volume is consistent when healthy."},
     ]
     pj = json.dumps(nfl_props)
-    init = f"const EAST={ej};const WEST={wj};const PROPS_DATA={pj};const ESPN_SPORT='americanfootball';const ESPN_LEAGUE='nfl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderGames();renderProps(PROPS_DATA);"
+    init = f"const EAST={ej};const WEST={wj};const PROPS_DATA={pj};const ESPN_SPORT='americanfootball';const ESPN_LEAGUE='nfl';renderStandings(EAST,'east-body');renderStandings(WEST,'west-body');renderStandings(EAST,'east-conf-body');renderStandings(WEST,'west-conf-body');renderGames();renderProps(PROPS_DATA);"
     pages += nfl_playoff_results_html()
     html = page_shell("NFL","#f97316","#ea6c0a","rgba(249,115,22,0.10)",today,tabs,pages)
     html = html.replace("</script>", init+"</script>")
