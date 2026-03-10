@@ -392,7 +392,7 @@ def page_shell(sport, acc, acc2, hero_rgba, today, tabs_html, pages_html):
   </div>
 </nav>
 {pages_html}
-<footer><strong>THE FIELD — {sport}</strong> · Data via ESPN · Updated {today} · For entertainment only · 1-800-GAMBLER</footer>
+<footer><strong>THE FIELD — {sport}</strong> · Updated {today} · For entertainment only · 1-800-GAMBLER</footer>
 <script>{SHARED_JS}</script>
 </body>
 </html>"""
@@ -2024,7 +2024,7 @@ footer{{position:relative;z-index:1;text-align:center;padding:18px;font-size:12p
   <div class="strip-stat"><div class="strip-val">3</div><div class="strip-lbl">Live Seasons</div></div>
   <div class="strip-stat"><div class="strip-val">LIVE</div><div class="strip-lbl">Daily Updates</div></div>
 </div>
-<footer>THE FIELD · Sports Analytics Hub · Data via ESPN · For entertainment only · Updated {today}</footer>
+<footer>THE FIELD · Sports Analytics Hub · For entertainment only · Updated {today}</footer>
 </body></html>"""
     save("index.html", html)
 
