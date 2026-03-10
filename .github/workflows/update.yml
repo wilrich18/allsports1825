@@ -1,7 +1,15 @@
 name: Nightly Update
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 23 * * *'   # 6 PM CT
+    - cron: '0 0 * * *'    # 7 PM CT
+    - cron: '0 1 * * *'    # 8 PM CT
+    - cron: '0 2 * * *'    # 9 PM CT
+    - cron: '0 3 * * *'    # 10 PM CT
+    - cron: '0 4 * * *'    # 11 PM CT
+    - cron: '0 5 * * *'    # 12 AM CT
+    - cron: '0 6 * * *'    # 1 AM CT
+    - cron: '0 7 * * *'    # 2 AM CT (late west coast games)
   workflow_dispatch:
 jobs:
   update:
