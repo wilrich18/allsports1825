@@ -126,14 +126,14 @@ footer strong{color:var(--white);}</style>
   <div>
     <div class="section-title">AFC</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th><th>STRK</th></tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">NFC</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th><th>STRK</th></tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
   </div>
@@ -142,14 +142,14 @@ footer strong{color:var(--white);}</style>
   <div>
     <div class="section-title">AFC</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th><th>STRK</th></tr></thead>
       <tbody id="east-conf-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">NFC</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>PPG</th><th>OPP</th><th>+/-</th><th>L10</th><th>STRK</th></tr></thead>
       <tbody id="west-conf-body"></tbody>
     </table></div>
   </div>
@@ -195,6 +195,7 @@ function renderStandings(data,id){
   const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
   const hasPTS=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PTS');
   const hasPCT=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PCT');
+  const hasSTRK=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='STRK');
   const hasDivs=data.some(t=>t.div&&t.div!=='') && !id.includes('conf-body');
   if(!hasDivs){
     // No division data — flat sort by win pct
@@ -203,7 +204,7 @@ function renderStandings(data,id){
       const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
-      const ptsTd=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd}${ptsTd}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd=hasPCT?`<td>${pct}</td>`:'';const sc=t.streak&&t.streak[0]==='W'?'color:#4ade80':t.streak&&t.streak[0]==='L'?'color:#f87171':'';const strkTd=hasSTRK?`<td style="font-weight:700;${sc}">${t.streak||'—'}</td>`:'';tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd}${ptsTd}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td>${strkTd}</tr>`;
     });
     return;
   }
@@ -226,7 +227,7 @@ function renderStandings(data,id){
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
       const confRank=rankMap[t.t]||'';
-      const ptsTd2=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd2=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd2}${ptsTd2}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd2=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd2=hasPCT?`<td>${pct}</td>`:'';const sc2=t.streak&&t.streak[0]==='W'?'color:#4ade80':t.streak&&t.streak[0]==='L'?'color:#f87171':'';const strkTd2=hasSTRK?`<td style="font-weight:700;${sc2}">${t.streak||'—'}</td>`:'';tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd2}${ptsTd2}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td>${strkTd2}</tr>`;
     });
   });
 }
