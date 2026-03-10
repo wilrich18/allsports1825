@@ -836,8 +836,10 @@ def generate_recap(sport, home, h_score, away, a_score, w_team=None, l_team=None
 def fetch_yesterday(sport, league):
     """Fetch completed games from yesterday via ESPN scoreboard dates param."""
     try:
-        from datetime import timedelta
-        ydate = (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
+        from datetime import timedelta, timezone
+        # Use CT (UTC-6) to determine yesterday correctly
+        ct_now = datetime.now(timezone.utc) - timedelta(hours=6)
+        ydate = (ct_now - timedelta(days=1)).strftime("%Y%m%d")
         r = safe_get(
             f"https://site.api.espn.com/apis/site/v2/sports/{sport}/{league}/scoreboard",
             {"dates": ydate}
