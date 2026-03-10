@@ -149,6 +149,7 @@ function renderStandings(data,id){
   const hasOTL=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='OTL');
   const hasPTS=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PTS');
   const hasPCT=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='PCT');
+  const hasSTRK=tbl&&Array.from(tbl.querySelectorAll('thead th')).some(th=>th.textContent==='STRK');
   const hasDivs=data.some(t=>t.div&&t.div!=='') && !id.includes('conf-body');
   if(!hasDivs){
     // No division data — flat sort by win pct
@@ -157,7 +158,7 @@ function renderStandings(data,id){
       const gp=t.w+t.l||1,pct=(t.w/gp).toFixed(3);
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
-      const ptsTd=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd}${ptsTd}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd=hasPCT?`<td>${pct}</td>`:'';const sc=t.streak&&t.streak[0]==='W'?'color:#4ade80':t.streak&&t.streak[0]==='L'?'color:#f87171':'';const strkTd=hasSTRK?`<td style="font-weight:700;${sc}">${t.streak||'—'}</td>`:'';tb.innerHTML+=`<tr class="${i===7?'playoff-line':''}"><td><span class="team-rank">${i+1}</span></td><td><span class="team-name">${t.t}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd}${ptsTd}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td>${strkTd}</tr>`;
     });
     return;
   }
@@ -180,7 +181,7 @@ function renderStandings(data,id){
       const ns=t.net>0?'+'+t.net:String(t.net),nc=t.net>0?'net-pos':t.net<0?'net-neg':'';
       const otlTd=hasOTL?`<td>${t.otl??0}</td>`:'';
       const confRank=rankMap[t.t]||'';
-      const ptsTd2=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd2=hasPCT?`<td>${pct}</td>`:'';tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd2}${ptsTd2}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td></tr>`;
+      const ptsTd2=hasPTS?`<td style="font-weight:700;color:var(--white)">${t.pts??t.w*2+(t.otl??0)}</td>`:'';const pctTd2=hasPCT?`<td>${pct}</td>`:'';const sc2=t.streak&&t.streak[0]==='W'?'color:#4ade80':t.streak&&t.streak[0]==='L'?'color:#f87171':'';const strkTd2=hasSTRK?`<td style="font-weight:700;${sc2}">${t.streak||'—'}</td>`:'';tb.innerHTML+=`<tr><td><span class="team-rank">${di+1}</span></td><td><span class="team-name">${t.t}</span><span style="font-size:10px;color:var(--gray);margin-left:6px">#${confRank}</span></td><td><span class="record-w">${t.w}</span></td><td><span class="record-l">${t.l}</span></td>${otlTd}${pctTd2}${ptsTd2}<td>${t.ppg}</td><td>${t.opp}</td><td class="${nc}">${ns}</td><td>${t.l10}</td>${strkTd2}</tr>`;
     });
   });
 }
@@ -403,18 +404,19 @@ def conference_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=Fals
     otl_th = "<th>OTL</th>" if show_otl else ""
     pts_th = "<th>PTS</th>" if show_pts else ""
     pct_th = "<th>PCT</th>" if show_pct else ""
+    strk_th = "<th>STRK</th>"
     return f"""<div class="two-col">
   <div>
     <div class="section-title">{e_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th>{strk_th}</tr></thead>
       <tbody id="east-conf-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">{w_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th>{strk_th}</tr></thead>
       <tbody id="west-conf-body"></tbody>
     </table></div>
   </div>
@@ -424,18 +426,19 @@ def standings_block(el, wl, e_label, w_label, c1="PPG", c2="OPP", show_otl=False
     otl_th = "<th>OTL</th>" if show_otl else ""
     pts_th = "<th>PTS</th>" if show_pts else ""
     pct_th = "<th>PCT</th>" if show_pct else ""
+    strk_th = "<th>STRK</th>"
     return f"""<div class="two-col">
   <div>
     <div class="section-title">{e_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th>{strk_th}</tr></thead>
       <tbody id="east-body"></tbody>
     </table></div>
   </div>
   <div>
     <div class="section-title">{w_label}</div>
     <div class="standings-wrap"><table class="standings-table">
-      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th></tr></thead>
+      <thead><tr><th>#</th><th>Team</th><th>W</th><th>L</th>{otl_th}{pct_th}{pts_th}<th>{c1}</th><th>{c2}</th><th>+/-</th><th>L10</th>{strk_th}</tr></thead>
       <tbody id="west-body"></tbody>
     </table></div>
   </div>
@@ -957,6 +960,45 @@ NBA_DIVISIONS = {
 }
 NBA_DIV_LOOKUP = {team: div for div, teams in NBA_DIVISIONS.items() for team in teams}
 
+def fetch_l10_streak(sport, league, team_id):
+    """Fetch last 10 completed games for a team and return (l10, streak) tuple."""
+    try:
+        r = safe_get(
+            f"https://site.api.espn.com/apis/site/v2/sports/{sport}/{league}/teams/{team_id}/schedule"
+        )
+        events = r.json().get("events", [])
+        results = []
+        for ev in reversed(events):
+            comp = ev.get("competitions", [{}])[0]
+            status = comp.get("status", {}).get("type", {})
+            if not status.get("completed", False):
+                continue
+            competitors = comp.get("competitors", [])
+            for team in competitors:
+                if str(team.get("id", "")) == str(team_id):
+                    won = team.get("winner", False)
+                    results.append("W" if won else "L")
+                    break
+            if len(results) >= 10:
+                break
+        if not results:
+            return "—", "—"
+        w = results.count("W")
+        l = results.count("L")
+        l10 = f"{w}-{l}"
+        # Calculate streak from most recent game
+        streak_char = results[0]
+        streak_count = 0
+        for r in results:
+            if r == streak_char:
+                streak_count += 1
+            else:
+                break
+        streak = f"{streak_char}{streak_count}"
+        return l10, streak
+    except Exception as e:
+        return "—", "—"
+
 def fetch_nba_standings():
     log("🏀 Fetching NBA standings...")
     try:
@@ -985,7 +1027,9 @@ def fetch_nba_standings():
                     net = round(ppg-opp, 1)
                     pct = round(w/gp, 3)
                     div_name = NBA_DIV_LOOKUP.get(name, "Other")
-                    t = dict(t=name, w=w, l=l, ppg=ppg, opp=opp, net=net, pct=pct, l10="—", div=div_name)
+                    team_id = entry["team"].get("id", "")
+                    l10, streak = fetch_l10_streak("basketball", "nba", team_id)
+                    t = dict(t=name, w=w, l=l, ppg=ppg, opp=opp, net=net, pct=pct, l10=l10, streak=streak, div=div_name)
                     if NBA_DIV_LOOKUP.get(name, "") in east_divs:
                         east.append(t)
                     else:
@@ -1062,7 +1106,9 @@ def fetch_nhl_standings():
                             ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                             net = round(ppg-opp, 1)
-                            t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
+                            team_id = entry["team"].get("id", "")
+                            l10, streak = fetch_l10_streak("hockey", "nhl", team_id)
+                            t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10=l10, streak=streak, div=NHL_DIV_LOOKUP.get(name,"Other"))
                             if is_west: west.append(t)
                             else: east.append(t)
                         except: continue
@@ -1078,7 +1124,9 @@ def fetch_nhl_standings():
                         ppg = round(float(vals.get("goalsFor", vals.get("pointsFor",0)) or 0)/gp, 1)
                         opp = round(float(vals.get("goalsAgainst", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                         net = round(ppg-opp, 1)
-                        t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10="—", div=NHL_DIV_LOOKUP.get(name,"Other"))
+                        team_id = entry["team"].get("id", "")
+                        l10, streak = fetch_l10_streak("hockey", "nhl", team_id)
+                        t = dict(t=name, w=w, l=l, otl=otl, pts=(w*2)+otl, pct=round(w/gp,3), ppg=ppg, opp=opp, net=net, l10=l10, streak=streak, div=NHL_DIV_LOOKUP.get(name,"Other"))
                         if is_west: west.append(t)
                         else: east.append(t)
                     except: continue
@@ -1116,7 +1164,8 @@ def fetch_mlb_standings():
                             ppg = round(float(vals.get("runs", vals.get("pointsFor",0)) or 0)/gp, 1)
                             opp = round(float(vals.get("runsAllowed", vals.get("pointsAgainst",0)) or 0)/gp, 1)
                             div_name = MLB_DIV_LOOKUP.get(name, div_label or "Other")
-                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
+                            _l10r=fetch_l10_streak("baseball","mlb",entry["team"].get("id",""));l10=_l10r[0];streak=_l10r[1]
+                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10=l10,streak=streak,div=MLB_DIV_LOOKUP.get(name,"Other"))
                             if MLB_DIV_LOOKUP.get(name,"") in MLB_AL_DIVS: al.append(t)
                             else: nl.append(t)
                         except: continue
@@ -1167,7 +1216,8 @@ def fetch_nfl_standings():
                             ppg = round(float(vals.get("pointsFor",0) or 0)/gp, 1)
                             opp = round(float(vals.get("pointsAgainst",0) or 0)/gp, 1)
                             div_name = NFL_DIV_LOOKUP.get(name, div_name or "Other")
-                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10="—",div=NFL_DIV_LOOKUP.get(name,"Other"))
+                            _l10r=fetch_l10_streak("americanfootball","nfl",entry["team"].get("id",""));l10=_l10r[0];streak=_l10r[1]
+                            t = dict(t=name,w=w,l=l,pct=round(w/gp,3),ppg=ppg,opp=opp,net=round(ppg-opp,1),l10=l10,streak=streak,div=NFL_DIV_LOOKUP.get(name,"Other"))
                             if NFL_DIV_LOOKUP.get(name,"") in NFL_AFC_DIVS: afc.append(t)
                             else: nfc.append(t)
                         except: continue
